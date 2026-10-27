@@ -1,4 +1,4 @@
-import { useAuth, useUser } from '@clerk/expo';
+import { useUser } from '@clerk/expo';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,6 @@ export default function Settings() {
   const setSettings = useStore((s) => s.setSettings);
   const [notice, setNotice] = useState<{ text: string; error?: boolean }>();
   const [confirming, setConfirming] = useState(false);
-  const { isSignedIn } = useAuth();
   const { user } = useUser();
 
   const onExport = () => {
@@ -64,11 +63,11 @@ export default function Settings() {
       <Card>
         <Txt variant="label">{t('account.title')}</Txt>
         <Txt variant="caption">
-          {isSignedIn ? t('account.signedInCaption', { email: user?.primaryEmailAddress?.emailAddress }) : t('account.guestCaption')}
+          {t('account.signedInCaption', { email: user?.primaryEmailAddress?.emailAddress })}
         </Txt>
         <Button
           ghost
-          label={isSignedIn ? t('account.manage') : t('account.signIn')}
+          label={t('account.manage')}
           onPress={() => router.push('/account')}
           style={styles.full}
         />
@@ -135,7 +134,7 @@ export default function Settings() {
       </Card>
       <Card>
         <Txt variant="label">{t('settings.data')}</Txt>
-        <Txt variant="caption">{t(isSignedIn ? 'settings.dataTextSynced' : 'settings.dataText')}</Txt>
+        <Txt variant="caption">{t('settings.dataTextSynced')}</Txt>
         <View style={styles.row}>
           <Button ghost label={t('settings.export')} onPress={onExport} style={styles.half} />
           <Button ghost label={t('settings.import')} onPress={onImport} style={styles.half} />

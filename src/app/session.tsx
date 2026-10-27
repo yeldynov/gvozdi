@@ -16,7 +16,7 @@ import { PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Art, Button, Card, Sheet, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
-import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, live, shouldPromptSignup, type Achievement } from '@/lib/practice';
+import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
 import {
   clampMinutes,
   elapsedSec,
@@ -33,7 +33,8 @@ import { fonts, radius, space, useColors } from '@/theme';
 
 const gong = require('@/assets/sounds/gong.m4a');
 
-const leave = () => (router.canGoBack() ? router.back() : router.replace('/'));
+// Guests can't reach the tabs, so their fallback is onboarding.
+const leave = (signedIn = true) => (router.canGoBack() ? router.back() : router.replace(signedIn ? '/' : '/onboarding'));
 const toProgress = () => router.dismissTo({ pathname: '/progress', params: { saved: '1' } });
 
 // A running session lives in the store (`running`), so after an OS kill or reload this screen resumes it instead of the params.
@@ -60,9 +61,10 @@ export default function SessionScreen() {
 function Prepare({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: number; onStart: () => void }) {
   const { t } = useTranslation();
   const c = useColors();
+  const { isSignedIn } = useAuth();
   return (
     <View style={styles.page}>
-      <TopBar onClose={leave} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
+      <TopBar onClose={() => leave(isSignedIn)} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
       <View style={styles.center}>
         <Art name="breathe" size={240} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
@@ -89,7 +91,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const [now, setNow] = useState(() => Date.now());
   const [sheet, setSheet] = useState<'save' | 'discard' | null>(null);
   const { isSignedIn } = useAuth();
-  const [done, setDone] = useState<{ a?: Achievement; offer: boolean }>(); // after save: unlock screen, then account offer
+  const [unlocked, setUnlocked] = useState<Achievement>(); // after save
+  const [guestEnd, setGuestEnd] = useState(false); // guests can't save: offer an account instead
   const running = clock.pausedAt === null;
   const elapsed = elapsedSec(clock, now);
   const reached = goalSec > 0 && elapsed >= goalSec;
@@ -101,11 +104,11 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
 
   // Back gesture, hardware back or browser back ask before throwing the session away.
   const pendingBack = useRef<() => void>(undefined);
-  const allowLeave = usePreventRemove(!done, ({ repeat }) => {
+  const allowLeave = usePreventRemove(!unlocked && !guestEnd, ({ repeat }) => {
     pendingBack.current = repeat;
     setSheet('discard');
   });
-  const exit = (then: () => void = leave) => {
+  const exit = (then: () => void = () => leave(isSignedIn)) => {
     useStore.getState().setRunning(undefined);
     allowLeave();
     then();
@@ -153,11 +156,11 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const finish = () => {
     if (!elapsed) return exit();
     updateClock(pauseClock(clock, Date.now()));
-    setSheet('save');
+    if (isSignedIn) setSheet('save');
+    else setGuestEnd(true);
   };
 
-  const save = (tension: Tension | undefined, note: string) => {
-    const before = earnedAchievementIds(useStore.getState().sessions);
+  const record = (tension?: Tension, note = '') =>
     addSession({
       startedAt: new Date(clock.startedAt).toISOString(),
       durationSec: elapsed,
@@ -166,21 +169,27 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
+
+  // Held on the device as a guest; useSync uploads it once the account exists.
+  const keepAsGuest = () => {
+    record();
+    capture('session_saved', { mode, duration_sec: elapsed, goal_sec: goalSec || undefined, goal_reached: reached, guest: true });
+    exit(() => router.replace('/account'));
+  };
+
+  const save = (tension: Tension | undefined, note: string) => {
+    const before = earnedAchievementIds(useStore.getState().sessions);
+    record(tension, note);
     useStore.getState().setRunning(undefined);
-    const { sessions, settings, setSettings } = useStore.getState();
+    const { sessions } = useStore.getState();
     const fresh = earnedAchievementIds(sessions).filter((id) => !before.includes(id));
     const a = ACHIEVEMENTS.find((x) => x.id === fresh.at(-1));
     capture('session_saved', { mode, duration_sec: elapsed, goal_sec: goalSec || undefined, goal_reached: reached, tension, has_note: !!note.trim() });
     for (const id of fresh) capture('achievement_unlocked', { id });
-    const offer = !isSignedIn && shouldPromptSignup(sessions, settings.signupPrompt);
-    if (offer)
-      setSettings({
-        signupPrompt: { ...settings.signupPrompt, lastShownAt: new Date().toISOString(), shownAtCount: live(sessions).length },
-      });
-    if (!a && !offer) return exit(toProgress);
+    if (!a) return exit(toProgress);
     setSheet(null);
-    setDone({ a, offer });
-    if (a && haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    setUnlocked(a);
+    if (haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
   };
 
   const keepGoing = () => {
@@ -191,8 +200,18 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const status = !running ? t('session.paused') : reached ? t('session.goalReached') : t('session.standing');
   const big = (value: string, color = c.text) => <Text style={[styles.big, { color }]}>{value}</Text>;
 
-  if (done?.a) return <Unlocked a={done.a} onContinue={() => (done.offer ? setDone({ offer: true }) : toProgress())} />;
-  if (done?.offer) return <AccountOffer />;
+  if (unlocked) return <Unlocked a={unlocked} onContinue={toProgress} />;
+  if (guestEnd)
+    return (
+      <GuestEnd
+        elapsed={elapsed}
+        onKeep={keepAsGuest}
+        onDiscard={() => {
+          capture('session_discarded', { mode, duration_sec: elapsed, guest: true });
+          exit(() => router.replace('/onboarding'));
+        }}
+      />
+    );
 
   return (
     <View style={styles.page}>
@@ -325,14 +344,9 @@ function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void })
   );
 }
 
-function AccountOffer() {
+function GuestEnd({ elapsed, onKeep, onDiscard }: { elapsed: number; onKeep: () => void; onDiscard: () => void }) {
   const { t } = useTranslation();
   const c = useColors();
-  const dismiss = () => {
-    const { settings, setSettings } = useStore.getState();
-    setSettings({ signupPrompt: { ...settings.signupPrompt, dismissals: settings.signupPrompt.dismissals + 1 } });
-    toProgress();
-  };
   return (
     <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
       <View style={styles.center}>
@@ -341,12 +355,12 @@ function AccountOffer() {
           <Txt variant="display" style={{ textAlign: 'center' }}>
             {t('account.offerTitle')}
           </Txt>
-          <Txt style={{ color: c.text2, textAlign: 'center', maxWidth: 420 }}>{t('account.offerText')}</Txt>
+          <Txt style={{ color: c.text2, textAlign: 'center', maxWidth: 420 }}>{t('account.offerText', { time: formatDuration(elapsed) })}</Txt>
         </View>
       </View>
       <View style={{ gap: space[3] }}>
-        <Button label={t('account.offerYes')} onPress={() => router.replace('/account')} style={styles.wide} />
-        <Button ghost label={t('account.offerLater')} onPress={dismiss} style={styles.wide} />
+        <Button label={t('account.offerYes')} onPress={onKeep} style={styles.wide} />
+        <Button ghost label={t('session.discard')} onPress={onDiscard} style={styles.wide} />
       </View>
     </Animated.View>
   );

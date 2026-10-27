@@ -22,8 +22,6 @@
     "programDay": "21-day program · Day {{day}} of {{total}}",
     "programDone": "{{done}} of {{total}} days done",
     "programText": "A little longer each day you practise. A missed day just waits for you.",
-    "backup": "Back up your streak",
-    "backupText": "A free account keeps your practice safe across devices.",
     "install": "Keep Gvozdi on your home screen",
     "installText": "Opens full screen and works offline.",
     "installIos": "Tap Share, then “Add to Home Screen”. Opens full screen and works offline.",
@@ -64,7 +62,6 @@
     "light": "Light",
     "dark": "Dark",
     "data": "Your data",
-    "dataText": "Sessions live on this device only. Export a backup to keep them safe or move them to another phone.",
     "export": "Export",
     "import": "Import",
     "exportFailed": "Couldn't export the backup.",
@@ -220,7 +217,6 @@
   "onboarding": {
     "skip": "Skip",
     "next": "Next",
-    "begin": "Begin your practice",
     "welcome": {
       "kicker": "A practice, not an app",
       "title": "Stand on nails. Calmly.",
@@ -234,9 +230,12 @@
     "start": {
       "kicker": "Start small",
       "title": "A few minutes a day.",
-      "text": "Begin short and add a little as your feet adapt. Everything stays on this device; no account needed.",
+      "text": "Begin short and add a little as your feet adapt. A free account keeps your sessions and streak on every device.",
       "safety": "If you are pregnant, have diabetes, a heart condition or wounds on your feet, ask your doctor first."
-    }
+    },
+    "createAccount": "Create free account",
+    "haveAccount": "I already have an account",
+    "tryGuest": "Try a session as a guest"
   },
   "reminder": {
     "title": "Time for the board",
@@ -265,14 +264,11 @@
     "signedInAs": "Signed in as",
     "syncedText": "Your sessions sync to this account automatically.",
     "signOut": "Sign out",
-    "signIn": "Sign in or create account",
     "manage": "Manage account",
-    "guestCaption": "You're practising as a guest. Sessions live only on this device.",
     "signedInCaption": "Signed in as {{email}}. Sessions sync automatically.",
-    "offerTitle": "Keep your practice safe",
-    "offerText": "Create a free account and your sessions and streak will be backed up and on every device you use.",
+    "offerTitle": "Keep this session?",
+    "offerText": "{{time}} on the board. Create a free account to save it and start your streak.",
     "offerYes": "Create free account",
-    "offerLater": "Not now",
     "signOutFailed": "Couldn't sync your sessions, so you're still signed in. Check your connection and try again."
   }
 }

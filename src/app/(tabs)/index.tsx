@@ -1,9 +1,7 @@
-import { useAuth } from '@clerk/expo';
-import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { InstallHint } from '@/components/install-hint';
 import { Art, Button, Card, Screen, Txt } from '@/components/ui';
@@ -20,7 +18,6 @@ export default function Home() {
   const c = useColors();
   const streak = currentStreak(sessions);
   const program = programDay(sessions);
-  const { isLoaded, isSignedIn } = useAuth();
 
   // Consent is asked only in the EU/EEA/UK/CH (by IP country); elsewhere, or when the country is unknown, it's approved.
   const [askConsent, setAskConsent] = useState(false);
@@ -73,18 +70,6 @@ export default function Home() {
           </View>
         </Card>
       )}
-      {isLoaded && !isSignedIn && live(sessions).length > 0 && (
-        <Pressable accessibilityRole="button" onPress={() => router.push('/account')} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
-          <Card style={styles.backup}>
-            <Feather name="cloud" size={20} color={c.text2} />
-            <View style={{ flex: 1 }}>
-              <Txt variant="body">{t('home.backup')}</Txt>
-              <Txt variant="caption">{t('home.backupText')}</Txt>
-            </View>
-            <Feather name="chevron-right" size={20} color={c.text3} />
-          </Card>
-        </Pressable>
-      )}
       {live(sessions).length > 0 && <InstallHint />}
     </Screen>
   );
@@ -92,7 +77,6 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   dots: { flexDirection: 'row', flexWrap: 'wrap', gap: space[1], marginVertical: space[1] },
-  backup: { flexDirection: 'row', alignItems: 'center', gap: space[3], paddingVertical: space[4] },
   dot: { width: 10, height: 10, borderRadius: radius.pill },
   row: { flexDirection: 'row', gap: space[3], marginTop: space[2] },
   half: { flex: 1, alignItems: 'center', paddingHorizontal: space[2] },

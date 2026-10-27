@@ -37,8 +37,6 @@ export const useStore = create<State>()(
         theme: 'system',
         sound: true,
         haptics: true,
-        onboarded: false,
-        signupPrompt: { dismissals: 0 },
       },
       addSession: (s) => {
         const session = { ...s, id: randomUUID(), updatedAt: now() };

@@ -1,6 +1,6 @@
 // One passwordless screen: email → code. Signs in if the email is known, otherwise signs up.
 import { useAuth, useSignIn, useSignUp, useUser } from '@clerk/expo';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
@@ -33,6 +33,7 @@ export default function Account() {
   const [flow, setFlow] = useState<'in' | 'up'>(); // set once a code is on its way
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false); // just signed in here: go Home once the auth guard lets us
 
   const fail = (e: ClerkErr) => setError(t(ERRORS[codeOf(e) ?? ''] ?? 'account.failed'));
 
@@ -73,12 +74,11 @@ export default function Account() {
       const { error: finErr } = await attempt.finalize();
       if (finErr) return fail(finErr);
       capture(flow === 'in' ? 'signed_in' : 'signed_up');
-      if (router.canGoBack()) router.back();
-      else router.replace('/');
+      setDone(true);
     });
 
   // The sessions live in the account, so the device forgets them; otherwise the next sign-in would merge them into another account.
-  // If the last sync fails we stay signed in, so nothing unsynced is lost. Then back to onboarding, which offers sign-in.
+  // If the last sync fails we stay signed in, so nothing unsynced is lost. This screen is open to guests, so leave for onboarding explicitly.
   const onSignOut = () =>
     step(async () => {
       if (!(await syncNow(getToken))) return setError(t('account.signOutFailed'));
@@ -86,15 +86,16 @@ export default function Account() {
       const st = useStore.getState();
       st.setSyncCursor(undefined);
       st.replaceSessions([]);
-      st.setSettings({ onboarded: false });
       router.replace('/onboarding');
     });
+
+  if (done && isSignedIn) return <Redirect href="/" />;
 
   const input = [styles.input, { color: c.text, backgroundColor: c.surface, borderColor: c.divider }];
 
   return (
     <Screen>
-      <BackHeader title={t('tabs.settings')} fallback="/settings" />
+      {isSignedIn ? <BackHeader title={t('tabs.settings')} fallback="/settings" /> : <BackHeader title={t('common.back')} fallback="/onboarding" />}
       <Txt variant="display">{t('account.title')}</Txt>
 
       {isSignedIn ? (

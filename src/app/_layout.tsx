@@ -1,4 +1,5 @@
-import { ClerkProvider } from '@clerk/expo';
+import { ClerkProvider, useAuth } from '@clerk/expo';
+import { resourceCache } from '@clerk/expo/resource-cache';
 import { tokenCache } from '@clerk/expo/token-cache';
 import { Fraunces_300Light } from '@expo-google-fonts/fraunces';
 import { Literata_300Light } from '@expo-google-fonts/literata';
@@ -50,23 +51,46 @@ export default function RootLayout() {
     return () => sub.remove();
   }, [hydrated, reminder, sessions, active.language, t]);
 
-  const ready = fontsLoaded && hydrated;
-  useEffect(() => {
-    if (!ready) return;
-    SplashScreen.hideAsync();
-    capture('app_opened', { language: active.language });
-  }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps -- once per launch
-
-  if (!ready) return null;
+  if (!fontsLoaded || !hydrated) return null;
   return (
-    <ClerkProvider publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
+    // resourceCache: native only; lets Clerk restore the signed-in user offline instead of bouncing to onboarding.
+    <ClerkProvider
+      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+      tokenCache={tokenCache}
+      __experimental_resourceCache={resourceCache}>
       <Background />
       <StatusBar style={c.isDark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
-      </Stack>
+      <Routes />
     </ClerkProvider>
+  );
+}
+
+// The app is for signed-in users; guests get onboarding, the account screen and one demo session.
+function Routes() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const c = useColors();
+  const { i18n: active } = useTranslation();
+  useEffect(() => {
+    if (!isLoaded) return;
+    SplashScreen.hideAsync();
+    capture('app_opened', { language: active.language });
+  }, [isLoaded]); // eslint-disable-line react-hooks/exhaustive-deps -- once per launch
+
+  if (!isLoaded) return null;
+  return (
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
+      <Stack.Protected guard={!!isSignedIn} redirectTo="/onboarding">
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="history/index" />
+        <Stack.Screen name="history/[id]" />
+        <Stack.Screen name="achievement/[id]" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isSignedIn} redirectTo="/">
+        <Stack.Screen name="onboarding" />
+      </Stack.Protected>
+      <Stack.Screen name="account" />
+      <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
+    </Stack>
   );
 }
 

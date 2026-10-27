@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Art, Button, Txt, type ArtName } from '@/components/ui';
 import { capture } from '@/lib/analytics';
-import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
 const PAGES = ['welcome', 'peak', 'start'] as const;
@@ -19,17 +18,21 @@ export default function Onboarding() {
   const key = PAGES[page];
   const last = page === PAGES.length - 1;
 
-  const finish = (to: '/' | '/account' = '/') => {
-    useStore.getState().setSettings({ onboarded: true });
-    capture('onboarding_completed', { skipped: !last, account: to === '/account' });
-    router.replace(to);
+  // Push, not replace: backing out of the account screen or the demo session returns here.
+  const toAccount = () => {
+    capture('onboarding_completed', { skipped: !last, account: true });
+    router.push('/account');
+  };
+  const tryGuest = () => {
+    capture('onboarding_completed', { skipped: !last, account: false });
+    router.push({ pathname: '/session', params: { mode: 'free' } });
   };
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: c.bg }]}>
       <View style={styles.top}>
         {!last && (
-          <Pressable accessibilityRole="button" hitSlop={12} onPress={() => finish()}>
+          <Pressable accessibilityRole="button" hitSlop={12} onPress={() => setPage(PAGES.length - 1)}>
             <Text style={[styles.skip, { color: c.text2 }]}>{t('onboarding.skip')}</Text>
           </Pressable>
         )}
@@ -50,11 +53,16 @@ export default function Onboarding() {
           ))}
         </View>
         <Button
-          label={last ? t('onboarding.begin') : t('onboarding.next')}
-          onPress={last ? () => finish() : () => setPage(page + 1)}
+          label={last ? t('onboarding.createAccount') : t('onboarding.next')}
+          onPress={last ? toAccount : () => setPage(page + 1)}
           style={styles.cta}
         />
-        <Button ghost label={t('account.signIn')} onPress={() => finish('/account')} style={styles.cta} />
+        <Button ghost label={t('onboarding.haveAccount')} onPress={toAccount} style={styles.cta} />
+        {last && (
+          <Pressable accessibilityRole="link" hitSlop={8} onPress={tryGuest} style={styles.guest}>
+            <Text style={[styles.skip, { color: c.text2, textDecorationLine: 'underline' }]}>{t('onboarding.tryGuest')}</Text>
+          </Pressable>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -71,4 +79,5 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', gap: space[2], justifyContent: 'center' },
   dot: { width: 8, height: 8, borderRadius: radius.pill },
   cta: { alignSelf: 'stretch', alignItems: 'center' },
+  guest: { alignSelf: 'center' },
 });

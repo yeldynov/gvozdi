@@ -22,10 +22,6 @@ export type Settings = {
   sound: boolean;
   haptics: boolean;
   reminder?: string; // 'HH:mm'
-  onboarded: boolean;
-  signupPrompt: SignupPrompt;
   installHintDismissed?: boolean; // web only
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };
-
-export type SignupPrompt = { lastShownAt?: string; shownAtCount?: number; dismissals: number };

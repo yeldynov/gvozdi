@@ -4,7 +4,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 
 - GitHub `yeldynov/gvozdi`, EAS project `@shangnik/gvozdi`, web https://gvozdi.expo.app
 - Bundle id / package: `com.shangnik.gvozdi`
-- Guest-first (no login required; an occasional dismissible sign-up prompt comes later). Earthy brand. Languages EN / UK / RU.
+- Account required (user decision): `Stack.Protected` in root `_layout` gates tabs/history/achievement on Clerk `isSignedIn`. Guests get onboarding, `/account` and one demo session; finishing it offers "create an account to keep it" (kept locally, pushed by `useSync` after sign-in). Earthy brand. Languages EN / UK / RU.
 - MVP scope excludes: Library, Paywall, Board/Pure/Breath session variants, mood check-in, social sharing, web push.
 
 ## Stack
@@ -20,13 +20,13 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 ## Layout
 
 ```
-src/app/_layout.tsx          root: fonts, i18n, theme
+src/app/_layout.tsx          root: fonts, i18n, theme, Clerk (+ offline resourceCache), protected route groups (redirectTo)
 src/app/+html.tsx            web shell: manifest, icons, theme-color, SW registration, beforeinstallprompt capture
 public/sw.js                 network-first SW; on each load warms every route's HTML + JS chunks (add new routes to ROUTES)
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
-src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
-src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
-src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
+src/app/onboarding.tsx       3 intro pages (signed-out only); last page: create account / have account / "try a session as a guest"
+src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; guests get GuestEnd (keep → /account, discard → /onboarding) instead of the save sheet; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
+src/app/account.tsx          email → code; signs in, or signs up if the email is new (open to guests). Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
 src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
 src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)
@@ -111,7 +111,7 @@ npx tsc --noEmit && npx expo lint && npm test
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. Levels and a 21-day program — done; program advances per practice day (gaps pause), then todayMinutes falls back to suggestedMinutes
-8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision)
+8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app is account-gated with a guest demo session (replaced the sign-up prompt rule)
 9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog — done (native icons/splash unseen until `eas build`). Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
 
 Donor repos (copy from, never fork): `~/dev/gvozdi-app` (gvozdi-pwa: design tokens, `SessionActivePeak.jsx`, `SessionActiveNails.jsx`, copy), and `gh repo clone yeldynov/<name>` for `stepsure-ai` (translations, stats), `gvozdi-app`/`gvozdi-v6` (prepare/guide copy in UK/RU).
