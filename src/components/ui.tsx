@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather';
+import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +7,26 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, t
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { fonts, radius, space, useColors } from '@/theme';
+
+// Character scenes exported as static SVGs from the gvozdi-pwa design set (onboarding scenes).
+const ART = {
+  step: require('@/assets/art/step.svg'),
+  stand: require('@/assets/art/stand.svg'),
+  breathe: require('@/assets/art/breathe.svg'),
+  time: require('@/assets/art/time.svg'),
+  feel: require('@/assets/art/feel.svg'),
+  streak: require('@/assets/art/streak.svg'),
+  reflect: require('@/assets/art/reflect.svg'),
+  walk: require('@/assets/art/walk.svg'),
+  rest: require('@/assets/art/rest.svg'),
+  together: require('@/assets/art/together.svg'),
+};
+export type ArtName = keyof typeof ART;
+
+/** Decorative square illustration. */
+export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
+  return <Image source={ART[name]} contentFit="contain" accessible={false} style={{ width: size, height: size, alignSelf: 'center' }} />;
+}
 
 export function Screen({ children }: { children: ReactNode }) {
   const c = useColors();

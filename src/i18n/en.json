@@ -108,7 +108,10 @@
     "fewer": "Fewer minutes",
     "more": "More minutes",
     "begin": "Begin",
-    "beginFor": "Begin · {{min}} min"
+    "beginFor": "Begin · {{min}} min",
+    "zen": "Back to simple",
+    "customize": "Customize practice",
+    "zenTitle": "Just stand."
   },
   "session": {
     "prepareTitle": "Steady!",

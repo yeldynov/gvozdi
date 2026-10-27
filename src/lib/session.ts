@@ -23,22 +23,23 @@ export function elapsedSec(c: Clock, now: number): number {
   return Math.max(0, Math.floor((end - c.startedAt - c.pausedMs) / 1000));
 }
 
-// Peak mode: sensation climbs sharply, tops out within ~1 min, eases by 1:30 and settles by 7:00.
+// Peak mode: sensation climbs from the first step, tops out at 1:30, eases by 7:00.
 export const PEAK_SEC = 90;
 export const MILD_SEC = 420;
 
-/** Felt intensity 0..1 at second t (shape ported from gvozdi-pwa SessionActivePeak). */
+/** Felt intensity 0..1 at second t: ease-out climb to 1 at PEAK_SEC, then decays toward a mild floor. */
 export function intensityAt(t: number): number {
-  if (t < PEAK_SEC) return (1 - Math.exp(-t / 6)) * Math.exp(-Math.max(0, t - 26) / 42);
-  return 0.22 * Math.exp(-(t - PEAK_SEC) / 250);
+  if (t < PEAK_SEC) return 1 - (1 - t / PEAK_SEC) ** 2;
+  return 0.15 + 0.85 * Math.exp(-(t - PEAK_SEC) / 90);
 }
 
 export type PeakCaption = 'sharp' | 'climbing' | 'top' | 'past' | 'adapting' | 'goal';
 
 export function peakCaption(elapsed: number, goalSec: number): PeakCaption {
-  if (elapsed < 10) return 'sharp';
-  if (elapsed < 26) return 'climbing';
-  if (elapsed < 55) return 'top';
-  if (elapsed < PEAK_SEC) return 'past';
-  return elapsed >= goalSec ? 'goal' : 'adapting';
+  if (goalSec && elapsed >= goalSec) return 'goal';
+  if (elapsed < 15) return 'sharp';
+  if (elapsed < 60) return 'climbing';
+  if (elapsed < PEAK_SEC + 15) return 'top';
+  if (elapsed < 180) return 'past';
+  return 'adapting';
 }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TENSION_ICONS, useFormatDay } from '@/components/session-fields';
-import { BackHeader, Button, Card, Screen, Txt } from '@/components/ui';
+import { Art, BackHeader, Button, Card, Screen, Txt } from '@/components/ui';
 import { formatDuration, groupByDay } from '@/lib/practice';
 import { useStore } from '@/store';
 import { fonts, space, useColors } from '@/theme';
@@ -24,6 +24,7 @@ export default function History() {
 
       {days.length === 0 && (
         <Card>
+          <Art name="reflect" size={180} />
           <Txt variant="title">{t('history.empty')}</Txt>
           <Txt variant="caption">{t('history.emptyText')}</Txt>
           <Button label={t('home.begin')} onPress={() => router.navigate('/practice')} style={{ marginTop: space[2] }} />

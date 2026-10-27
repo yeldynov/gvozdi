@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Txt } from '@/components/ui';
+import { Art, Button, Txt, type ArtName } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
 const PAGES = ['welcome', 'peak', 'start'] as const;
+const ART: Record<(typeof PAGES)[number], ArtName> = { welcome: 'step', peak: 'feel', start: 'time' };
 
 export default function Onboarding() {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ export default function Onboarding() {
       </View>
 
       <View style={styles.body}>
+        <Art name={ART[key]} size={240} />
         <Txt variant="label">{t(`onboarding.${key}.kicker`)}</Txt>
         <Txt variant="display" style={styles.headline}>{t(`onboarding.${key}.title`)}</Txt>
         <Txt style={[styles.text, { color: c.text2 }]}>{t(`onboarding.${key}.text`)}</Txt>

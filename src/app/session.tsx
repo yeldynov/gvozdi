@@ -12,8 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Badge } from '@/components/progress-visuals';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
-import { BreathDot, PeakCurve, TimerRing } from '@/components/session-visuals';
-import { Button, Card, Sheet, Txt } from '@/components/ui';
+import { PeakCurve, TimerRing } from '@/components/session-visuals';
+import { Art, Button, Card, Sheet, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
 import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, live, shouldPromptSignup, type Achievement } from '@/lib/practice';
@@ -63,7 +63,7 @@ function Prepare({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: numbe
     <View style={styles.page}>
       <TopBar onClose={leave} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
       <View style={styles.center}>
-        <BreathDot size={160} active color={c.primary} />
+        <Art name="breathe" size={240} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
           {t('session.prepareTitle')}
         </Txt>
@@ -335,7 +335,7 @@ function AccountOffer() {
   return (
     <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
       <View style={styles.center}>
-        <Feather name="cloud" size={48} color={c.accent} />
+        <Art name="together" size={220} />
         <View style={{ alignItems: 'center', gap: space[2] }}>
           <Txt variant="display" style={{ textAlign: 'center' }}>
             {t('account.offerTitle')}
