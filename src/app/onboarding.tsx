@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Txt } from '@/components/ui';
+import { capture } from '@/lib/analytics';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -19,6 +20,7 @@ export default function Onboarding() {
 
   const finish = () => {
     useStore.getState().setSettings({ onboarded: true });
+    capture('onboarding_completed', { skipped: !last });
     router.replace('/');
   };
 

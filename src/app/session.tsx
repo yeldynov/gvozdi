@@ -14,6 +14,7 @@ import { Badge } from '@/components/progress-visuals';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { BreathDot, PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Button, Card, Sheet, Txt } from '@/components/ui';
+import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
 import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, live, shouldPromptSignup, type Achievement } from '@/lib/practice';
 import {
@@ -148,6 +149,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     const { sessions, settings, setSettings } = useStore.getState();
     const fresh = earnedAchievementIds(sessions).filter((id) => !before.includes(id));
     const a = ACHIEVEMENTS.find((x) => x.id === fresh.at(-1));
+    capture('session_saved', { mode, duration_sec: elapsed, goal_sec: goalSec || undefined, goal_reached: reached, tension, has_note: !!note.trim() });
+    for (const id of fresh) capture('achievement_unlocked', { id });
     const offer = !isSignedIn && shouldPromptSignup(sessions, settings.signupPrompt);
     if (offer)
       setSettings({
@@ -256,7 +259,15 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
           {t('session.discardText', { time: formatDuration(elapsed) })}
         </Txt>
         <View style={styles.row}>
-          <Button ghost label={t('session.discard')} onPress={leave} style={styles.half} />
+          <Button
+            ghost
+            label={t('session.discard')}
+            onPress={() => {
+              capture('session_discarded', { mode, duration_sec: elapsed });
+              leave();
+            }}
+            style={styles.half}
+          />
           <Button label={t('session.keepGoing')} onPress={() => setSheet(null)} style={styles.half} />
         </View>
       </Sheet>

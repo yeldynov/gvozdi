@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import { BackHeader, Button, Card, Screen, Txt } from '@/components/ui';
+import { capture } from '@/lib/analytics';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -70,6 +71,7 @@ export default function Account() {
       if (attempt.status !== 'complete') return setError(t('account.failed'));
       const { error: finErr } = await attempt.finalize();
       if (finErr) return fail(finErr);
+      capture(flow === 'in' ? 'signed_in' : 'signed_up');
       if (router.canGoBack()) router.back();
       else router.replace('/settings');
     });

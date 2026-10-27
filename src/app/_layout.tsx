@@ -11,6 +11,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import i18n, { resolveLanguage } from '@/i18n';
+import { capture } from '@/lib/analytics';
 import { syncReminder } from '@/lib/reminder';
 import { useSync } from '@/lib/sync';
 import { useStore } from '@/store';
@@ -40,8 +41,10 @@ export default function RootLayout() {
 
   const ready = fontsLoaded && hydrated;
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
-  }, [ready]);
+    if (!ready) return;
+    SplashScreen.hideAsync();
+    capture('app_opened', { language: active.language });
+  }, [ready]); // eslint-disable-line react-hooks/exhaustive-deps -- once per launch
 
   if (!ready) return null;
   return (

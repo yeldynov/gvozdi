@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button, Card, Txt } from '@/components/ui';
+import { capture } from '@/lib/analytics';
 import { useStore } from '@/store';
 import { space, useColors } from '@/theme';
 
@@ -43,7 +44,10 @@ export function InstallHint() {
           <Button
             ghost
             label={t('home.installButton')}
-            onPress={() => prompt.prompt().then(() => setPrompt(undefined))}
+            onPress={() => {
+              capture('install_prompted');
+              prompt.prompt().then(() => setPrompt(undefined));
+            }}
             style={styles.button}
           />
         )}

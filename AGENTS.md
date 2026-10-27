@@ -14,12 +14,15 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 - State: Zustand `persist` + AsyncStorage (localStorage on web), key `gvozdi`.
 - i18n: i18next + expo-localization.
 - Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
-- Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP). Planned: PostHog.
+- Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP).
+- Analytics: PostHog EU capture API over `fetch` (no SDK), anonymous `settings.analyticsId`; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
 
 ## Layout
 
 ```
 src/app/_layout.tsx          root: fonts, i18n, theme
+src/app/+html.tsx            web shell: manifest, icons, theme-color, SW registration, beforeinstallprompt capture
+public/sw.js                 network-first SW; on each load warms every route's HTML + JS chunks (add new routes to ROUTES)
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer
@@ -36,6 +39,8 @@ src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + ca
 src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)
 src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
+src/lib/analytics.ts         capture(event, props); events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted
+src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
 src/lib/reminder.ts          native daily reminder (fixed id, rescheduled from root _layout on time/language change); reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
@@ -71,6 +76,10 @@ npx tsc --noEmit && npx expo lint && npm test
 
 ## Gotchas
 
+- `+html.tsx` must render `headNodes`/`bodyNodes` from `useServerDocumentContext()`, or the export ships HTML with no JS.
+- Fraunces has no Cyrillic: `Txt` display/title switch to Literata for UK/RU. Use `Txt` for headlines, not raw `fonts.display`.
+- react-native-web ignores `accessibilityState`; use `aria-checked` / `aria-*` props.
+- Icons/splash are rendered from one SVG mark by a throwaway headless-Chrome script; regenerate all PNGs together if the mark changes.
 - Web output must stay `"static"` in `app.json`. `server` output crashed on EAS Hosting with SDK 58. API routes still work: `["expo-router", { "apiRoutes": true }]` exports prerendered HTML + `+api.ts` routes (verified on an EAS preview deploy, `src/app/api/health+api.ts`).
 - TS 6 defaults `types` to `[]`, so test files need `/// <reference types="node" />`.
 - Typed routes regenerate only while `npx expo start` runs. Don't set `CI=1` while editing; it disables file watching.
@@ -101,7 +110,7 @@ npx tsc --noEmit && npx expo lint && npm test
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. Levels and a 21-day program — done; program advances per practice day (gaps pause), then todayMinutes falls back to suggestedMinutes
 8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision)
-9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog. Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
+9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog — done (native icons/splash unseen until `eas build`). Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
 
 Donor repos (copy from, never fork): `~/dev/gvozdi-app` (gvozdi-pwa: design tokens, `SessionActivePeak.jsx`, `SessionActiveNails.jsx`, copy), and `gh repo clone yeldynov/<name>` for `stepsure-ai` (translations, stats), `gvozdi-app`/`gvozdi-v6` (prepare/guide copy in UK/RU).
 
