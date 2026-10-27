@@ -117,6 +117,20 @@ export function Choice<T extends string>({
   );
 }
 
+export function Step({ icon, label, onPress }: { icon: 'minus' | 'plus'; label: string; onPress: () => void }) {
+  const c = useColors();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      hitSlop={8}
+      style={[styles.stepBtn, { backgroundColor: c.bg2 }]}>
+      <Feather name={icon} size={18} color={c.text} />
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   scroll: { padding: space[5], gap: space[4], width: '100%', maxWidth: 560, alignSelf: 'center' },
   display: { fontFamily: fonts.display, fontSize: 34, lineHeight: 40 },
@@ -139,5 +153,6 @@ const styles = StyleSheet.create({
   buttonText: { fontFamily: fonts.textBold, fontSize: 16 },
   choice: { flexDirection: 'row', borderRadius: radius.pill, padding: 3 },
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },
+  stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   choiceText: { fontFamily: fonts.textMedium, fontSize: 14 },
 });

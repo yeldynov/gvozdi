@@ -59,7 +59,15 @@
     "cleared": "All sessions cleared.",
     "contact": "Contact",
     "contactText": "Questions, ideas or a bug? Write to us on Telegram.",
-    "write": "Write to us"
+    "write": "Write to us",
+    "reminder": "Daily reminder",
+    "reminderText": "A gentle nudge at the same time every day.",
+    "reminderWeb": "Reminders work in the iOS and Android app.",
+    "reminderDenied": "Notifications are off. Allow them in your phone's settings.",
+    "on": "On",
+    "off": "Off",
+    "earlier": "Earlier",
+    "later": "Later"
   },
   "practice": {
     "title": "Practice",
@@ -202,5 +210,9 @@
       "text": "Begin short and add a little as your feet adapt. Everything stays on this device; no account needed.",
       "safety": "If you are pregnant, have diabetes, a heart condition or wounds on your feet, ask your doctor first."
     }
+  },
+  "reminder": {
+    "title": "Time for the board",
+    "body": "A few quiet minutes on the nails."
   }
 }

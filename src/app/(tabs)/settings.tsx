@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
 
-import { Button, Card, Choice, Screen, Sheet, Txt } from '@/components/ui';
+import { Button, Card, Choice, Screen, Sheet, Step, Txt } from '@/components/ui';
 import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
-import { dayKey, live } from '@/lib/practice';
+import { dayKey, live, shiftTime } from '@/lib/practice';
+import { allowReminders, remindersSupported } from '@/lib/reminder';
 import type { Language, ThemePref } from '@/lib/types';
 import { useStore } from '@/store';
 import { space, useColors } from '@/theme';
@@ -39,6 +40,13 @@ export default function Settings() {
       setNotice({ text: t('settings.importFailed'), error: true });
     }
   };
+
+  const onReminder = async (on: 'on' | 'off') => {
+    if (on === 'off') return setSettings({ reminder: undefined });
+    if (await allowReminders()) setSettings({ reminder: '20:00' });
+    else setNotice({ text: t('settings.reminderDenied'), error: true });
+  };
+  const shiftReminder = (delta: number) => settings.reminder && setSettings({ reminder: shiftTime(settings.reminder, delta) });
 
   const onClear = () => {
     setConfirming(false);
@@ -75,6 +83,29 @@ export default function Settings() {
         />
       </Card>
       <Card>
+        <Txt variant="label">{t('settings.reminder')}</Txt>
+        <Txt variant="caption">{t(remindersSupported ? 'settings.reminderText' : 'settings.reminderWeb')}</Txt>
+        {remindersSupported && (
+          <Choice<'on' | 'off'>
+            value={settings.reminder ? 'on' : 'off'}
+            onChange={onReminder}
+            options={[
+              { value: 'off', label: t('settings.off') },
+              { value: 'on', label: t('settings.on') },
+            ]}
+          />
+        )}
+        {remindersSupported && settings.reminder && (
+          <View style={styles.time}>
+            <Step icon="minus" label={t('settings.earlier')} onPress={() => shiftReminder(-15)} />
+            <Txt variant="title" style={styles.timeValue}>
+              {settings.reminder}
+            </Txt>
+            <Step icon="plus" label={t('settings.later')} onPress={() => shiftReminder(15)} />
+          </View>
+        )}
+      </Card>
+      <Card>
         <Txt variant="label">{t('settings.data')}</Txt>
         <Txt variant="caption">{t('settings.dataText')}</Txt>
         <View style={styles.row}>
@@ -105,5 +136,7 @@ export default function Settings() {
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space[3], marginTop: space[2] },
   half: { flex: 1, alignItems: 'center', paddingHorizontal: space[2] },
+  time: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space[4], marginTop: space[2] },
+  timeValue: { minWidth: 80, textAlign: 'center', fontVariant: ['tabular-nums'] },
   full: { alignSelf: 'stretch', alignItems: 'center' },
 });

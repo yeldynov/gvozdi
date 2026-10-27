@@ -13,6 +13,7 @@ import {
   formatDuration,
   groupByDay,
   lastDays,
+  shiftTime,
   suggestedMinutes,
   totals,
 } from './practice.ts';
@@ -71,4 +72,10 @@ test('groupByDay: newest first, tombstones dropped, day totals', () => {
   assert.deepEqual(g.map((x) => x.sessions.length), [2, 1]);
   assert.equal(g[0].totalSec, 300);
   assert.equal(g[0].sessions[0].durationSec, 180);
+});
+
+test('shiftTime wraps around midnight', () => {
+  assert.equal(shiftTime('20:00', 15), '20:15');
+  assert.equal(shiftTime('23:50', 15), '00:05');
+  assert.equal(shiftTime('00:05', -15), '23:50');
 });

@@ -1,10 +1,9 @@
-import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Button, Card, Choice, Screen, Txt } from '@/components/ui';
+import { Button, Card, Choice, Screen, Step, Txt } from '@/components/ui';
 import { suggestedMinutes } from '@/lib/practice';
 import { clampMinutes, PRESET_MINUTES } from '@/lib/session';
 import type { SessionMode } from '@/lib/types';
@@ -75,27 +74,12 @@ export default function Practice() {
   );
 }
 
-function Step({ icon, label, onPress }: { icon: 'minus' | 'plus'; label: string; onPress: () => void }) {
-  const c = useColors();
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      onPress={onPress}
-      hitSlop={8}
-      style={[styles.stepBtn, { backgroundColor: c.bg2 }]}>
-      <Feather name={icon} size={18} color={c.text} />
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
   tile: { flexBasis: '31%', flexGrow: 1, alignItems: 'center', paddingVertical: space[4], borderRadius: radius.md },
   tileNum: { fontFamily: fonts.textMedium, fontSize: 22, fontVariant: ['tabular-nums'] },
   tileUnit: { fontFamily: fonts.text, fontSize: 12 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: space[3], paddingVertical: space[3] },
-  stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   stepValue: { fontFamily: fonts.textMedium, fontSize: 16, minWidth: 64, textAlign: 'center', fontVariant: ['tabular-nums'] },
   begin: { alignSelf: 'stretch', alignItems: 'center', marginTop: space[2] },
 });

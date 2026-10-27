@@ -32,6 +32,7 @@ src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + ca
 src/lib/backup.ts            pure: serialize/parse (validates untrusted JSON), mergeSessions (last-write-wins by updatedAt)
 src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
+src/lib/reminder.ts          native daily reminder (fixed id, rescheduled from root _layout on time/language change); reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
@@ -87,7 +88,7 @@ npx tsc --noEmit && npx expo lint && npm test
 3. History: grouped by day, detail with edit/delete — done (entry: Progress → All sessions)
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
-6. Reminders (native daily notification; disabled row on web)
+6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. Levels and a 21-day program
 8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`)
 9. Polish and release: a11y, PWA install hint + service worker, icons/splash, store listings, `eas build`/`submit`, PostHog

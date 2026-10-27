@@ -110,6 +110,13 @@ export function formatDuration(totalSec: number): string {
   return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
 }
 
+/** Shift an 'HH:mm' time by `deltaMin`, wrapping around midnight. */
+export function shiftTime(hhmm: string, deltaMin: number): string {
+  const [h, m] = hhmm.split(':').map(Number);
+  const t = (((h * 60 + m + deltaMin) % 1440) + 1440) % 1440;
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+}
+
 /** Minutes practised per day for the last `n` days, oldest first. */
 export function lastDays(sessions: Session[], now = new Date(), n = 7): { day: string; minutes: number }[] {
   const today = dayKey(now);
