@@ -85,7 +85,7 @@ npx tsc --noEmit && npx expo lint && npm test
 - Web output must stay `"static"` in `app.json`. `server` output crashed on EAS Hosting with SDK 58. API routes still work: `["expo-router", { "apiRoutes": true }]` exports prerendered HTML + `+api.ts` routes (verified on an EAS preview deploy, `src/app/api/health+api.ts`).
 - TS 6 defaults `types` to `[]`, so test files need `/// <reference types="node" />`.
 - Typed routes regenerate only while `npx expo start` runs. Don't set `CI=1` while editing; it disables file watching.
-- `npm test` runs Node's native TS support (`node --test src/lib/`), so tests must import with relative paths and avoid RN modules.
+- `npm test` runs Node's native TS support (`node --test 'src/lib/*.test.ts'`), so tests must import with relative paths and avoid RN modules.
 - Headless Chrome on macOS has a ~500px minimum width. Screenshot the web build with:
   `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --window-size=600,900 --virtual-time-budget=30000 --screenshot=out.png http://localhost:8081`
   (add `--blink-settings=preferredColorScheme=1` for light mode).

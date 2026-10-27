@@ -67,7 +67,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --no-warnings --test src/lib/",
+    "test": "node --no-warnings --test 'src/lib/*.test.ts'",
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate",
     "db:seed": "node --no-warnings --env-file=.env.local scripts/seed.ts"
