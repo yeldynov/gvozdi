@@ -1,0 +1,33 @@
+{
+  "tabs": { "home": "Головна", "practice": "Практика", "progress": "Прогрес", "settings": "Налаштування" },
+  "home": {
+    "tagline": "Практика, а не застосунок.",
+    "streak_one": "{{count}} день поспіль",
+    "streak_few": "{{count}} дні поспіль",
+    "streak_many": "{{count}} днів поспіль",
+    "streak_other": "{{count}} дня поспіль",
+    "noStreak": "Ваша серія починається сьогодні",
+    "today": "Практика на сьогодні",
+    "minutes_one": "{{count}} хвилина на дошці",
+    "minutes_few": "{{count}} хвилини на дошці",
+    "minutes_many": "{{count}} хвилин на дошці",
+    "minutes_other": "{{count}} хвилини на дошці",
+    "begin": "Почати"
+  },
+  "practice": { "title": "Практика", "soon": "Таймер сесії з'явиться в наступному оновленні." },
+  "progress": {
+    "title": "Прогрес",
+    "sessions": "Сесії",
+    "total": "Загальний час",
+    "longest": "Найдовша",
+    "average": "Середня"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "language": "Мова",
+    "theme": "Оформлення",
+    "system": "Системне",
+    "light": "Світле",
+    "dark": "Темне"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "tabs": { "home": "Главная", "practice": "Практика", "progress": "Прогресс", "settings": "Настройки" },
+  "home": {
+    "tagline": "Практика, а не приложение.",
+    "streak_one": "{{count}} день подряд",
+    "streak_few": "{{count}} дня подряд",
+    "streak_many": "{{count}} дней подряд",
+    "streak_other": "{{count}} дня подряд",
+    "noStreak": "Ваша серия начинается сегодня",
+    "today": "Практика на сегодня",
+    "minutes_one": "{{count}} минута на доске",
+    "minutes_few": "{{count}} минуты на доске",
+    "minutes_many": "{{count}} минут на доске",
+    "minutes_other": "{{count}} минуты на доске",
+    "begin": "Начать"
+  },
+  "practice": { "title": "Практика", "soon": "Таймер сессии появится в следующем обновлении." },
+  "progress": {
+    "title": "Прогресс",
+    "sessions": "Сессии",
+    "total": "Общее время",
+    "longest": "Самая долгая",
+    "average": "Средняя"
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": "Язык",
+    "theme": "Оформление",
+    "system": "Системное",
+    "light": "Светлое",
+    "dark": "Тёмное"
+  }
+}

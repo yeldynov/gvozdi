@@ -1,0 +1,29 @@
+{
+  "tabs": { "home": "Home", "practice": "Practice", "progress": "Progress", "settings": "Settings" },
+  "home": {
+    "tagline": "A practice, not an app.",
+    "streak_one": "{{count}} day in a row",
+    "streak_other": "{{count}} days in a row",
+    "noStreak": "Your streak starts today",
+    "today": "Today's practice",
+    "minutes_one": "{{count}} minute on the board",
+    "minutes_other": "{{count}} minutes on the board",
+    "begin": "Begin"
+  },
+  "practice": { "title": "Practice", "soon": "The session timer arrives in the next update." },
+  "progress": {
+    "title": "Progress",
+    "sessions": "Sessions",
+    "total": "Total time",
+    "longest": "Longest",
+    "average": "Average"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Appearance",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  }
+}
