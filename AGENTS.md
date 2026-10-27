@@ -52,7 +52,7 @@ src/lib/practice.ts          pure logic: streaks, achievements, stats, levels, 2
 src/lib/*.test.ts            node:test asserts
 src/i18n/{en,uk,ru}.json     translations
 .eas/workflows/ship.yml      manual: web deploy + OTA update (eas workflow:run)
-.github/workflows/checks.yml push/PR → tsc, lint, tests
+.github/workflows/ship.yml   push to main → web deploy + OTA update (GitHub Actions, EXPO_TOKEN = robot token)
 ```
 
 ## Conventions
@@ -98,7 +98,7 @@ npx tsc --noEmit && npx expo lint && npm test
 
 ## Shipping
 
-- Pushing to `main` runs the checks in GitHub Actions (`.github/workflows/checks.yml`). Deploys are manual for now (EAS free-plan CI minutes ran out): `npx eas-cli@latest workflow:run ship.yml`, or locally without CI minutes: `npx eas-cli@latest env:exec production "npx expo export -p web" && npx eas-cli@latest deploy --prod --environment production && npx eas-cli@latest update --channel production --environment production`. Commit and push at the end of each roadmap step.
+- Pushing to `main` runs `.github/workflows/ship.yml` in GitHub Actions: deploys the PWA and publishes an OTA update to the `production` channel (the EAS workflow of the same name is manual-only; free-plan EAS CI minutes run out). Manual ship from this machine: `npx eas-cli@latest env:exec production "npx expo export -p web" && npx eas-cli@latest deploy --prod --environment production && npx eas-cli@latest update --channel production --environment production`. Commit and push at the end of each roadmap step.
 - **No `eas build` until the MVP is done.** Native rebuilds are only needed when native dependencies change (runtime version uses the `fingerprint` policy).
 
 ## Roadmap

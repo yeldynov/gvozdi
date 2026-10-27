@@ -1,0 +1,39 @@
+# Mirrors .eas/workflows/ship.yml on GitHub runners (free for public repos), so EAS CI minutes aren't needed.
+name: Ship to web and native
+
+on:
+  push:
+    branches: [main]
+
+concurrency: ship
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+jobs:
+  deploy_web:
+    name: Deploy PWA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx eas-cli@latest env:exec production "npx expo export -p web" --non-interactive
+      - run: npx eas-cli@latest deploy --prod --environment production --non-interactive
+
+  update_native:
+    name: OTA update to production builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx eas-cli@latest update --channel production --environment production --message "${MESSAGE%%$'\n'*}" --non-interactive
+        env:
+          MESSAGE: ${{ github.event.head_commit.message }}
