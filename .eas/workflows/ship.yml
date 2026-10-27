@@ -1,8 +1,6 @@
 name: Ship to web and native
 
-on:
-  push:
-    branches: ['main']
+# Manual for now (free-plan CI minutes ran out): npx eas-cli@latest workflow:run ship.yml
 
 jobs:
   deploy_web:
