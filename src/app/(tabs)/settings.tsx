@@ -126,7 +126,7 @@ export default function Settings() {
         <Txt variant="caption">{t('settings.privacyText')}</Txt>
         <Choice<'on' | 'off'>
           value={settings.analytics ? 'on' : 'off'}
-          onChange={(v) => setSettings(v === 'on' ? { analytics: true } : { analytics: false, analyticsId: undefined })}
+          onChange={(v) => setSettings(v === 'on' ? { analytics: true } : { analytics: false })}
           options={[
             { value: 'off', label: t('settings.off') },
             { value: 'on', label: t('settings.on') },

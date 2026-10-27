@@ -15,7 +15,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 - i18n: i18next + expo-localization.
 - Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
 - Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP).
-- Analytics: PostHog EU capture API over `fetch` (no SDK), sent only when `settings.analytics === true`. While undecided, Home calls `GET /api/region` (EAS `eas-ip-country` header): EU/EEA/UK/CH (`needsConsent` in `src/lib/consent.ts`) get the consent card, everyone else and unknown/offline are auto-approved (user decision). Settings toggles; opt-out drops `analyticsId`; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
+- Analytics: PostHog EU, `posthog-react-native` (native) / `posthog-js` (web, `analytics.web.ts`), opted out by default; `useAnalytics()` in root `_layout` mirrors `settings.analytics` into optIn/optOut and identifies signed-in users by Clerk id. `capture()` sends only when `settings.analytics === true`. While undecided, Home calls `GET /api/region` (EAS `eas-ip-country` header): EU/EEA/UK/CH (`needsConsent` in `src/lib/consent.ts`) get the consent card, everyone else and unknown/offline are auto-approved (user decision). Settings toggles; opt-out resets the SDK id; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
 
 ## Layout
 
@@ -40,7 +40,7 @@ src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + ca
 src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)
 src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
-src/lib/analytics.ts         capture(event, props); events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted
+src/lib/analytics.ts         capture(event, props), useAnalytics(); .web.ts twin; events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted
 src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
 src/lib/reminder.ts          native one-shot reminders for 14 days (`reminderDates`, skips a practised today), rescheduled from root _layout on launch/foreground/save/time/language; reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone

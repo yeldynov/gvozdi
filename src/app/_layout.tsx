@@ -12,7 +12,7 @@ import { AppState } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import i18n, { resolveLanguage } from '@/i18n';
-import { capture } from '@/lib/analytics';
+import { capture, useAnalytics } from '@/lib/analytics';
 import { dayKey, live } from '@/lib/practice';
 import { syncReminder } from '@/lib/reminder';
 import { useSync } from '@/lib/sync';
@@ -60,7 +60,7 @@ export default function RootLayout() {
   if (!ready) return null;
   return (
     <ClerkProvider publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
-      <Sync />
+      <Background />
       <StatusBar style={c.isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
         <Stack.Screen name="(tabs)" />
@@ -70,7 +70,9 @@ export default function RootLayout() {
   );
 }
 
-function Sync() {
+// Hooks that need Clerk: data sync and analytics identity/consent.
+function Background() {
   useSync();
+  useAnalytics();
   return null;
 }

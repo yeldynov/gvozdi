@@ -1,30 +1,45 @@
+import { useAuth } from '@clerk/expo';
 import Constants from 'expo-constants';
-import { randomUUID } from 'expo-crypto';
-import { Platform } from 'react-native';
+import PostHog from 'posthog-react-native';
+import { useEffect } from 'react';
 
 import { useStore } from '@/store';
 
-// PostHog capture API without the SDK: same code on native and web, no native deps.
-// ponytail: one request per event, no offline queue; switch to posthog-react-native if we need replay or batching.
+// PostHog SDK (EU). analytics.web.ts is the posthog-js twin with the same exports.
 const KEY = process.env.EXPO_PUBLIC_POSTHOG_KEY; // set only in EAS production, so dev runs send nothing
-const HOST = 'https://eu.i.posthog.com';
 
-export function capture(event: string, properties: Record<string, string | number | boolean | undefined> = {}) {
-  const { settings, setSettings } = useStore.getState();
-  if (!KEY || settings.analytics !== true) return; // opt-in only
-  let id = settings.analyticsId;
-  if (!id) {
-    id = randomUUID();
-    setSettings({ analyticsId: id });
-  }
-  fetch(`${HOST}/i/v0/e/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      api_key: KEY,
-      event,
-      distinct_id: id,
-      properties: { ...properties, $os: Platform.OS, app_version: Constants.expoConfig?.version, $process_person_profile: false },
-    }),
-  }).catch(() => {});
+const client = KEY
+  ? new PostHog(KEY, {
+      host: 'https://eu.i.posthog.com',
+      defaultOptIn: false, // nothing leaves the device until settings.analytics is true
+      captureAppLifecycleEvents: true,
+      personProfiles: 'identified_only',
+    })
+  : undefined;
+client?.register({ app_version: Constants.expoConfig?.version ?? 'unknown' });
+
+type Props = Record<string, string | number | boolean | undefined>;
+
+export function capture(event: string, properties: Props = {}) {
+  if (useStore.getState().settings.analytics !== true) return; // opt-in only
+  client?.capture(event, JSON.parse(JSON.stringify(properties))); // drops undefined values
+}
+
+/** Mirrors the consent setting into the SDK and ties events to the Clerk user while signed in. Mount once inside ClerkProvider. */
+export function useAnalytics() {
+  const analytics = useStore((s) => s.settings.analytics);
+  const { userId } = useAuth();
+  useEffect(() => {
+    if (!client) return;
+    if (analytics) client.optIn();
+    else {
+      client.optOut();
+      client.reset(); // a fresh anonymous id if they opt back in
+    }
+  }, [analytics]);
+  useEffect(() => {
+    if (!client || !analytics) return;
+    if (userId) client.identify(userId);
+    else if (client.getDistinctId() !== client.getAnonymousId()) client.reset(); // signed out
+  }, [userId, analytics]);
 }
