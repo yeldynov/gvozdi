@@ -23,6 +23,8 @@ src/app/_layout.tsx          root: fonts, i18n, theme
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm
 src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
+src/app/achievement/[id].tsx  badge, earned date or progress bar; unlock screen lives in session.tsx after save
+src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achievement icon)
 src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
@@ -80,7 +82,7 @@ npx tsc --noEmit && npx expo lint && npm test
 1. Foundation (theme, fonts, i18n, store, practice logic, tabs) — done
 2. Session timer (setup, prepare gate, peak/timed/free, keep-awake, haptics, gong, goal notification, save sheet) — done; native paths untested until the first `eas build`
 3. History: grouped by day, detail with edit/delete — done (entry: Progress → All sessions)
-4. Progress: streak card, totals, SVG charts, achievements + unlock overlay
+4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact)
 6. Reminders (native daily notification; disabled row on web)
 7. Levels and a 21-day program

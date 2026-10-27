@@ -29,7 +29,23 @@
     "sessions": "Сесії",
     "total": "Загальний час",
     "longest": "Найдовша",
-    "average": "Середня"
+    "average": "Середня",
+    "streak": "Поточна серія",
+    "days_one": "день",
+    "days_few": "дні",
+    "days_many": "днів",
+    "days_other": "дня",
+    "best_one": "Найкраще: {{count}} день",
+    "best_few": "Найкраще: {{count}} дні",
+    "best_many": "Найкраще: {{count}} днів",
+    "best_other": "Найкраще: {{count}} дня",
+    "week": "Цей тиждень",
+    "month": "Останні 30 днів",
+    "minutesTotal_one": "{{count}} хвилина",
+    "minutesTotal_few": "{{count}} хвилини",
+    "minutesTotal_many": "{{count}} хвилин",
+    "minutesTotal_other": "{{count}} хвилини",
+    "achievements": "Досягнення"
   },
   "settings": {
     "title": "Налаштування",
@@ -116,5 +132,48 @@
     "delete": "Видалити",
     "deleteTitle": "Видалити цю сесію?",
     "deleteText": "Сесію {{time}} буде прибрано з історії та статистики."
+  },
+  "achievements": {
+    "unlocked": "Досягнення відкрито",
+    "continue": "Продовжити",
+    "earnedOn": "Отримано {{date}}",
+    "progress": "{{value}} з {{target}}",
+    "notFound": "Такого досягнення немає.",
+    "first_session": {
+      "title": "Перший крок",
+      "desc": "Ваша перша практика"
+    },
+    "streak_3": {
+      "title": "Три дні",
+      "desc": "Три дні поспіль"
+    },
+    "streak_7": {
+      "title": "Тиждень",
+      "desc": "Сім днів поспіль"
+    },
+    "sessions_10": {
+      "title": "Десять сесій",
+      "desc": "Десять практик позаду"
+    },
+    "streak_14": {
+      "title": "Два тижні",
+      "desc": "Чотирнадцять днів поспіль"
+    },
+    "streak_30": {
+      "title": "Місяць",
+      "desc": "Тридцять днів поспіль"
+    },
+    "streak_60": {
+      "title": "Два місяці",
+      "desc": "Шістдесят днів поспіль"
+    },
+    "streak_100": {
+      "title": "Сотня",
+      "desc": "Сто днів поспіль"
+    },
+    "streak_365": {
+      "title": "Рік",
+      "desc": "Цілий рік, щодня"
+    }
   }
 }

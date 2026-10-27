@@ -29,7 +29,23 @@
     "sessions": "Сессии",
     "total": "Общее время",
     "longest": "Самая долгая",
-    "average": "Средняя"
+    "average": "Средняя",
+    "streak": "Текущая серия",
+    "days_one": "день",
+    "days_few": "дня",
+    "days_many": "дней",
+    "days_other": "дня",
+    "best_one": "Лучшее: {{count}} день",
+    "best_few": "Лучшее: {{count}} дня",
+    "best_many": "Лучшее: {{count}} дней",
+    "best_other": "Лучшее: {{count}} дня",
+    "week": "Эта неделя",
+    "month": "Последние 30 дней",
+    "minutesTotal_one": "{{count}} минута",
+    "minutesTotal_few": "{{count}} минуты",
+    "minutesTotal_many": "{{count}} минут",
+    "minutesTotal_other": "{{count}} минуты",
+    "achievements": "Достижения"
   },
   "settings": {
     "title": "Настройки",
@@ -116,5 +132,48 @@
     "delete": "Удалить",
     "deleteTitle": "Удалить эту сессию?",
     "deleteText": "Сессия {{time}} будет удалена из истории и статистики."
+  },
+  "achievements": {
+    "unlocked": "Достижение открыто",
+    "continue": "Продолжить",
+    "earnedOn": "Получено {{date}}",
+    "progress": "{{value}} из {{target}}",
+    "notFound": "Такого достижения нет.",
+    "first_session": {
+      "title": "Первый шаг",
+      "desc": "Ваша первая практика"
+    },
+    "streak_3": {
+      "title": "Три дня",
+      "desc": "Три дня подряд"
+    },
+    "streak_7": {
+      "title": "Неделя",
+      "desc": "Семь дней подряд"
+    },
+    "sessions_10": {
+      "title": "Десять сессий",
+      "desc": "Десять практик позади"
+    },
+    "streak_14": {
+      "title": "Две недели",
+      "desc": "Четырнадцать дней подряд"
+    },
+    "streak_30": {
+      "title": "Месяц",
+      "desc": "Тридцать дней подряд"
+    },
+    "streak_60": {
+      "title": "Два месяца",
+      "desc": "Шестьдесят дней подряд"
+    },
+    "streak_100": {
+      "title": "Сотня",
+      "desc": "Сто дней подряд"
+    },
+    "streak_365": {
+      "title": "Год",
+      "desc": "Целый год, каждый день"
+    }
   }
 }

@@ -25,7 +25,17 @@
     "sessions": "Sessions",
     "total": "Total time",
     "longest": "Longest",
-    "average": "Average"
+    "average": "Average",
+    "streak": "Current streak",
+    "days_one": "day",
+    "days_other": "days",
+    "best_one": "Best: {{count}} day",
+    "best_other": "Best: {{count}} days",
+    "week": "This week",
+    "month": "Last 30 days",
+    "minutesTotal_one": "{{count}} minute",
+    "minutesTotal_other": "{{count}} minutes",
+    "achievements": "Achievements"
   },
   "settings": {
     "title": "Settings",
@@ -112,5 +122,48 @@
     "delete": "Delete",
     "deleteTitle": "Delete this session?",
     "deleteText": "This {{time}} session will be removed from your history and stats."
+  },
+  "achievements": {
+    "unlocked": "Achievement unlocked",
+    "continue": "Continue",
+    "earnedOn": "Earned {{date}}",
+    "progress": "{{value}} of {{target}}",
+    "notFound": "No such achievement.",
+    "first_session": {
+      "title": "First Step",
+      "desc": "Your first practice"
+    },
+    "streak_3": {
+      "title": "Three Days",
+      "desc": "Three days in a row"
+    },
+    "streak_7": {
+      "title": "One Week",
+      "desc": "Seven days in a row"
+    },
+    "sessions_10": {
+      "title": "Ten Sessions",
+      "desc": "Ten practices behind you"
+    },
+    "streak_14": {
+      "title": "Two Weeks",
+      "desc": "Fourteen days in a row"
+    },
+    "streak_30": {
+      "title": "One Month",
+      "desc": "Thirty days in a row"
+    },
+    "streak_60": {
+      "title": "Two Months",
+      "desc": "Sixty days in a row"
+    },
+    "streak_100": {
+      "title": "Century",
+      "desc": "One hundred days in a row"
+    },
+    "streak_365": {
+      "title": "One Year",
+      "desc": "A whole year, every day"
+    }
   }
 }

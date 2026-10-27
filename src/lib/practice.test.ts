@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import {
+  ACHIEVEMENTS,
   achievementEarnedAt,
+  achievementProgress,
   bestStreak,
   currentStreak,
   earnedAchievementIds,
@@ -40,6 +42,10 @@ test('achievements come from the best streak, so a broken streak keeps them', ()
   assert.equal(bestStreak(brokenWeek), 7);
   assert.deepEqual(earnedAchievementIds(brokenWeek), ['first_session', 'streak_3', 'streak_7']);
   assert.equal(achievementEarnedAt('streak_3', brokenWeek), at(14).startedAt);
+  const byId = (id: string) => ACHIEVEMENTS.find((a) => a.id === id)!;
+  assert.equal(achievementProgress(byId('streak_14'), brokenWeek), 7);
+  assert.equal(achievementProgress(byId('streak_3'), brokenWeek), 3); // capped at target
+  assert.equal(achievementProgress(byId('sessions_10'), brokenWeek), 7);
 });
 
 test('durations of an hour or more keep their hours', () => {

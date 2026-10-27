@@ -6,13 +6,15 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Badge } from '@/components/progress-visuals';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { BreathDot, PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Button, Card, Sheet, Txt } from '@/components/ui';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
-import { formatDuration } from '@/lib/practice';
+import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
 import {
   clampMinutes,
   elapsedSec,
@@ -81,6 +83,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const [clock, setClock] = useState<Clock>(() => startClock(Date.now()));
   const [now, setNow] = useState(() => Date.now());
   const [sheet, setSheet] = useState<'save' | 'discard' | null>(null);
+  const [unlocked, setUnlocked] = useState<Achievement>();
   const running = clock.pausedAt === null;
   const elapsed = elapsedSec(clock, now);
   const reached = goalSec > 0 && elapsed >= goalSec;
@@ -131,6 +134,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   };
 
   const save = (tension: Tension | undefined, note: string) => {
+    const before = earnedAchievementIds(useStore.getState().sessions);
     addSession({
       startedAt: new Date(clock.startedAt).toISOString(),
       durationSec: elapsed,
@@ -139,11 +143,18 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
-    leave();
+    const fresh = earnedAchievementIds(useStore.getState().sessions).filter((id) => !before.includes(id));
+    const a = ACHIEVEMENTS.find((x) => x.id === fresh.at(-1));
+    if (!a) return leave();
+    setSheet(null);
+    setUnlocked(a);
+    if (haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
   };
 
   const status = !running ? t('session.paused') : reached ? t('session.goalReached') : t('session.standing');
   const big = (value: string, color = c.text) => <Text style={[styles.big, { color }]}>{value}</Text>;
+
+  if (unlocked) return <Unlocked a={unlocked} />;
 
   return (
     <View style={styles.page}>
@@ -241,6 +252,30 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
         </View>
       </Sheet>
     </View>
+  );
+}
+
+function Unlocked({ a }: { a: Achievement }) {
+  const { t } = useTranslation();
+  const c = useColors();
+  return (
+    <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
+      <View style={styles.center}>
+        <Txt variant="label" style={{ color: c.accent }}>
+          {t('achievements.unlocked')}
+        </Txt>
+        <Animated.View entering={ZoomIn.delay(150).springify()}>
+          <Badge a={a} earned size={120} />
+        </Animated.View>
+        <View style={{ alignItems: 'center', gap: space[2] }}>
+          <Txt variant="display" style={{ textAlign: 'center' }}>
+            {t(`achievements.${a.id}.title`)}
+          </Txt>
+          <Txt style={{ color: c.text2, textAlign: 'center' }}>{t(`achievements.${a.id}.desc`)}</Txt>
+        </View>
+      </View>
+      <Button label={t('achievements.continue')} onPress={leave} style={styles.wide} />
+    </Animated.View>
   );
 }
 

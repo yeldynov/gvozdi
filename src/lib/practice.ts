@@ -63,11 +63,14 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'streak_365', kind: 'streak', target: 365 },
 ];
 
+/** Progress toward the target, capped at it: session count, or the best streak ever. */
+export function achievementProgress(a: Achievement, sessions: Session[]): number {
+  return Math.min(a.target, a.kind === 'count' ? live(sessions).length : bestStreak(sessions));
+}
+
 /** Earned from the best streak ever, so achievements never disappear when a streak breaks. */
 export function earnedAchievementIds(sessions: Session[]): string[] {
-  const count = live(sessions).length;
-  const best = bestStreak(sessions);
-  return ACHIEVEMENTS.filter((a) => (a.kind === 'count' ? count : best) >= a.target).map((a) => a.id);
+  return ACHIEVEMENTS.filter((a) => achievementProgress(a, sessions) >= a.target).map((a) => a.id);
 }
 
 /** ISO time of the session that unlocked the achievement, or null. */
