@@ -100,8 +100,8 @@ npx tsc --noEmit && npx expo lint && npm test
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. Levels and a 21-day program — done; program advances per practice day (gaps pause), then todayMinutes falls back to suggestedMinutes
-8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk is still the dev instance (production needs a custom domain)
-9. Polish and release: a11y, PWA install hint + service worker, icons/splash, store listings, `eas build`/`submit`, PostHog
+8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision)
+9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog. Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynovn@gmail.com
 
 Donor repos (copy from, never fork): `~/dev/gvozdi-app` (gvozdi-pwa: design tokens, `SessionActivePeak.jsx`, `SessionActiveNails.jsx`, copy), and `gh repo clone yeldynov/<name>` for `stepsure-ai` (translations, stats), `gvozdi-app`/`gvozdi-v6` (prepare/guide copy in UK/RU).
 
