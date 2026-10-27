@@ -22,12 +22,14 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 src/app/_layout.tsx          root: fonts, i18n, theme
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm
+src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
 src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
+src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
-src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal) — reuse before adding new primitives
+src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
 src/store.ts                 sessions + settings; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
 src/lib/practice.ts          pure logic: streaks, achievements, stats, formatDuration, suggestedMinutes
@@ -77,7 +79,7 @@ npx tsc --noEmit && npx expo lint && npm test
 0. Scaffold + pipeline — done
 1. Foundation (theme, fonts, i18n, store, practice logic, tabs) — done
 2. Session timer (setup, prepare gate, peak/timed/free, keep-awake, haptics, gong, goal notification, save sheet) — done; native paths untested until the first `eas build`
-3. History: grouped by day, detail with edit/delete
+3. History: grouped by day, detail with edit/delete — done (entry: Progress → All sessions)
 4. Progress: streak card, totals, SVG charts, achievements + unlock overlay
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact)
 6. Reminders (native daily notification; disabled row on web)

@@ -5,9 +5,10 @@ import { useKeepAwake } from 'expo-keep-awake';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { BreathDot, PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Button, Card, Sheet, Txt } from '@/components/ui';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
@@ -243,13 +244,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   );
 }
 
-const TENSIONS: { key: Tension; icon: keyof typeof Feather.glyphMap }[] = [
-  { key: 'intense', icon: 'zap' },
-  { key: 'tense', icon: 'activity' },
-  { key: 'mild', icon: 'moon' },
-  { key: 'easy', icon: 'feather' },
-];
-
 function SaveSheet({
   visible,
   elapsed,
@@ -282,36 +276,8 @@ function SaveSheet({
             <Txt variant="caption">{t('session.ofGoal', { time: formatDuration(goalSec) })}</Txt>
           ))}
       </View>
-      <View style={{ gap: space[3] }}>
-        <Txt variant="label">{t('session.howIntense')}</Txt>
-        <View style={[styles.row, { gap: space[2] }]} accessibilityRole="radiogroup">
-          {TENSIONS.map(({ key, icon }) => {
-            const on = tension === key;
-            return (
-              <Pressable
-                key={key}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: on }}
-                onPress={() => setTension(on ? undefined : key)}
-                style={[styles.tension, { backgroundColor: on ? c.primary : c.bg2 }]}>
-                <Feather name={icon} size={18} color={on ? c.onPrimary : c.text2} />
-                <Text numberOfLines={1} style={[styles.tensionText, { color: on ? c.onPrimary : c.text2 }]}>
-                  {t(`session.tension.${key}`)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
-      <TextInput
-        value={note}
-        onChangeText={setNote}
-        placeholder={t('session.notePlaceholder')}
-        placeholderTextColor={c.text3}
-        maxLength={280}
-        multiline
-        style={[styles.note, { color: c.text, backgroundColor: c.surface, borderColor: c.divider }]}
-      />
+      <TensionPicker value={tension} onChange={setTension} />
+      <NoteInput value={note} onChange={setNote} />
       <View style={styles.row}>
         <Button ghost label={t('common.cancel')} onPress={onClose} style={styles.half} />
         <Button label={t('session.save')} onPress={() => onSave(tension, note)} style={styles.half} />
@@ -353,15 +319,4 @@ const styles = StyleSheet.create({
   side: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   chip: { borderRadius: radius.pill, paddingVertical: 4, paddingHorizontal: space[3] },
   chipText: { fontFamily: fonts.textBold, fontSize: 12, letterSpacing: 0.8, textTransform: 'uppercase' },
-  tension: { flex: 1, alignItems: 'center', gap: 6, paddingVertical: space[3], borderRadius: radius.sm },
-  tensionText: { fontFamily: fonts.textMedium, fontSize: 11 },
-  note: {
-    minHeight: 64,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: radius.sm,
-    padding: space[3],
-    fontFamily: fonts.text,
-    fontSize: 15,
-    textAlignVertical: 'top',
-  },
 });

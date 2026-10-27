@@ -1,7 +1,8 @@
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Card, Screen, Txt } from '@/components/ui';
+import { Button, Card, Screen, Txt } from '@/components/ui';
 import { formatDuration, totals } from '@/lib/practice';
 import { useStore } from '@/store';
 
@@ -27,6 +28,7 @@ export default function Progress() {
           </View>
         ))}
       </Card>
+      <Button ghost label={t('history.link')} onPress={() => router.push('/history')} />
     </Screen>
   );
 }

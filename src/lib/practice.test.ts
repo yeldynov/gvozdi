@@ -9,6 +9,7 @@ import {
   currentStreak,
   earnedAchievementIds,
   formatDuration,
+  groupByDay,
   lastDays,
   suggestedMinutes,
   totals,
@@ -56,4 +57,12 @@ test('last 7 days, suggested minutes, totals', () => {
   assert.equal(suggestedMinutes([at(1, 300), at(0, 900)]), 17);
   assert.equal(suggestedMinutes([at(0, 89 * 60)]), 90);
   assert.deepEqual(totals([at(0, 100), at(1, 300)]), { count: 2, totalSec: 400, avgSec: 200, longestSec: 300 });
+});
+
+test('groupByDay: newest first, tombstones dropped, day totals', () => {
+  const sessions = [at(1, 60, 8), at(0, 120, 7), at(0, 180, 9), { ...at(0, 999, 10), deletedAt: 'x' }];
+  const g = groupByDay(sessions);
+  assert.deepEqual(g.map((x) => x.sessions.length), [2, 1]);
+  assert.equal(g[0].totalSec, 300);
+  assert.equal(g[0].sessions[0].durationSec, 180);
 });

@@ -1,6 +1,8 @@
+import Feather from '@expo/vector-icons/Feather';
+import { router, type Href } from 'expo-router';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type TextProps, type ViewStyle } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { fonts, radius, space, useColors } from '@/theme';
@@ -11,6 +13,23 @@ export function Screen({ children }: { children: ReactNode }) {
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: c.bg }}>
       <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView>
     </SafeAreaView>
+  );
+}
+
+/** Back chevron + label for pushed screens; falls back to `fallback` when opened directly (web deep link). */
+export function BackHeader({ title, fallback }: { title: string; fallback: Href }) {
+  const c = useColors();
+  const { t } = useTranslation();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t('common.back')}
+      hitSlop={12}
+      onPress={() => (router.canGoBack() ? router.back() : router.replace(fallback))}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: space[1], alignSelf: 'flex-start' }}>
+      <Feather name="chevron-left" size={22} color={c.text2} />
+      <Text style={[styles.label, { color: c.text2 }]}>{title}</Text>
+    </Pressable>
   );
 }
 
@@ -36,7 +55,7 @@ export function Button({
   label: string;
   onPress: () => void;
   ghost?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) {
   const c = useColors();
   return (

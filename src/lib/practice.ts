@@ -88,6 +88,16 @@ export function achievementEarnedAt(id: string, sessions: Session[]): string | n
   return null;
 }
 
+/** Live sessions grouped by local day, newest day and newest session first. */
+export function groupByDay(sessions: Session[]): { day: string; sessions: Session[]; totalSec: number }[] {
+  const groups = new Map<string, Session[]>();
+  for (const s of live(sessions).sort((a, b) => b.startedAt.localeCompare(a.startedAt))) {
+    const day = dayKey(new Date(s.startedAt));
+    groups.set(day, [...(groups.get(day) ?? []), s]);
+  }
+  return [...groups].map(([day, list]) => ({ day, sessions: list, totalSec: list.reduce((n, s) => n + s.durationSec, 0) }));
+}
+
 /** 'm:ss' under an hour, 'h:mm:ss' from an hour up. */
 export function formatDuration(totalSec: number): string {
   const sec = Math.max(0, Math.floor(totalSec));

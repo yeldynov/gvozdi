@@ -1,7 +1,8 @@
 {
   "common": {
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "back": "Back"
   },
   "tabs": {
     "home": "Home",
@@ -99,5 +100,17 @@
     "discardText": "{{time}} on the board won't be saved.",
     "discard": "Discard",
     "keepGoing": "Keep going"
+  },
+  "history": {
+    "title": "History",
+    "link": "All sessions",
+    "empty": "No sessions yet",
+    "emptyText": "Your practice will gather here, day by day.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "notFound": "This session is gone.",
+    "delete": "Delete",
+    "deleteTitle": "Delete this session?",
+    "deleteText": "This {{time}} session will be removed from your history and stats."
   }
 }
