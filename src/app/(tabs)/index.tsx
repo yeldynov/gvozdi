@@ -33,7 +33,7 @@ export default function Home() {
           <>
             <View style={styles.dots} accessibilityLabel={t('home.programDone', { done: program.done, total: PROGRAM.length })}>
               {PROGRAM.map((_, i) => (
-                <View key={i} style={[styles.dot, { backgroundColor: i < program.done ? c.accent : c.bg3 }]} />
+                <View key={i} style={[styles.dot, { backgroundColor: i < program.done ? c.accent : c.divider }]} />
               ))}
             </View>
             <Txt variant="caption">{t('home.programText')}</Txt>

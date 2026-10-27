@@ -37,7 +37,7 @@ export default function AchievementDetail() {
             </Txt>
           ) : (
             <View style={{ alignSelf: 'stretch', gap: space[2], marginTop: space[4] }}>
-              <View style={{ height: 6, borderRadius: radius.pill, backgroundColor: c.bg3 }}>
+              <View style={{ height: 6, borderRadius: radius.pill, backgroundColor: c.divider }}>
                 <View
                   style={{ width: `${(value / a.target) * 100}%`, height: 6, borderRadius: radius.pill, backgroundColor: c.accent }}
                 />

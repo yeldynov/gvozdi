@@ -37,8 +37,10 @@ type Variant = 'display' | 'title' | 'body' | 'label' | 'caption';
 
 export function Txt({ variant = 'body', style, ...props }: TextProps & { variant?: Variant }) {
   const c = useColors();
+  const { i18n } = useTranslation();
   const color = variant === 'label' || variant === 'caption' ? c.text2 : c.text;
-  return <Text {...props} style={[styles[variant], { color }, style]} />;
+  const cyrillic = (variant === 'display' || variant === 'title') && i18n.language !== 'en';
+  return <Text {...props} style={[styles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]} />;
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {

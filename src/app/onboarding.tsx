@@ -34,7 +34,7 @@ export default function Onboarding() {
 
       <View style={styles.body}>
         <Txt variant="label">{t(`onboarding.${key}.kicker`)}</Txt>
-        <Txt style={[styles.headline, { color: c.text }]}>{t(`onboarding.${key}.title`)}</Txt>
+        <Txt variant="display" style={styles.headline}>{t(`onboarding.${key}.title`)}</Txt>
         <Txt style={[styles.text, { color: c.text2 }]}>{t(`onboarding.${key}.text`)}</Txt>
         {last && <Txt variant="caption">{t('onboarding.start.safety')}</Txt>}
       </View>
@@ -42,7 +42,7 @@ export default function Onboarding() {
       <View style={styles.footer}>
         <View style={styles.dots}>
           {PAGES.map((p, i) => (
-            <View key={p} style={[styles.dot, { backgroundColor: i === page ? c.primary : c.bg3 }]} />
+            <View key={p} style={[styles.dot, { backgroundColor: i === page ? c.primary : c.divider }]} />
           ))}
         </View>
         <Button
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   top: { height: 24, alignItems: 'flex-end' },
   skip: { fontFamily: fonts.textMedium, fontSize: 15 },
   body: { flex: 1, justifyContent: 'center', gap: space[4] },
-  headline: { fontFamily: fonts.display, fontSize: 46, lineHeight: 50 },
+  headline: { fontSize: 46, lineHeight: 50 },
   text: { fontSize: 16, lineHeight: 24, maxWidth: 340 },
   footer: { gap: space[6] },
   dots: { flexDirection: 'row', gap: space[2], justifyContent: 'center' },

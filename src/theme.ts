@@ -46,6 +46,8 @@ export const space = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 7: 32, 8: 40 };
 
 export const fonts = {
   display: 'Fraunces_300Light',
+  // Fraunces has no Cyrillic; UK/RU headlines use Literata.
+  displayCyrillic: 'Literata_300Light',
   text: 'InterTight_400Regular',
   textMedium: 'InterTight_500Medium',
   textBold: 'InterTight_600SemiBold',
