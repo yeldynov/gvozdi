@@ -18,7 +18,10 @@
     "today": "Today's practice",
     "minutes_one": "{{count}} minute on the board",
     "minutes_other": "{{count}} minutes on the board",
-    "begin": "Begin"
+    "begin": "Begin",
+    "programDay": "21-day program · Day {{day}} of {{total}}",
+    "programDone": "{{done}} of {{total}} days done",
+    "programText": "A little longer each day you practise. A missed day just waits for you."
   },
   "progress": {
     "title": "Progress",
@@ -35,7 +38,12 @@
     "month": "Last 30 days",
     "minutesTotal_one": "{{count}} minute",
     "minutesTotal_other": "{{count}} minutes",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "level": "Level",
+    "nextLevel": "Next: {{name}}",
+    "levelTotal": "{{value}} of {{target}} min in total",
+    "levelLongest": "Longest session: {{value}} of {{target}} min",
+    "topLevel": "The highest level. Keep standing."
   },
   "settings": {
     "title": "Settings",
@@ -214,5 +222,12 @@
   "reminder": {
     "title": "Time for the board",
     "body": "A few quiet minutes on the nails."
+  },
+  "levels": {
+    "beginner": "Beginner",
+    "steady": "Steady",
+    "practitioner": "Practitioner",
+    "adept": "Adept",
+    "master": "Master"
   }
 }

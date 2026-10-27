@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button, Card, Choice, Screen, Step, Txt } from '@/components/ui';
-import { suggestedMinutes } from '@/lib/practice';
+import { todayMinutes } from '@/lib/practice';
 import { clampMinutes, PRESET_MINUTES } from '@/lib/session';
 import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
@@ -16,7 +16,7 @@ export default function Practice() {
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
   const [mode, setMode] = useState<SessionMode>('peak');
-  const [min, setMin] = useState(() => clampMinutes(suggestedMinutes(sessions)));
+  const [min, setMin] = useState(() => clampMinutes(todayMinutes(sessions)));
 
   const begin = () => router.push({ pathname: '/session', params: { mode, min: String(min) } });
 

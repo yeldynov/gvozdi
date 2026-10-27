@@ -22,7 +22,10 @@
     "minutes_few": "{{count}} хвилини на дошці",
     "minutes_many": "{{count}} хвилин на дошці",
     "minutes_other": "{{count}} хвилини на дошці",
-    "begin": "Почати"
+    "begin": "Почати",
+    "programDay": "Програма 21 день · День {{day}} з {{total}}",
+    "programDone": "Виконано днів: {{done}} з {{total}}",
+    "programText": "Щодня трохи довше. Пропущений день просто чекає на вас."
   },
   "progress": {
     "title": "Прогрес",
@@ -45,7 +48,12 @@
     "minutesTotal_few": "{{count}} хвилини",
     "minutesTotal_many": "{{count}} хвилин",
     "minutesTotal_other": "{{count}} хвилини",
-    "achievements": "Досягнення"
+    "achievements": "Досягнення",
+    "level": "Рівень",
+    "nextLevel": "Далі: {{name}}",
+    "levelTotal": "{{value}} з {{target}} хв загалом",
+    "levelLongest": "Найдовша сесія: {{value}} з {{target}} хв",
+    "topLevel": "Найвищий рівень. Стійте й далі."
   },
   "settings": {
     "title": "Налаштування",
@@ -226,5 +234,12 @@
   "reminder": {
     "title": "Час для дошки",
     "body": "Кілька тихих хвилин на цвяхах."
+  },
+  "levels": {
+    "beginner": "Новачок",
+    "steady": "Стійкий",
+    "practitioner": "Практик",
+    "adept": "Досвідчений",
+    "master": "Майстер"
   }
 }

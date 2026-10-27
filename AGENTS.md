@@ -38,7 +38,7 @@ src/theme.ts                 useColors() light/dark (follows settings.theme), ra
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
 src/store.ts                 sessions + settings; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
-src/lib/practice.ts          pure logic: streaks, achievements, stats, formatDuration, suggestedMinutes
+src/lib/practice.ts          pure logic: streaks, achievements, stats, levels, 21-day program (todayMinutes), formatDuration
 src/lib/*.test.ts            node:test asserts
 src/i18n/{en,uk,ru}.json     translations
 .eas/workflows/ship.yml      push to main → web deploy + OTA update
@@ -89,7 +89,7 @@ npx tsc --noEmit && npx expo lint && npm test
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
-7. Levels and a 21-day program
+7. Levels and a 21-day program — done; program advances per practice day (gaps pause), then todayMinutes falls back to suggestedMinutes
 8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`)
 9. Polish and release: a11y, PWA install hint + service worker, icons/splash, store listings, `eas build`/`submit`, PostHog
 

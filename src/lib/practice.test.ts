@@ -13,8 +13,12 @@ import {
   formatDuration,
   groupByDay,
   lastDays,
+  levelOf,
+  PROGRAM,
+  programDay,
   shiftTime,
   suggestedMinutes,
+  todayMinutes,
   totals,
 } from './practice.ts';
 import type { Session } from './types.ts';
@@ -78,4 +82,25 @@ test('shiftTime wraps around midnight', () => {
   assert.equal(shiftTime('20:00', 15), '20:15');
   assert.equal(shiftTime('23:50', 15), '00:05');
   assert.equal(shiftTime('00:05', -15), '23:50');
+});
+
+test('levelOf needs both total and longest thresholds', () => {
+  assert.equal(levelOf([]).level.id, 'beginner');
+  // 80 min total but longest only 4 min: still beginner
+  assert.equal(levelOf(Array.from({ length: 20 }, (_, i) => at(i, 240))).level.id, 'beginner');
+  const l = levelOf([at(0, 60 * 60), at(1, 11 * 60)]);
+  assert.equal(l.level.id, 'steady');
+  assert.equal(l.next?.id, 'practitioner');
+  assert.equal(l.totalMin, 71);
+});
+
+test('programDay advances per practice day, pauses on gaps, ends after 21', () => {
+  assert.deepEqual(programDay([], now), { day: 1, minutes: 2, done: 0 });
+  // practised 2 days ago and today (gap yesterday): day 2, today counted as done
+  assert.deepEqual(programDay([at(2), at(0), at(0, 60, 9)], now), { day: 2, minutes: 2, done: 2 });
+  const past = Array.from({ length: 21 }, (_, i) => at(i + 1));
+  assert.equal(programDay(past.slice(1), now)?.day, 21);
+  assert.equal(programDay(past, now), null);
+  assert.equal(todayMinutes(past.slice(1), now), PROGRAM[20]);
+  assert.equal(todayMinutes(past, now), 6); // 5 min last session + 1
 });

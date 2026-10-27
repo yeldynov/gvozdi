@@ -22,7 +22,10 @@
     "minutes_few": "{{count}} минуты на доске",
     "minutes_many": "{{count}} минут на доске",
     "minutes_other": "{{count}} минуты на доске",
-    "begin": "Начать"
+    "begin": "Начать",
+    "programDay": "Программа 21 день · День {{day}} из {{total}}",
+    "programDone": "Выполнено дней: {{done}} из {{total}}",
+    "programText": "Каждый день чуть дольше. Пропущенный день просто ждёт вас."
   },
   "progress": {
     "title": "Прогресс",
@@ -45,7 +48,12 @@
     "minutesTotal_few": "{{count}} минуты",
     "minutesTotal_many": "{{count}} минут",
     "minutesTotal_other": "{{count}} минуты",
-    "achievements": "Достижения"
+    "achievements": "Достижения",
+    "level": "Уровень",
+    "nextLevel": "Дальше: {{name}}",
+    "levelTotal": "{{value}} из {{target}} мин всего",
+    "levelLongest": "Самая долгая сессия: {{value}} из {{target}} мин",
+    "topLevel": "Высший уровень. Стойте и дальше."
   },
   "settings": {
     "title": "Настройки",
@@ -226,5 +234,12 @@
   "reminder": {
     "title": "Время для доски",
     "body": "Несколько тихих минут на гвоздях."
+  },
+  "levels": {
+    "beginner": "Новичок",
+    "steady": "Устойчивый",
+    "practitioner": "Практик",
+    "adept": "Опытный",
+    "master": "Мастер"
   }
 }

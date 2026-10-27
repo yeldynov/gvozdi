@@ -149,6 +149,43 @@ export function suggestedMinutes(sessions: Session[]): number {
   return Math.min(90, Math.round(mins) + step);
 }
 
+export type Level = { id: string; totalMin: number; longestMin: number };
+
+// Both thresholds must be met; labels live in i18n under levels.<id>.
+export const LEVELS: Level[] = [
+  { id: 'beginner', totalMin: 0, longestMin: 0 },
+  { id: 'steady', totalMin: 60, longestMin: 5 },
+  { id: 'practitioner', totalMin: 300, longestMin: 10 },
+  { id: 'adept', totalMin: 1000, longestMin: 20 },
+  { id: 'master', totalMin: 3000, longestMin: 30 },
+];
+
+export function levelOf(sessions: Session[]) {
+  const { totalSec, longestSec } = totals(sessions);
+  const i = LEVELS.findLastIndex((l) => totalSec >= l.totalMin * 60 && longestSec >= l.longestMin * 60);
+  return { level: LEVELS[i], next: LEVELS[i + 1], totalMin: Math.floor(totalSec / 60), longestMin: Math.floor(longestSec / 60) };
+}
+
+/** Minutes for each day of the 21-day program. */
+export const PROGRAM = [2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20];
+
+/**
+ * Today's program day: it advances one step per practice day, so a missed day pauses rather than resets.
+ * Null once 21 earlier days have been practised. `done` counts today if already practised.
+ */
+export function programDay(sessions: Session[], now = new Date()) {
+  const today = dayKey(now);
+  const days = practiceDays(sessions);
+  const before = days.filter((d) => d < today).length;
+  if (before >= PROGRAM.length) return null;
+  return { day: before + 1, minutes: PROGRAM[before], done: before + (days.includes(today) ? 1 : 0) };
+}
+
+/** What Home and Practice offer: the program's minutes while it runs, then the adaptive suggestion. */
+export function todayMinutes(sessions: Session[], now = new Date()): number {
+  return programDay(sessions, now)?.minutes ?? suggestedMinutes(sessions);
+}
+
 /** Dev-only: one session a day for `days` days, ending today. */
 export function seedSessions(now = new Date(), days = 180): Session[] {
   return Array.from({ length: days }, (_, i) => {
