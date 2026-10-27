@@ -16,6 +16,8 @@ type State = {
   replaceSessions: (sessions: Session[]) => void;
   clearSessions: () => void;
   setSettings: (patch: Partial<Settings>) => void;
+  syncCursor?: string; // server time of the last pull; cleared on sign-out
+  setSyncCursor: (cursor?: string) => void;
 };
 
 const now = () => new Date().toISOString();
@@ -49,12 +51,13 @@ export const useStore = create<State>()(
           sessions: st.sessions.map((s) => (s.deletedAt ? s : { ...s, deletedAt: now(), updatedAt: now() })),
         })),
       setSettings: (patch) => set((st) => ({ settings: { ...st.settings, ...patch } })),
+      setSyncCursor: (syncCursor) => set({ syncCursor }),
     }),
     {
       name: 'gvozdi',
       version: 1,
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: ({ sessions, settings }) => ({ sessions, settings }),
+      partialize: ({ sessions, settings, syncCursor }) => ({ sessions, settings, syncCursor }),
     },
   ),
 );

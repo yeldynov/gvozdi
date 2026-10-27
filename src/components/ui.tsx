@@ -50,21 +50,25 @@ export function Button({
   label,
   onPress,
   ghost,
+  disabled,
   style,
 }: {
   label: string;
   onPress: () => void;
   ghost?: boolean;
+  disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const c = useColors();
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: ghost ? c.bg2 : c.primary, opacity: pressed ? 0.85 : 1 },
+        { backgroundColor: ghost ? c.bg2 : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
       <Text style={[styles.buttonText, { color: ghost ? c.text : c.onPrimary }]}>{label}</Text>

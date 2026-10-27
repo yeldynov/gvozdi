@@ -23,5 +23,7 @@ export type Settings = {
   haptics: boolean;
   reminder?: string; // 'HH:mm'
   onboarded: boolean;
-  signupPrompt: { lastShownAt?: string; dismissals: number };
+  signupPrompt: SignupPrompt;
 };
+
+export type SignupPrompt = { lastShownAt?: string; shownAtCount?: number; dismissals: number };

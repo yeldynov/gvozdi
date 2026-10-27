@@ -21,7 +21,9 @@
     "begin": "Begin",
     "programDay": "21-day program · Day {{day}} of {{total}}",
     "programDone": "{{done}} of {{total}} days done",
-    "programText": "A little longer each day you practise. A missed day just waits for you."
+    "programText": "A little longer each day you practise. A missed day just waits for you.",
+    "backup": "Back up your streak",
+    "backupText": "A free account keeps your practice safe across devices."
   },
   "progress": {
     "title": "Progress",
@@ -75,7 +77,8 @@
     "on": "On",
     "off": "Off",
     "earlier": "Earlier",
-    "later": "Later"
+    "later": "Later",
+    "dataTextSynced": "Sessions are backed up to your account. You can still export a JSON copy any time."
   },
   "practice": {
     "title": "Practice",
@@ -229,5 +232,30 @@
     "practitioner": "Practitioner",
     "adept": "Adept",
     "master": "Master"
+  },
+  "account": {
+    "title": "Account",
+    "intro": "Enter your email. We'll send a code: no password needed. New here? This creates your free account.",
+    "emailPlaceholder": "you@example.com",
+    "continue": "Send code",
+    "codeSent": "We sent a 6-digit code to {{email}}.",
+    "codePlaceholder": "000000",
+    "verify": "Continue",
+    "changeEmail": "Use another email",
+    "badEmail": "That email doesn't look right.",
+    "badCode": "That code isn't right. Try again.",
+    "expired": "That code expired. Ask for a new one.",
+    "failed": "Something went wrong. Check your connection and try again.",
+    "signedInAs": "Signed in as",
+    "syncedText": "Your sessions sync to this account automatically.",
+    "signOut": "Sign out",
+    "signIn": "Sign in or create account",
+    "manage": "Manage account",
+    "guestCaption": "You're practising as a guest. Sessions live only on this device.",
+    "signedInCaption": "Signed in as {{email}}. Sessions sync automatically.",
+    "offerTitle": "Keep your practice safe",
+    "offerText": "Create a free account and your sessions and streak will be backed up and on every device you use.",
+    "offerYes": "Create free account",
+    "offerLater": "Not now"
   }
 }

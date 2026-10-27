@@ -1,3 +1,5 @@
+import { useAuth, useUser } from '@clerk/expo';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
@@ -20,6 +22,8 @@ export default function Settings() {
   const setSettings = useStore((s) => s.setSettings);
   const [notice, setNotice] = useState<{ text: string; error?: boolean }>();
   const [confirming, setConfirming] = useState(false);
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
 
   const onExport = () => {
     const { sessions } = useStore.getState();
@@ -57,6 +61,18 @@ export default function Settings() {
   return (
     <Screen>
       <Txt variant="display">{t('settings.title')}</Txt>
+      <Card>
+        <Txt variant="label">{t('account.title')}</Txt>
+        <Txt variant="caption">
+          {isSignedIn ? t('account.signedInCaption', { email: user?.primaryEmailAddress?.emailAddress }) : t('account.guestCaption')}
+        </Txt>
+        <Button
+          ghost
+          label={isSignedIn ? t('account.manage') : t('account.signIn')}
+          onPress={() => router.push('/account')}
+          style={styles.full}
+        />
+      </Card>
       <Card>
         <Txt variant="label">{t('settings.language')}</Txt>
         <Choice<Language>
@@ -107,7 +123,7 @@ export default function Settings() {
       </Card>
       <Card>
         <Txt variant="label">{t('settings.data')}</Txt>
-        <Txt variant="caption">{t('settings.dataText')}</Txt>
+        <Txt variant="caption">{t(isSignedIn ? 'settings.dataTextSynced' : 'settings.dataText')}</Txt>
         <View style={styles.row}>
           <Button ghost label={t('settings.export')} onPress={onExport} style={styles.half} />
           <Button ghost label={t('settings.import')} onPress={onImport} style={styles.half} />

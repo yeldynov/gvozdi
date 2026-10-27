@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
+    "@clerk/backend": "^3.26.3",
+    "@clerk/expo": "^4.14.2",
     "@expo-google-fonts/fraunces": "^0.4.1",
     "@expo-google-fonts/inter-tight": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
+    "@neondatabase/serverless": "^1.2.0",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "drizzle-orm": "^0.45.4",
     "expo": "~58.0.19",
     "expo-asset": "~58.0.18",
     "expo-audio": "~58.0.10",
@@ -23,6 +27,7 @@
     "expo-localization": "~58.0.5",
     "expo-notifications": "~58.1.6",
     "expo-router": "~58.0.26",
+    "expo-secure-store": "~58.0.2",
     "expo-sharing": "~58.0.20",
     "expo-splash-screen": "~58.0.11",
     "expo-status-bar": "~58.0.4",
@@ -45,6 +50,7 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "@types/react": "~19.3.0",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
     "typescript": "~6.0.3"
@@ -56,7 +62,9 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "node --no-warnings --test src/lib/"
+    "test": "node --no-warnings --test src/lib/",
+    "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs migrate"
   },
   "private": true
 }

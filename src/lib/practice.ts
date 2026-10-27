@@ -1,5 +1,5 @@
 // Pure practice logic: no React, no storage. Every function takes sessions (and `now`) so it is testable.
-import type { Session } from './types';
+import type { Session, SignupPrompt } from './types';
 
 const DAY_MS = 86_400_000;
 
@@ -184,6 +184,17 @@ export function programDay(sessions: Session[], now = new Date()) {
 /** What Home and Practice offer: the program's minutes while it runs, then the adaptive suggestion. */
 export function todayMinutes(sessions: Session[], now = new Date()): number {
   return programDay(sessions, now)?.minutes ?? suggestedMinutes(sessions);
+}
+
+/**
+ * Whether to offer an account on the save screen: after the 3rd session, then no sooner than
+ * 7 days and 5 sessions after the last offer, and never again after 3 dismissals.
+ */
+export function shouldPromptSignup(sessions: Session[], p: SignupPrompt, now = new Date()): boolean {
+  const count = live(sessions).length;
+  if (p.dismissals >= 3 || count < 3) return false;
+  if (!p.lastShownAt) return true;
+  return now.getTime() - Date.parse(p.lastShownAt) >= 7 * DAY_MS && count - (p.shownAtCount ?? 0) >= 5;
 }
 
 /** Dev-only: one session a day for `days` days, ending today. */

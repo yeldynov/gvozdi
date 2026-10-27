@@ -1,3 +1,4 @@
+import { useAuth } from '@clerk/expo';
 import Feather from '@expo/vector-icons/Feather';
 import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
@@ -14,7 +15,7 @@ import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { BreathDot, PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Button, Card, Sheet, Txt } from '@/components/ui';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
-import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
+import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, live, shouldPromptSignup, type Achievement } from '@/lib/practice';
 import {
   clampMinutes,
   elapsedSec,
@@ -83,7 +84,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const [clock, setClock] = useState<Clock>(() => startClock(Date.now()));
   const [now, setNow] = useState(() => Date.now());
   const [sheet, setSheet] = useState<'save' | 'discard' | null>(null);
-  const [unlocked, setUnlocked] = useState<Achievement>();
+  const { isSignedIn } = useAuth();
+  const [done, setDone] = useState<{ a?: Achievement; offer: boolean }>(); // after save: unlock screen, then account offer
   const running = clock.pausedAt === null;
   const elapsed = elapsedSec(clock, now);
   const reached = goalSec > 0 && elapsed >= goalSec;
@@ -143,18 +145,25 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
-    const fresh = earnedAchievementIds(useStore.getState().sessions).filter((id) => !before.includes(id));
+    const { sessions, settings, setSettings } = useStore.getState();
+    const fresh = earnedAchievementIds(sessions).filter((id) => !before.includes(id));
     const a = ACHIEVEMENTS.find((x) => x.id === fresh.at(-1));
-    if (!a) return leave();
+    const offer = !isSignedIn && shouldPromptSignup(sessions, settings.signupPrompt);
+    if (offer)
+      setSettings({
+        signupPrompt: { ...settings.signupPrompt, lastShownAt: new Date().toISOString(), shownAtCount: live(sessions).length },
+      });
+    if (!a && !offer) return leave();
     setSheet(null);
-    setUnlocked(a);
-    if (haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    setDone({ a, offer });
+    if (a && haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
   };
 
   const status = !running ? t('session.paused') : reached ? t('session.goalReached') : t('session.standing');
   const big = (value: string, color = c.text) => <Text style={[styles.big, { color }]}>{value}</Text>;
 
-  if (unlocked) return <Unlocked a={unlocked} />;
+  if (done?.a) return <Unlocked a={done.a} onContinue={() => (done.offer ? setDone({ offer: true }) : leave())} />;
+  if (done?.offer) return <AccountOffer />;
 
   return (
     <View style={styles.page}>
@@ -255,7 +264,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   );
 }
 
-function Unlocked({ a }: { a: Achievement }) {
+function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void }) {
   const { t } = useTranslation();
   const c = useColors();
   return (
@@ -274,7 +283,34 @@ function Unlocked({ a }: { a: Achievement }) {
           <Txt style={{ color: c.text2, textAlign: 'center' }}>{t(`achievements.${a.id}.desc`)}</Txt>
         </View>
       </View>
-      <Button label={t('achievements.continue')} onPress={leave} style={styles.wide} />
+      <Button label={t('achievements.continue')} onPress={onContinue} style={styles.wide} />
+    </Animated.View>
+  );
+}
+
+function AccountOffer() {
+  const { t } = useTranslation();
+  const c = useColors();
+  const dismiss = () => {
+    const { settings, setSettings } = useStore.getState();
+    setSettings({ signupPrompt: { ...settings.signupPrompt, dismissals: settings.signupPrompt.dismissals + 1 } });
+    leave();
+  };
+  return (
+    <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
+      <View style={styles.center}>
+        <Feather name="cloud" size={48} color={c.accent} />
+        <View style={{ alignItems: 'center', gap: space[2] }}>
+          <Txt variant="display" style={{ textAlign: 'center' }}>
+            {t('account.offerTitle')}
+          </Txt>
+          <Txt style={{ color: c.text2, textAlign: 'center', maxWidth: 420 }}>{t('account.offerText')}</Txt>
+        </View>
+      </View>
+      <View style={{ gap: space[3] }}>
+        <Button label={t('account.offerYes')} onPress={() => router.replace('/account')} style={styles.wide} />
+        <Button ghost label={t('account.offerLater')} onPress={dismiss} style={styles.wide} />
+      </View>
     </Animated.View>
   );
 }

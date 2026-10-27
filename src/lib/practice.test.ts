@@ -17,6 +17,7 @@ import {
   PROGRAM,
   programDay,
   shiftTime,
+  shouldPromptSignup,
   suggestedMinutes,
   todayMinutes,
   totals,
@@ -103,4 +104,15 @@ test('programDay advances per practice day, pauses on gaps, ends after 21', () =
   assert.equal(programDay(past, now), null);
   assert.equal(todayMinutes(past.slice(1), now), PROGRAM[20]);
   assert.equal(todayMinutes(past, now), 6); // 5 min last session + 1
+});
+
+test('shouldPromptSignup: 3rd session, then 7 days + 5 sessions later, stops after 3 dismissals', () => {
+  const n = (k: number) => Array.from({ length: k }, (_, i) => at(i));
+  assert.equal(shouldPromptSignup(n(2), { dismissals: 0 }, now), false);
+  assert.equal(shouldPromptSignup(n(3), { dismissals: 0 }, now), true);
+  const shown = { dismissals: 1, lastShownAt: new Date(2026, 9, 21).toISOString(), shownAtCount: 3 };
+  assert.equal(shouldPromptSignup(n(7), shown, now), false); // 6 days, 4 sessions
+  assert.equal(shouldPromptSignup(n(8), shown, now), false); // 5 sessions but only 6 days
+  assert.equal(shouldPromptSignup(n(8), shown, new Date(2026, 9, 28, 12)), true);
+  assert.equal(shouldPromptSignup(n(20), { ...shown, dismissals: 3 }, new Date(2027, 0, 1)), false);
 });

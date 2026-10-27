@@ -14,7 +14,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 - State: Zustand `persist` + AsyncStorage (localStorage on web), key `gvozdi`.
 - i18n: i18next + expo-localization.
 - Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
-- Planned: Clerk, Expo Router API routes + Drizzle + Neon for sync, PostHog.
+- Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP). Planned: PostHog.
 
 ## Layout
 
@@ -22,14 +22,18 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 src/app/_layout.tsx          root: fonts, i18n, theme
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
-src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm
+src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer
+src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out
+src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
+src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)
+src/lib/sync.ts              useSync(): pushes all sessions, pulls since cursor; runs after changes and on foreground while signed in
 src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
 src/app/achievement/[id].tsx  badge, earned date or progress bar; unlock screen lives in session.tsx after save
 src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achievement icon)
 src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
-src/lib/backup.ts            pure: serialize/parse (validates untrusted JSON), mergeSessions (last-write-wins by updatedAt)
+src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)
 src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
 src/lib/reminder.ts          native daily reminder (fixed id, rescheduled from root _layout on time/language change); reminder.web.ts no-op
@@ -67,13 +71,19 @@ npx tsc --noEmit && npx expo lint && npm test
 
 ## Gotchas
 
-- Web output must stay `"static"` in `app.json`. `server` output crashed on EAS Hosting with SDK 58.
+- Web output must stay `"static"` in `app.json`. `server` output crashed on EAS Hosting with SDK 58. API routes still work: `["expo-router", { "apiRoutes": true }]` exports prerendered HTML + `+api.ts` routes (verified on an EAS preview deploy, `src/app/api/health+api.ts`).
 - TS 6 defaults `types` to `[]`, so test files need `/// <reference types="node" />`.
 - Typed routes regenerate only while `npx expo start` runs. Don't set `CI=1` while editing; it disables file watching.
 - `npm test` runs Node's native TS support (`node --test src/lib/`), so tests must import with relative paths and avoid RN modules.
 - Headless Chrome on macOS has a ~500px minimum width. Screenshot the web build with:
   `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --window-size=600,900 --virtual-time-budget=30000 --screenshot=out.png http://localhost:8081`
   (add `--blink-settings=preferredColorScheme=1` for light mode).
+
+## Secrets
+
+- `.env.local` (gitignored) holds `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `DATABASE_URL`; pull Clerk keys with `npx -y clerk@latest env pull`.
+- EAS `production` env has the same three: publishable key `plaintext`, the other two `sensitive` (EAS Hosting can't deploy `secret`).
+- Clerk: use the CLI (`npx -y clerk@latest`), not the Clerk MCP connector; they're signed into different workspaces. Test accounts: `name+clerk_test@example.com`, code `424242`. Web sign-up shows a bot check that headless Chrome can't pass; create the user with `clerk users create` and test the sign-in path.
 
 ## Shipping
 
@@ -90,7 +100,7 @@ npx tsc --noEmit && npx expo lint && npm test
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. Levels and a 21-day program — done; program advances per practice day (gaps pause), then todayMinutes falls back to suggestedMinutes
-8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`)
+8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk is still the dev instance (production needs a custom domain)
 9. Polish and release: a11y, PWA install hint + service worker, icons/splash, store listings, `eas build`/`submit`, PostHog
 
 Donor repos (copy from, never fork): `~/dev/gvozdi-app` (gvozdi-pwa: design tokens, `SessionActivePeak.jsx`, `SessionActiveNails.jsx`, copy), and `gh repo clone yeldynov/<name>` for `stepsure-ai` (translations, stats), `gvozdi-app`/`gvozdi-v6` (prepare/guide copy in UK/RU).

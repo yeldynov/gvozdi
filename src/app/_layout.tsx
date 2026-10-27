@@ -1,3 +1,5 @@
+import { ClerkProvider } from '@clerk/expo';
+import { tokenCache } from '@clerk/expo/token-cache';
 import { Fraunces_300Light } from '@expo-google-fonts/fraunces';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold } from '@expo-google-fonts/inter-tight';
 import { useFonts } from 'expo-font';
@@ -9,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import i18n, { resolveLanguage } from '@/i18n';
 import { syncReminder } from '@/lib/reminder';
+import { useSync } from '@/lib/sync';
 import { useStore } from '@/store';
 import { useColors } from '@/theme';
 
@@ -41,12 +44,18 @@ export default function RootLayout() {
 
   if (!ready) return null;
   return (
-    <>
+    <ClerkProvider publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!} tokenCache={tokenCache}>
+      <Sync />
       <StatusBar style={c.isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
       </Stack>
-    </>
+    </ClerkProvider>
   );
+}
+
+function Sync() {
+  useSync();
+  return null;
 }
