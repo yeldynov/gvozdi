@@ -16,6 +16,7 @@ import {
   levelOf,
   PROGRAM,
   programDay,
+  reminderDates,
   shiftTime,
   shouldPromptSignup,
   suggestedMinutes,
@@ -115,4 +116,12 @@ test('shouldPromptSignup: 3rd session, then 7 days + 5 sessions later, stops aft
   assert.equal(shouldPromptSignup(n(8), shown, now), false); // 5 sessions but only 6 days
   assert.equal(shouldPromptSignup(n(8), shown, new Date(2026, 9, 28, 12)), true);
   assert.equal(shouldPromptSignup(n(20), { ...shown, dismissals: 3 }, new Date(2027, 0, 1)), false);
+});
+
+test('reminderDates skips today once practised or past, then one per day', () => {
+  const later = reminderDates('21:00', false, now, 3); // now is 20:00
+  assert.deepEqual(later.map((d) => d.getDate()), [27, 28, 29]);
+  assert.equal(later[0].getHours(), 21);
+  assert.deepEqual(reminderDates('21:00', true, now, 3).map((d) => d.getDate()), [28, 29]);
+  assert.deepEqual(reminderDates('19:00', false, now, 3).map((d) => d.getDate()), [28, 29]);
 });

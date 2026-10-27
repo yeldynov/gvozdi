@@ -3,7 +3,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
 import { useKeepAwake } from 'expo-keep-awake';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, usePreventRemove } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -35,21 +35,23 @@ const gong = require('@/assets/sounds/gong.m4a');
 
 const leave = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
-// ponytail: the running session lives in component state, so an OS kill mid-session loses it; persist the Clock if that bites
+// A running session lives in the store (`running`), so after an OS kill or reload this screen resumes it instead of the params.
 export default function SessionScreen() {
   const params = useLocalSearchParams<{ mode?: string; min?: string }>();
-  const mode: SessionMode = params.mode === 'free' || params.mode === 'timed' ? params.mode : 'peak';
-  const goalSec = mode === 'free' ? 0 : clampMinutes(Number(params.min) || 5) * 60;
-  const [started, setStarted] = useState(false);
+  const [resume] = useState(() => useStore.getState().running);
+  const mode: SessionMode = resume?.mode ?? (params.mode === 'free' || params.mode === 'timed' ? params.mode : 'peak');
+  const goalSec = resume ? resume.goalSec : mode === 'free' ? 0 : clampMinutes(Number(params.min) || 5) * 60;
+  const [started, setStarted] = useState(!!resume);
   const c = useColors();
+
+  const start = () => {
+    useStore.getState().setRunning({ mode, goalSec, clock: startClock(Date.now()) });
+    setStarted(true);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg }}>
-      {started ? (
-        <Active mode={mode} goalSec={goalSec} />
-      ) : (
-        <Prepare mode={mode} goalSec={goalSec} onStart={() => setStarted(true)} />
-      )}
+      {started ? <Active mode={mode} goalSec={goalSec} /> : <Prepare mode={mode} goalSec={goalSec} onStart={start} />}
     </SafeAreaView>
   );
 }
@@ -82,7 +84,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const addSession = useStore((s) => s.addSession);
   const player = useAudioPlayer(gong);
 
-  const [clock, setClock] = useState<Clock>(() => startClock(Date.now()));
+  const [clock, setClock] = useState<Clock>(() => useStore.getState().running?.clock ?? startClock(Date.now()));
   const [now, setNow] = useState(() => Date.now());
   const [sheet, setSheet] = useState<'save' | 'discard' | null>(null);
   const { isSignedIn } = useAuth();
@@ -90,6 +92,23 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const running = clock.pausedAt === null;
   const elapsed = elapsedSec(clock, now);
   const reached = goalSec > 0 && elapsed >= goalSec;
+
+  const updateClock = (next: Clock) => {
+    setClock(next);
+    useStore.getState().setRunning({ mode, goalSec, clock: next });
+  };
+
+  // Back gesture, hardware back or browser back ask before throwing the session away.
+  const pendingBack = useRef<() => void>(undefined);
+  const allowLeave = usePreventRemove(!done, ({ repeat }) => {
+    pendingBack.current = repeat;
+    setSheet('discard');
+  });
+  const exit = (then: () => void = leave) => {
+    useStore.getState().setRunning(undefined);
+    allowLeave();
+    then();
+  };
 
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
@@ -113,7 +132,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   }, [clock, goalSec, t]);
 
   // In-app cue, once.
-  const cued = useRef(false);
+  const cued = useRef(reached); // a resumed session past its goal doesn't gong again
   useEffect(() => {
     if (!reached || cued.current) return;
     cued.current = true;
@@ -126,13 +145,13 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
 
   const toggle = () => {
     const at = Date.now();
-    setClock(running ? pauseClock(clock, at) : resumeClock(clock, at));
+    updateClock(running ? pauseClock(clock, at) : resumeClock(clock, at));
     setNow(at);
   };
 
   const finish = () => {
-    if (!elapsed) return leave();
-    setClock(pauseClock(clock, Date.now()));
+    if (!elapsed) return exit();
+    updateClock(pauseClock(clock, Date.now()));
     setSheet('save');
   };
 
@@ -146,6 +165,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
+    useStore.getState().setRunning(undefined);
     const { sessions, settings, setSettings } = useStore.getState();
     const fresh = earnedAchievementIds(sessions).filter((id) => !before.includes(id));
     const a = ACHIEVEMENTS.find((x) => x.id === fresh.at(-1));
@@ -156,10 +176,15 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       setSettings({
         signupPrompt: { ...settings.signupPrompt, lastShownAt: new Date().toISOString(), shownAtCount: live(sessions).length },
       });
-    if (!a && !offer) return leave();
+    if (!a && !offer) return exit();
     setSheet(null);
     setDone({ a, offer });
     if (a && haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  };
+
+  const keepGoing = () => {
+    pendingBack.current = undefined;
+    setSheet(null);
   };
 
   const status = !running ? t('session.paused') : reached ? t('session.goalReached') : t('session.standing');
@@ -171,7 +196,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   return (
     <View style={styles.page}>
       <TopBar
-        onClose={() => (elapsed ? setSheet('discard') : leave())}
+        onClose={() => (elapsed ? setSheet('discard') : exit())}
         label={mode === 'peak' ? undefined : t(`practice.modes.${mode}`)}
         chip={mode === 'peak' ? (elapsed < PEAK_SEC ? { text: t('session.peak'), color: c.accent } : { text: t('session.steady'), color: c.success }) : undefined}
       />
@@ -253,7 +278,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
         onSave={save}
         onClose={() => setSheet(null)}
       />
-      <Sheet visible={sheet === 'discard'} onClose={() => setSheet(null)}>
+      <Sheet visible={sheet === 'discard'} onClose={keepGoing}>
         <Txt variant="title">{t('session.discardTitle')}</Txt>
         <Txt variant="body" style={{ color: c.text2 }}>
           {t('session.discardText', { time: formatDuration(elapsed) })}
@@ -264,11 +289,11 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
             label={t('session.discard')}
             onPress={() => {
               capture('session_discarded', { mode, duration_sec: elapsed });
-              leave();
+              exit(pendingBack.current);
             }}
             style={styles.half}
           />
-          <Button label={t('session.keepGoing')} onPress={() => setSheet(null)} style={styles.half} />
+          <Button label={t('session.keepGoing')} onPress={keepGoing} style={styles.half} />
         </View>
       </Sheet>
     </View>

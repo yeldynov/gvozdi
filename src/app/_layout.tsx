@@ -8,10 +8,12 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useSyncExternalStore } from 'react';
+import { AppState } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import i18n, { resolveLanguage } from '@/i18n';
 import { capture } from '@/lib/analytics';
+import { dayKey, live } from '@/lib/practice';
 import { syncReminder } from '@/lib/reminder';
 import { useSync } from '@/lib/sync';
 import { useStore } from '@/store';
@@ -27,6 +29,7 @@ export default function RootLayout() {
   const hydrated = useSyncExternalStore(subscribeHydration, isHydrated, () => false);
   const language = useStore((s) => s.settings.language);
   const reminder = useStore((s) => s.settings.reminder);
+  const sessions = useStore((s) => s.sessions);
   const { t, i18n: active } = useTranslation();
   const c = useColors();
 
@@ -34,10 +37,18 @@ export default function RootLayout() {
     i18n.changeLanguage(resolveLanguage(language));
   }, [language]);
 
-  // Reschedule when the time or the language of its text changes.
+  // Reschedule on launch, on foreground (the 14-day window moves on), and when the time, today's practice or the language changes.
   useEffect(() => {
-    if (hydrated) syncReminder(reminder, t('reminder.title'), t('reminder.body'));
-  }, [hydrated, reminder, active.language, t]);
+    if (!hydrated) return;
+    const sync = () => {
+      const today = dayKey(new Date()); // read at call time: a foreground may be the next day
+      const practised = live(sessions).some((x) => dayKey(new Date(x.startedAt)) === today);
+      syncReminder(reminder, practised, t('reminder.title'), t('reminder.body'));
+    };
+    sync();
+    const sub = AppState.addEventListener('change', (s) => s === 'active' && sync());
+    return () => sub.remove();
+  }, [hydrated, reminder, sessions, active.language, t]);
 
   const ready = fontsLoaded && hydrated;
   useEffect(() => {

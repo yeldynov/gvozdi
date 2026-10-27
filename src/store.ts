@@ -3,7 +3,11 @@ import { randomUUID } from 'expo-crypto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import type { Session, Settings } from '@/lib/types';
+import type { Clock } from '@/lib/session';
+import type { Session, SessionMode, Settings } from '@/lib/types';
+
+/** The session on the board right now; persisted so an OS kill or reload resumes it. */
+export type Running = { mode: SessionMode; goalSec: number; clock: Clock };
 
 type NewSession = Omit<Session, 'id' | 'updatedAt' | 'deletedAt'>;
 
@@ -18,6 +22,8 @@ type State = {
   setSettings: (patch: Partial<Settings>) => void;
   syncCursor?: string; // server time of the last pull; cleared on sign-out
   setSyncCursor: (cursor?: string) => void;
+  running?: Running;
+  setRunning: (running?: Running) => void;
 };
 
 const now = () => new Date().toISOString();
@@ -52,12 +58,13 @@ export const useStore = create<State>()(
         })),
       setSettings: (patch) => set((st) => ({ settings: { ...st.settings, ...patch } })),
       setSyncCursor: (syncCursor) => set({ syncCursor }),
+      setRunning: (running) => set({ running }),
     }),
     {
       name: 'gvozdi',
       version: 1,
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: ({ sessions, settings, syncCursor }) => ({ sessions, settings, syncCursor }),
+      partialize: ({ sessions, settings, syncCursor, running }) => ({ sessions, settings, syncCursor, running }),
     },
   ),
 );

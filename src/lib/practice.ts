@@ -117,6 +117,18 @@ export function shiftTime(hhmm: string, deltaMin: number): string {
   return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
 }
 
+/** Reminder times for the next `days` days at hh:mm, skipping today if already practised or the time has passed. */
+export function reminderDates(hhmm: string, practisedToday: boolean, now = new Date(), days = 14): Date[] {
+  const [h, m] = hhmm.split(':').map(Number);
+  const out: Date[] = [];
+  for (let i = 0; i < days; i++) {
+    const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, h, m);
+    if (i === 0 && (practisedToday || at <= now)) continue;
+    out.push(at);
+  }
+  return out;
+}
+
 /** Minutes practised per day for the last `n` days, oldest first. */
 export function lastDays(sessions: Session[], now = new Date(), n = 7): { day: string; minutes: number }[] {
   const today = dayKey(now);

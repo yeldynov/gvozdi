@@ -5,4 +5,4 @@ export async function allowReminders(): Promise<boolean> {
   return false;
 }
 
-export async function syncReminder(_time: string | undefined, _title: string, _body: string) {}
+export async function syncReminder(_time: string | undefined, _practisedToday: boolean, _title: string, _body: string) {}

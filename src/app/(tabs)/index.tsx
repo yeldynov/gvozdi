@@ -1,6 +1,7 @@
 import { useAuth } from '@clerk/expo';
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -17,6 +18,11 @@ export default function Home() {
   const streak = currentStreak(sessions);
   const program = programDay(sessions);
   const { isLoaded, isSignedIn } = useAuth();
+
+  // Back to a session the OS killed or the browser reloaded.
+  useEffect(() => {
+    if (useStore.getState().running) router.push('/session');
+  }, []);
 
   return (
     <Screen>
