@@ -21,6 +21,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 ```
 src/app/_layout.tsx          root: fonts, i18n, theme
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
+src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm
 src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
 src/app/achievement/[id].tsx  badge, earned date or progress bar; unlock screen lives in session.tsx after save
@@ -28,6 +29,8 @@ src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achieveme
 src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
+src/lib/backup.ts            pure: serialize/parse (validates untrusted JSON), mergeSessions (last-write-wins by updatedAt)
+src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
@@ -83,7 +86,7 @@ npx tsc --noEmit && npx expo lint && npm test
 2. Session timer (setup, prepare gate, peak/timed/free, keep-awake, haptics, gong, goal notification, save sheet) — done; native paths untested until the first `eas build`
 3. History: grouped by day, detail with edit/delete — done (entry: Progress → All sessions)
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
-5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact)
+5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web)
 7. Levels and a 21-day program
 8. Accounts: Clerk, sign-up prompt rule (pure + tested), `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`)

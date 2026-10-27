@@ -14,6 +14,7 @@ type State = {
   updateSession: (id: string, patch: Partial<Pick<Session, 'tension' | 'note'>>) => void;
   deleteSession: (id: string) => void;
   replaceSessions: (sessions: Session[]) => void;
+  clearSessions: () => void;
   setSettings: (patch: Partial<Settings>) => void;
 };
 
@@ -43,6 +44,10 @@ export const useStore = create<State>()(
           sessions: st.sessions.map((s) => (s.id === id ? { ...s, deletedAt: now(), updatedAt: now() } : s)),
         })),
       replaceSessions: (sessions) => set({ sessions }),
+      clearSessions: () =>
+        set((st) => ({
+          sessions: st.sessions.map((s) => (s.deletedAt ? s : { ...s, deletedAt: now(), updatedAt: now() })),
+        })),
       setSettings: (patch) => set((st) => ({ settings: { ...st.settings, ...patch } })),
     }),
     {

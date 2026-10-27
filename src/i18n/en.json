@@ -43,7 +43,23 @@
     "theme": "Appearance",
     "system": "System",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "data": "Your data",
+    "dataText": "Sessions live on this device only. Export a backup to keep them safe or move them to another phone.",
+    "export": "Export",
+    "import": "Import",
+    "exportFailed": "Couldn't export the backup.",
+    "imported_one": "Imported {{count}} session",
+    "imported_other": "Imported {{count}} sessions",
+    "importFailed": "That file isn't a Gvozdi backup.",
+    "clear": "Clear all sessions",
+    "clearTitle": "Clear all sessions?",
+    "clearText": "Your whole history, streak and achievements will be gone. Export a backup first if you might want them back.",
+    "clearConfirm": "Clear",
+    "cleared": "All sessions cleared.",
+    "contact": "Contact",
+    "contactText": "Questions, ideas or a bug? Write to us on Telegram.",
+    "write": "Write to us"
   },
   "practice": {
     "title": "Practice",
@@ -164,6 +180,27 @@
     "streak_365": {
       "title": "One Year",
       "desc": "A whole year, every day"
+    }
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "begin": "Begin your practice",
+    "welcome": {
+      "kicker": "A practice, not an app",
+      "title": "Stand on nails. Calmly.",
+      "text": "A timer, a streak, and a few honest words about how it felt. Nothing else."
+    },
+    "peak": {
+      "kicker": "The first minutes",
+      "title": "Sharp, then it eases.",
+      "text": "Discomfort peaks around a minute and a half, then fades. Breathe out slowly and let it pass. Peak mode walks you through it."
+    },
+    "start": {
+      "kicker": "Start small",
+      "title": "A few minutes a day.",
+      "text": "Begin short and add a little as your feet adapt. Everything stays on this device; no account needed.",
+      "safety": "If you are pregnant, have diabetes, a heart condition or wounds on your feet, ask your doctor first."
     }
   }
 }
