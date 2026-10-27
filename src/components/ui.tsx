@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type TextProps, type ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type TextProps, type ViewStyle } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -26,15 +27,44 @@ export function Card({ children, style }: { children: ReactNode; style?: ViewSty
   return <View style={[styles.card, { backgroundColor: c.surface, borderColor: c.divider }, style]}>{children}</View>;
 }
 
-export function Button({ label, onPress }: { label: string; onPress: () => void }) {
+export function Button({
+  label,
+  onPress,
+  ghost,
+  style,
+}: {
+  label: string;
+  onPress: () => void;
+  ghost?: boolean;
+  style?: ViewStyle;
+}) {
   const c = useColors();
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      style={({ pressed }) => [styles.button, { backgroundColor: c.primary, opacity: pressed ? 0.85 : 1 }]}>
-      <Text style={[styles.buttonText, { color: c.onPrimary }]}>{label}</Text>
+      style={({ pressed }) => [
+        styles.button,
+        { backgroundColor: ghost ? c.bg2 : c.primary, opacity: pressed ? 0.85 : 1 },
+        style,
+      ]}>
+      <Text style={[styles.buttonText, { color: ghost ? c.text : c.onPrimary }]}>{label}</Text>
     </Pressable>
+  );
+}
+
+/** Bottom sheet over a dimmed backdrop; tapping the backdrop calls onClose. */
+export function Sheet({ visible, onClose, children }: { visible: boolean; onClose: () => void; children: ReactNode }) {
+  const c = useColors();
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={styles.backdrop}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={t('common.close')} />
+        <View style={[styles.sheet, { backgroundColor: c.bg, paddingBottom: space[6] + insets.bottom }]}>{children}</View>
+      </View>
+    </Modal>
   );
 }
 
@@ -77,6 +107,16 @@ const styles = StyleSheet.create({
   caption: { fontFamily: fonts.text, fontSize: 13 },
   card: { borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: space[5], gap: space[2] },
   button: { borderRadius: radius.pill, paddingVertical: space[3], paddingHorizontal: space[6], alignSelf: 'flex-start' },
+  backdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.45)' },
+  sheet: {
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
+    padding: space[6],
+    gap: space[5],
+    width: '100%',
+    maxWidth: 560,
+    alignSelf: 'center',
+  },
   buttonText: { fontFamily: fonts.textBold, fontSize: 16 },
   choice: { flexDirection: 'row', borderRadius: radius.pill, padding: 3 },
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },

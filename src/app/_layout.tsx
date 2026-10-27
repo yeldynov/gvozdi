@@ -34,7 +34,10 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar style={c.isDark ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
+      </Stack>
     </>
   );
 }

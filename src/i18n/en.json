@@ -1,5 +1,14 @@
 {
-  "tabs": { "home": "Home", "practice": "Practice", "progress": "Progress", "settings": "Settings" },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "tabs": {
+    "home": "Home",
+    "practice": "Practice",
+    "progress": "Progress",
+    "settings": "Settings"
+  },
   "home": {
     "tagline": "A practice, not an app.",
     "streak_one": "{{count}} day in a row",
@@ -10,7 +19,6 @@
     "minutes_other": "{{count}} minutes on the board",
     "begin": "Begin"
   },
-  "practice": { "title": "Practice", "soon": "The session timer arrives in the next update." },
   "progress": {
     "title": "Progress",
     "sessions": "Sessions",
@@ -25,5 +33,71 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark"
+  },
+  "practice": {
+    "title": "Practice",
+    "question": "How long today?",
+    "modes": {
+      "peak": "Peak",
+      "timed": "Timed",
+      "free": "Free"
+    },
+    "hints": {
+      "peak": "Guides you through the sharp first minutes.",
+      "timed": "A quiet countdown to your goal.",
+      "free": "A stopwatch. Step off when you are ready."
+    },
+    "min": "min",
+    "custom": "Custom",
+    "fewer": "Fewer minutes",
+    "more": "More minutes",
+    "begin": "Begin",
+    "beginFor": "Begin · {{min}} min"
+  },
+  "session": {
+    "prepareTitle": "Steady!",
+    "prepareText": "Relax. Take a deep breath. As you exhale, stand on the nails. For the first few minutes, there may be discomfort in the feet. Take a deep breath and exhale to relax. Soon the pain will pass and the real practice will begin…",
+    "start": "Start",
+    "remaining": "Time remaining",
+    "achieved": "Time achieved",
+    "onBoard": "On the board",
+    "overGoal": "+{{time}} over goal",
+    "goal": "goal {{time}}",
+    "peakEases": "Peak eases in",
+    "peak": "Peak",
+    "steady": "Steady",
+    "standing": "Standing · breathe steady",
+    "paused": "Paused",
+    "goalReached": "Goal reached · keep going",
+    "curve": "Intensity · climbs to 1:30, eases by 7:00",
+    "captions": {
+      "sharp": "Sharp now. That's the nerve, not harm. Breathe out slowly.",
+      "climbing": "Climbing to the peak. Don't shift your weight — let it come.",
+      "top": "This is the top. It only eases from here.",
+      "past": "Past the worst. Feel the sting loosening.",
+      "adapting": "The body adapts. It's getting easier.",
+      "goal": "Goal reached. Keep going or finish."
+    },
+    "pause": "Pause",
+    "resume": "Resume",
+    "finish": "Finish",
+    "notifyTitle": "Goal reached",
+    "notifyBody": "{{min}} min on the board. Step off when you are ready.",
+    "saveTitle": "Save session",
+    "reached": "Goal reached",
+    "ofGoal": "of {{time}} goal",
+    "howIntense": "How intense was it?",
+    "tension": {
+      "intense": "Intense",
+      "tense": "Tense",
+      "mild": "Mild",
+      "easy": "Easy"
+    },
+    "notePlaceholder": "One honest line…",
+    "save": "Save",
+    "discardTitle": "Discard this session?",
+    "discardText": "{{time}} on the board won't be saved.",
+    "discard": "Discard",
+    "keepGoing": "Keep going"
   }
 }
