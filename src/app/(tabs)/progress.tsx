@@ -1,4 +1,6 @@
-import { router } from 'expo-router';
+import Feather from '@expo/vector-icons/Feather';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -21,6 +23,12 @@ export default function Progress() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
+  const { saved } = useLocalSearchParams<{ saved?: string }>();
+  useEffect(() => {
+    if (!saved) return;
+    const id = setTimeout(() => router.setParams({ saved: undefined }), 4000);
+    return () => clearTimeout(id);
+  }, [saved]);
   const sum = totals(sessions);
   const streak = currentStreak(sessions);
   const { level, next, totalMin, longestMin } = levelOf(sessions);
@@ -39,6 +47,12 @@ export default function Progress() {
   return (
     <Screen>
       <Txt variant="display">{t('progress.title')}</Txt>
+      {saved && (
+        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
+          <Feather name="check-circle" size={20} color={c.success} />
+          <Txt accessibilityLiveRegion="polite" role="status">{t('progress.saved')}</Txt>
+        </Card>
+      )}
 
       <Card style={{ gap: space[4] }}>
         <View>

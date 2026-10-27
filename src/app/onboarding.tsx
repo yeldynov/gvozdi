@@ -19,17 +19,17 @@ export default function Onboarding() {
   const key = PAGES[page];
   const last = page === PAGES.length - 1;
 
-  const finish = () => {
+  const finish = (to: '/' | '/account' = '/') => {
     useStore.getState().setSettings({ onboarded: true });
-    capture('onboarding_completed', { skipped: !last });
-    router.replace('/');
+    capture('onboarding_completed', { skipped: !last, account: to === '/account' });
+    router.replace(to);
   };
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: c.bg }]}>
       <View style={styles.top}>
         {!last && (
-          <Pressable accessibilityRole="button" hitSlop={12} onPress={finish}>
+          <Pressable accessibilityRole="button" hitSlop={12} onPress={() => finish()}>
             <Text style={[styles.skip, { color: c.text2 }]}>{t('onboarding.skip')}</Text>
           </Pressable>
         )}
@@ -51,9 +51,10 @@ export default function Onboarding() {
         </View>
         <Button
           label={last ? t('onboarding.begin') : t('onboarding.next')}
-          onPress={last ? finish : () => setPage(page + 1)}
+          onPress={last ? () => finish() : () => setPage(page + 1)}
           style={styles.cta}
         />
+        <Button ghost label={t('account.signIn')} onPress={() => finish('/account')} style={styles.cta} />
       </View>
     </SafeAreaView>
   );

@@ -74,18 +74,21 @@ export default function Account() {
       if (finErr) return fail(finErr);
       capture(flow === 'in' ? 'signed_in' : 'signed_up');
       if (router.canGoBack()) router.back();
-      else router.replace('/settings');
+      else router.replace('/');
     });
 
   // The sessions live in the account, so the device forgets them; otherwise the next sign-in would merge them into another account.
-  // If the last sync fails they stay, so nothing unsynced is lost.
-  const onSignOut = async () => {
-    const synced = await syncNow(getToken);
-    await signOut();
-    const st = useStore.getState();
-    st.setSyncCursor(undefined);
-    if (synced) st.replaceSessions([]);
-  };
+  // If the last sync fails we stay signed in, so nothing unsynced is lost. Then back to onboarding, which offers sign-in.
+  const onSignOut = () =>
+    step(async () => {
+      if (!(await syncNow(getToken))) return setError(t('account.signOutFailed'));
+      await signOut();
+      const st = useStore.getState();
+      st.setSyncCursor(undefined);
+      st.replaceSessions([]);
+      st.setSettings({ onboarded: false });
+      router.replace('/onboarding');
+    });
 
   const input = [styles.input, { color: c.text, backgroundColor: c.surface, borderColor: c.divider }];
 
@@ -99,7 +102,8 @@ export default function Account() {
           <Txt variant="label">{t('account.signedInAs')}</Txt>
           <Txt variant="title">{user?.primaryEmailAddress?.emailAddress}</Txt>
           <Txt variant="caption">{t('account.syncedText')}</Txt>
-          <Button ghost label={t('account.signOut')} onPress={onSignOut} style={styles.full} />
+          {error && <Txt style={{ color: c.error }}>{error}</Txt>}
+          <Button ghost label={busy ? '…' : t('account.signOut')} onPress={onSignOut} disabled={busy} style={styles.full} />
         </Card>
       ) : (
         <Card>

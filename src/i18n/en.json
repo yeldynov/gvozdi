@@ -53,7 +53,8 @@
     "nextLevel": "Next: {{name}}",
     "levelTotal": "{{value}} of {{target}} min in total",
     "levelLongest": "Longest session: {{value}} of {{target}} min",
-    "topLevel": "The highest level. Keep standing."
+    "topLevel": "The highest level. Keep standing.",
+    "saved": "Session saved. Well done."
   },
   "settings": {
     "title": "Settings",
@@ -271,6 +272,7 @@
     "offerTitle": "Keep your practice safe",
     "offerText": "Create a free account and your sessions and streak will be backed up and on every device you use.",
     "offerYes": "Create free account",
-    "offerLater": "Not now"
+    "offerLater": "Not now",
+    "signOutFailed": "Couldn't sync your sessions, so you're still signed in. Check your connection and try again."
   }
 }

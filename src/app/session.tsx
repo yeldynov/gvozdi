@@ -34,6 +34,7 @@ import { fonts, radius, space, useColors } from '@/theme';
 const gong = require('@/assets/sounds/gong.m4a');
 
 const leave = () => (router.canGoBack() ? router.back() : router.replace('/'));
+const toProgress = () => router.dismissTo({ pathname: '/progress', params: { saved: '1' } });
 
 // A running session lives in the store (`running`), so after an OS kill or reload this screen resumes it instead of the params.
 export default function SessionScreen() {
@@ -176,7 +177,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       setSettings({
         signupPrompt: { ...settings.signupPrompt, lastShownAt: new Date().toISOString(), shownAtCount: live(sessions).length },
       });
-    if (!a && !offer) return exit();
+    if (!a && !offer) return exit(toProgress);
     setSheet(null);
     setDone({ a, offer });
     if (a && haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
@@ -190,7 +191,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const status = !running ? t('session.paused') : reached ? t('session.goalReached') : t('session.standing');
   const big = (value: string, color = c.text) => <Text style={[styles.big, { color }]}>{value}</Text>;
 
-  if (done?.a) return <Unlocked a={done.a} onContinue={() => (done.offer ? setDone({ offer: true }) : leave())} />;
+  if (done?.a) return <Unlocked a={done.a} onContinue={() => (done.offer ? setDone({ offer: true }) : toProgress())} />;
   if (done?.offer) return <AccountOffer />;
 
   return (
@@ -330,7 +331,7 @@ function AccountOffer() {
   const dismiss = () => {
     const { settings, setSettings } = useStore.getState();
     setSettings({ signupPrompt: { ...settings.signupPrompt, dismissals: settings.signupPrompt.dismissals + 1 } });
-    leave();
+    toProgress();
   };
   return (
     <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
