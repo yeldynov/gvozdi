@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Circle } from 'react-native-svg';
 
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -26,6 +27,20 @@ export type ArtName = keyof typeof ART;
 /** Decorative square illustration. */
 export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
   return <Image source={ART[name]} contentFit="contain" accessible={false} style={{ width: size, height: size, alignSelf: 'center' }} />;
+}
+
+/** Brand lockup from gvozdi-pwa: ring + center nail, lowercase wordmark (always Fraunces, the name is Latin). */
+export function Logo() {
+  const c = useColors();
+  return (
+    <View accessibilityRole="header" accessibilityLabel="gvozdi" style={styles.logo}>
+      <Svg width={22} height={22} viewBox="0 0 24 24">
+        <Circle cx={12} cy={12} r={10} fill="none" stroke={c.text} strokeWidth={1.2} />
+        <Circle cx={12} cy={12} r={1.8} fill={c.text} />
+      </Svg>
+      <Text style={[styles.logoText, { color: c.text }]}>gvozdi</Text>
+    </View>
+  );
 }
 
 export function Screen({ children }: { children: ReactNode }) {
@@ -161,6 +176,8 @@ export function Step({ icon, label, onPress }: { icon: 'minus' | 'plus'; label: 
 const styles = StyleSheet.create({
   scroll: { padding: space[5], gap: space[4], width: '100%', maxWidth: 560, alignSelf: 'center' },
   display: { fontFamily: fonts.display, fontSize: 34, lineHeight: 40 },
+  logo: { flexDirection: 'row', alignItems: 'center', gap: space[2] },
+  logoText: { fontFamily: fonts.display, fontSize: 22, letterSpacing: 0.4 },
   title: { fontFamily: fonts.display, fontSize: 24, lineHeight: 30 },
   body: { fontFamily: fonts.text, fontSize: 16, lineHeight: 22 },
   label: { fontFamily: fonts.textMedium, fontSize: 13, letterSpacing: 0.4, textTransform: 'uppercase' },

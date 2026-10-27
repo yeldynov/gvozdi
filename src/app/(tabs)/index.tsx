@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { InstallHint } from '@/components/install-hint';
-import { Art, Button, Card, Screen, Txt } from '@/components/ui';
+import { Art, Button, Card, Logo, Screen, Txt } from '@/components/ui';
 import { needsConsent } from '@/lib/consent';
 import { currentStreak, live, PROGRAM, programDay, todayMinutes } from '@/lib/practice';
 import { useStore } from '@/store';
@@ -37,7 +37,7 @@ export default function Home() {
 
   return (
     <Screen>
-      <Txt variant="display">Gvozdi</Txt>
+      <Logo />
       <Txt variant="caption">{t('home.tagline')}</Txt>
       <Art name={streak ? 'streak' : 'step'} size={200} />
       <Card>

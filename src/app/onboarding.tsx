@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Art, Button, Txt, type ArtName } from '@/components/ui';
+import { Art, Button, Logo, Txt, type ArtName } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -33,6 +33,7 @@ export default function Onboarding() {
       {/* Scrolls when the copy (longer in UK/RU) doesn't fit above the footer. */}
       <ScrollView contentContainerStyle={styles.root}>
         <View style={styles.top}>
+          <Logo />
           {!last && (
             <Pressable accessibilityRole="button" hitSlop={12} onPress={() => setPage(PAGES.length - 1)}>
               <Text style={[styles.skip, { color: c.text2 }]}>{t('onboarding.skip')}</Text>
@@ -73,7 +74,7 @@ export default function Onboarding() {
 
 const styles = StyleSheet.create({
   root: { flexGrow: 1, gap: space[6], padding: space[7], width: '100%', maxWidth: 560, alignSelf: 'center' },
-  top: { height: 24, alignItems: 'flex-end' },
+  top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   skip: { fontFamily: fonts.textMedium, fontSize: 15 },
   body: { flexGrow: 1, justifyContent: 'center', gap: space[4] },
   headline: { fontSize: 46, lineHeight: 50 },
