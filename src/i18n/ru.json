@@ -178,6 +178,8 @@
     "unlocked": "Достижение открыто",
     "continue": "Продолжить",
     "earnedOn": "Получено {{date}}",
+    "earned": "получено",
+    "locked": "ещё не получено",
     "progress": "{{value}} из {{target}}",
     "notFound": "Такого достижения нет.",
     "first_session": {

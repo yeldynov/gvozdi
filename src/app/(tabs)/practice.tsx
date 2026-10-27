@@ -41,7 +41,7 @@ export default function Practice() {
                 <Pressable
                   key={m}
                   accessibilityRole="radio"
-                  accessibilityState={{ selected: on }}
+                  aria-checked={on}
                   accessibilityLabel={`${m} ${t('practice.min')}`}
                   onPress={() => setMin(m)}
                   style={[styles.tile, { backgroundColor: on ? c.primary : c.bg2 }]}>

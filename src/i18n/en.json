@@ -166,6 +166,8 @@
     "unlocked": "Achievement unlocked",
     "continue": "Continue",
     "earnedOn": "Earned {{date}}",
+    "earned": "earned",
+    "locked": "not yet earned",
     "progress": "{{value}} of {{target}}",
     "notFound": "No such achievement.",
     "first_session": {

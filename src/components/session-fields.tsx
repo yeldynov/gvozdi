@@ -45,7 +45,7 @@ export function TensionPicker({ value, onChange }: { value?: Tension; onChange: 
             <Pressable
               key={key}
               accessibilityRole="radio"
-              accessibilityState={{ selected: on }}
+              aria-checked={on}
               onPress={() => onChange(on ? undefined : key)}
               style={[styles.tile, { backgroundColor: on ? c.primary : c.bg2 }]}>
               <Feather name={TENSION_ICONS[key]} size={18} color={on ? c.onPrimary : c.text2} />

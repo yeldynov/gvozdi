@@ -178,6 +178,8 @@
     "unlocked": "Досягнення відкрито",
     "continue": "Продовжити",
     "earnedOn": "Отримано {{date}}",
+    "earned": "отримано",
+    "locked": "ще не отримано",
     "progress": "{{value}} з {{target}}",
     "notFound": "Такого досягнення немає.",
     "first_session": {

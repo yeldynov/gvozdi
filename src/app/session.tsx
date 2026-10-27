@@ -192,7 +192,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
             )}
           </View>
           <Card style={{ alignSelf: 'stretch', padding: space[3] }}>
-            <Txt variant="caption" style={{ color: c.text3 }}>
+            <Txt variant="caption">
               {t('session.curve')}
             </Txt>
             <PeakCurve elapsed={elapsed} total={goalSec} />

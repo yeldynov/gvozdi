@@ -71,7 +71,7 @@ export function DayBars({
               />
             </View>
             {labels && (
-              <Text style={[styles.day, { color: c.text3 }]}>
+              <Text style={[styles.day, { color: c.text2 }]}>
                 {new Date(y, m - 1, day).toLocaleDateString(i18n.language, { weekday: 'narrow' })}
               </Text>
             )}

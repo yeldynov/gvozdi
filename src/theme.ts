@@ -11,7 +11,7 @@ const light = {
   surface: '#fbf6ee',
   text: '#2d2419',
   text2: '#7a6b54',
-  text3: '#9c8c72',
+  text3: '#918166',
   divider: 'rgba(45, 36, 25, 0.1)',
   primary: '#5a4a36',
   onPrimary: '#fbf6ee',

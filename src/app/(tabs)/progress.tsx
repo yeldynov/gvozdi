@@ -91,6 +91,7 @@ export default function Progress() {
           <Pressable
             key={a.id}
             accessibilityRole="button"
+            accessibilityLabel={`${t(`achievements.${a.id}.title`)}, ${earned.includes(a.id) ? t('achievements.earned') : t('achievements.locked')}`}
             onPress={() => router.push({ pathname: '/achievement/[id]', params: { id: a.id } })}
             style={({ pressed }) => [styles.badge, { opacity: pressed ? 0.7 : 1 }]}>
             <Badge a={a} earned={earned.includes(a.id)} />

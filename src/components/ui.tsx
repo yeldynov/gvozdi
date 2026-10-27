@@ -40,7 +40,7 @@ export function Txt({ variant = 'body', style, ...props }: TextProps & { variant
   const { i18n } = useTranslation();
   const color = variant === 'label' || variant === 'caption' ? c.text2 : c.text;
   const cyrillic = (variant === 'display' || variant === 'title') && i18n.language !== 'en';
-  return <Text {...props} style={[styles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]} />;
+  return <Text accessibilityRole={variant === 'display' ? 'header' : undefined} {...props} style={[styles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]} />;
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
@@ -86,7 +86,7 @@ export function Sheet({ visible, onClose, children }: { visible: boolean; onClos
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.backdrop}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={t('common.close')} />
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')} />
         <View style={[styles.sheet, { backgroundColor: c.bg, paddingBottom: space[6] + insets.bottom }]}>{children}</View>
       </View>
     </Modal>
@@ -112,7 +112,7 @@ export function Choice<T extends string>({
           <Pressable
             key={o.value}
             accessibilityRole="radio"
-            accessibilityState={{ selected }}
+            aria-checked={selected}
             onPress={() => onChange(o.value)}
             style={[styles.choiceItem, selected && { backgroundColor: c.primary }]}>
             <Text style={[styles.choiceText, { color: selected ? c.onPrimary : c.text2 }]}>{o.label}</Text>
