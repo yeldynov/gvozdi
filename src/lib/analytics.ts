@@ -10,8 +10,8 @@ const KEY = process.env.EXPO_PUBLIC_POSTHOG_KEY; // set only in EAS production, 
 const HOST = 'https://eu.i.posthog.com';
 
 export function capture(event: string, properties: Record<string, string | number | boolean | undefined> = {}) {
-  if (!KEY) return;
   const { settings, setSettings } = useStore.getState();
+  if (!KEY || settings.analytics !== true) return; // opt-in only
   let id = settings.analyticsId;
   if (!id) {
     id = randomUUID();

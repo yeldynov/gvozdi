@@ -27,7 +27,11 @@
     "install": "Keep Gvozdi on your home screen",
     "installText": "Opens full screen and works offline.",
     "installIos": "Tap Share, then “Add to Home Screen”. Opens full screen and works offline.",
-    "installButton": "Install"
+    "installButton": "Install",
+    "consent": "Help shape Gvozdi?",
+    "consentText": "Share anonymous usage stats: which features get used. Never your notes, name or email. You can change this in Settings.",
+    "consentYes": "Share",
+    "consentNo": "No thanks"
   },
   "progress": {
     "title": "Progress",
@@ -82,7 +86,9 @@
     "off": "Off",
     "earlier": "Earlier",
     "later": "Later",
-    "dataTextSynced": "Sessions are backed up to your account. You can still export a JSON copy any time."
+    "dataTextSynced": "Sessions are backed up to your account. You can still export a JSON copy any time.",
+    "privacy": "Usage stats",
+    "privacyText": "Anonymous: which features get used. Never your notes, name or email."
   },
   "practice": {
     "title": "Practice",

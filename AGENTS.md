@@ -15,7 +15,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 - i18n: i18next + expo-localization.
 - Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
 - Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP).
-- Analytics: PostHog EU capture API over `fetch` (no SDK), anonymous `settings.analyticsId`; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
+- Analytics: PostHog EU capture API over `fetch` (no SDK), opt-in only (`settings.analytics` must be `true`; Home card asks once, Settings toggles, opt-out drops `analyticsId`); `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
 
 ## Layout
 
@@ -25,7 +25,7 @@ src/app/+html.tsx            web shell: manifest, icons, theme-color, SW registr
 public/sw.js                 network-first SW; on each load warms every route's HTML + JS chunks (add new routes to ROUTES)
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
-src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer
+src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
 src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
 src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)
@@ -41,11 +41,11 @@ src/lib/backup-io.ts         native export (share sheet) / import (document pick
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
 src/lib/analytics.ts         capture(event, props); events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted
 src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
-src/lib/reminder.ts          native daily reminder (fixed id, rescheduled from root _layout on time/language change); reminder.web.ts no-op
+src/lib/reminder.ts          native one-shot reminders for 14 days (`reminderDates`, skips a practised today), rescheduled from root _layout on launch/foreground/save/time/language; reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
-src/store.ts                 sessions + settings; addSession returns the session; delete writes a tombstone
+src/store.ts                 sessions + settings + running session; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
 src/lib/practice.ts          pure logic: streaks, achievements, stats, levels, 21-day program (todayMinutes), formatDuration
 src/lib/*.test.ts            node:test asserts

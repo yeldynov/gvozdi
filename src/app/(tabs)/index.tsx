@@ -14,6 +14,8 @@ import { radius, space, useColors } from '@/theme';
 export default function Home() {
   const { t } = useTranslation();
   const sessions = useStore((s) => s.sessions);
+  const analytics = useStore((s) => s.settings.analytics);
+  const setSettings = useStore((s) => s.setSettings);
   const c = useColors();
   const streak = currentStreak(sessions);
   const program = programDay(sessions);
@@ -48,6 +50,16 @@ export default function Home() {
         )}
         <Button label={t('home.begin')} onPress={() => router.navigate('/practice')} />
       </Card>
+      {analytics === undefined && (
+        <Card>
+          <Txt variant="body">{t('home.consent')}</Txt>
+          <Txt variant="caption">{t('home.consentText')}</Txt>
+          <View style={styles.row}>
+            <Button ghost label={t('home.consentNo')} onPress={() => setSettings({ analytics: false })} style={styles.half} />
+            <Button ghost label={t('home.consentYes')} onPress={() => setSettings({ analytics: true })} style={styles.half} />
+          </View>
+        </Card>
+      )}
       {isLoaded && !isSignedIn && live(sessions).length > 0 && (
         <Pressable accessibilityRole="button" onPress={() => router.push('/account')} style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}>
           <Card style={styles.backup}>
@@ -69,4 +81,6 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', flexWrap: 'wrap', gap: space[1], marginVertical: space[1] },
   backup: { flexDirection: 'row', alignItems: 'center', gap: space[3], paddingVertical: space[4] },
   dot: { width: 10, height: 10, borderRadius: radius.pill },
+  row: { flexDirection: 'row', gap: space[3], marginTop: space[2] },
+  half: { flex: 1, alignItems: 'center', paddingHorizontal: space[2] },
 });

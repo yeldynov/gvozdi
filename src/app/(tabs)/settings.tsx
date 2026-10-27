@@ -122,6 +122,18 @@ export default function Settings() {
         )}
       </Card>
       <Card>
+        <Txt variant="label">{t('settings.privacy')}</Txt>
+        <Txt variant="caption">{t('settings.privacyText')}</Txt>
+        <Choice<'on' | 'off'>
+          value={settings.analytics ? 'on' : 'off'}
+          onChange={(v) => setSettings(v === 'on' ? { analytics: true } : { analytics: false, analyticsId: undefined })}
+          options={[
+            { value: 'off', label: t('settings.off') },
+            { value: 'on', label: t('settings.on') },
+          ]}
+        />
+      </Card>
+      <Card>
         <Txt variant="label">{t('settings.data')}</Txt>
         <Txt variant="caption">{t(isSignedIn ? 'settings.dataTextSynced' : 'settings.dataText')}</Txt>
         <View style={styles.row}>

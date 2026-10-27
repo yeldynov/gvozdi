@@ -25,7 +25,8 @@ export type Settings = {
   onboarded: boolean;
   signupPrompt: SignupPrompt;
   installHintDismissed?: boolean; // web only
-  analyticsId?: string; // anonymous PostHog distinct_id
+  analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
+  analyticsId?: string; // anonymous PostHog distinct_id, dropped on opt-out
 };
 
 export type SignupPrompt = { lastShownAt?: string; shownAtCount?: number; dismissals: number };
