@@ -26,7 +26,7 @@ public/sw.js                 network-first SW; on each load warms every route's 
 src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
 src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
-src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out
+src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
 src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
 src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)

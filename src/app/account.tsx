@@ -7,6 +7,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 
 import { BackHeader, Button, Card, Screen, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
+import { syncNow } from '@/lib/sync';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -23,7 +24,7 @@ const ERRORS: Record<string, string> = {
 export default function Account() {
   const { t } = useTranslation();
   const c = useColors();
-  const { isSignedIn, signOut } = useAuth();
+  const { isSignedIn, signOut, getToken } = useAuth();
   const { user } = useUser();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
@@ -76,9 +77,14 @@ export default function Account() {
       else router.replace('/settings');
     });
 
+  // The sessions live in the account, so the device forgets them; otherwise the next sign-in would merge them into another account.
+  // If the last sync fails they stay, so nothing unsynced is lost.
   const onSignOut = async () => {
+    const synced = await syncNow(getToken);
     await signOut();
-    useStore.getState().setSyncCursor(undefined); // local sessions stay; the next account starts a fresh pull
+    const st = useStore.getState();
+    st.setSyncCursor(undefined);
+    if (synced) st.replaceSessions([]);
   };
 
   const input = [styles.input, { color: c.text, backgroundColor: c.surface, borderColor: c.divider }];

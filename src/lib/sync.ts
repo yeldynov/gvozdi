@@ -45,6 +45,18 @@ async function run(getToken: () => Promise<string | null>) {
   }
 }
 
+/** One sync right now; false when it failed (offline, server down). */
+export async function syncNow(getToken: () => Promise<string | null>) {
+  try {
+    const token = await getToken();
+    if (!token) return false;
+    await syncOnce(token);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function useSync() {
   const { isSignedIn, getToken } = useAuth();
   const sessions = useStore((s) => s.sessions);
