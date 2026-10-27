@@ -1,12 +1,13 @@
 import { useAuth } from '@clerk/expo';
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { InstallHint } from '@/components/install-hint';
 import { Button, Card, Screen, Txt } from '@/components/ui';
+import { needsConsent } from '@/lib/consent';
 import { currentStreak, live, PROGRAM, programDay, todayMinutes } from '@/lib/practice';
 import { useStore } from '@/store';
 import { radius, space, useColors } from '@/theme';
@@ -20,6 +21,17 @@ export default function Home() {
   const streak = currentStreak(sessions);
   const program = programDay(sessions);
   const { isLoaded, isSignedIn } = useAuth();
+
+  // Consent is asked only in the EU/EEA/UK/CH (by IP country); elsewhere, or when the country is unknown, it's approved.
+  const [askConsent, setAskConsent] = useState(false);
+  useEffect(() => {
+    if (analytics !== undefined) return;
+    fetch('/api/region')
+      .then((r) => r.json())
+      .then(({ country }: { country?: string | null }) => country)
+      .catch(() => null)
+      .then((country) => (needsConsent(country) ? setAskConsent(true) : setSettings({ analytics: true })));
+  }, [analytics, setSettings]);
 
   // Back to a session the OS killed or the browser reloaded.
   useEffect(() => {
@@ -50,7 +62,7 @@ export default function Home() {
         )}
         <Button label={t('home.begin')} onPress={() => router.navigate('/practice')} />
       </Card>
-      {analytics === undefined && (
+      {analytics === undefined && askConsent && (
         <Card>
           <Txt variant="body">{t('home.consent')}</Txt>
           <Txt variant="caption">{t('home.consentText')}</Txt>

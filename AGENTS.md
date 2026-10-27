@@ -15,7 +15,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 - i18n: i18next + expo-localization.
 - Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
 - Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP).
-- Analytics: PostHog EU capture API over `fetch` (no SDK), opt-in only (`settings.analytics` must be `true`; Home card asks once, Settings toggles, opt-out drops `analyticsId`); `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
+- Analytics: PostHog EU capture API over `fetch` (no SDK), sent only when `settings.analytics === true`. While undecided, Home calls `GET /api/region` (EAS `eas-ip-country` header): EU/EEA/UK/CH (`needsConsent` in `src/lib/consent.ts`) get the consent card, everyone else and unknown/offline are auto-approved (user decision). Settings toggles; opt-out drops `analyticsId`; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
 
 ## Layout
 
@@ -27,6 +27,7 @@ src/app/(tabs)/              Home (index), Practice (session setup), Progress, S
 src/app/onboarding.tsx       3 intro pages; (tabs)/_layout redirects here until settings.onboarded
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen / account offer; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
 src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out
+src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
 src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)
 src/lib/sync.ts              useSync(): pushes all sessions, pulls since cursor; runs after changes and on foreground while signed in
