@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { InstallHint } from '@/components/install-hint';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import { currentStreak, live, PROGRAM, programDay, todayMinutes } from '@/lib/practice';
 import { useStore } from '@/store';
@@ -53,6 +54,7 @@ export default function Home() {
           </Card>
         </Pressable>
       )}
+      {live(sessions).length > 0 && <InstallHint />}
     </Screen>
   );
 }

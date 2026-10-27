@@ -24,6 +24,7 @@ export type Settings = {
   reminder?: string; // 'HH:mm'
   onboarded: boolean;
   signupPrompt: SignupPrompt;
+  installHintDismissed?: boolean; // web only
 };
 
 export type SignupPrompt = { lastShownAt?: string; shownAtCount?: number; dismissals: number };

@@ -23,7 +23,11 @@
     "programDone": "{{done}} of {{total}} days done",
     "programText": "A little longer each day you practise. A missed day just waits for you.",
     "backup": "Back up your streak",
-    "backupText": "A free account keeps your practice safe across devices."
+    "backupText": "A free account keeps your practice safe across devices.",
+    "install": "Keep Gvozdi on your home screen",
+    "installText": "Opens full screen and works offline.",
+    "installIos": "Tap Share, then “Add to Home Screen”. Opens full screen and works offline.",
+    "installButton": "Install"
   },
   "progress": {
     "title": "Progress",

@@ -8,7 +8,6 @@
     "scheme": "gvozdi",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.shangnik.gvozdi",
       "supportsTablet": true
     },
@@ -39,7 +38,11 @@
         {
           "backgroundColor": "#f5efe6",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 120,
+          "dark": {
+            "backgroundColor": "#1b1611",
+            "image": "./assets/images/splash-icon-dark.png"
+          }
         }
       ],
       "expo-localization",
@@ -61,11 +64,6 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {
-        "asyncRoutes": {
-          "web": true
-        }
-      },
       "eas": {
         "projectId": "f30ee13a-4cbf-4874-b54d-e2bee38cad37"
       }
