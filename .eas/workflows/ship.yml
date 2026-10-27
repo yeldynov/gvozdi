@@ -1,0 +1,17 @@
+name: Ship to web and native
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  deploy_web:
+    name: Deploy PWA
+    type: deploy
+    params:
+      prod: true
+  update_native:
+    name: OTA update to production builds
+    type: update
+    params:
+      channel: production
