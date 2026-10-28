@@ -16,13 +16,13 @@ import Animated, {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
+import { Scene, SCENES, type SceneName } from '@/components/scenes';
 import { fonts, radius, space, useColors } from '@/theme';
 
 // Character scenes exported as static SVGs from the gvozdi-pwa design set (onboarding scenes).
 const ART = {
   step: require('@/assets/art/step.svg'),
   stand: require('@/assets/art/stand.svg'),
-  breathe: require('@/assets/art/breathe.svg'),
   time: require('@/assets/art/time.svg'),
   feel: require('@/assets/art/feel.svg'),
   streak: require('@/assets/art/streak.svg'),
@@ -31,7 +31,7 @@ const ART = {
   rest: require('@/assets/art/rest.svg'),
   together: require('@/assets/art/together.svg'),
 };
-export type ArtName = keyof typeof ART;
+export type ArtName = keyof typeof ART | SceneName;
 
 /** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
 export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
@@ -52,12 +52,16 @@ export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
     transform: [
       { translateY: -size * 0.03 * breath.value },
       { scale: 1 + 0.05 * breath.value },
-      { rotate: `${1.5 * sway.value}deg` },
+      { rotate: reduced ? '0deg' : `${1.5 * sway.value}deg` },
     ],
   }));
   return (
     <Animated.View style={[{ alignSelf: 'center' }, style]}>
-      <Image source={ART[name]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
+      {name in SCENES ? (
+        <Scene name={name as SceneName} size={size} />
+      ) : (
+        <Image source={ART[name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
+      )}
     </Animated.View>
   );
 }
