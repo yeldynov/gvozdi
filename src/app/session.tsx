@@ -218,7 +218,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     <View style={styles.page}>
       <TopBar
         onClose={() => (elapsed ? setSheet('discard') : exit())}
-        label={mode === 'peak' ? undefined : t(`practice.modes.${mode}`)}
         chip={mode === 'peak' ? (elapsed < PEAK_SEC ? { text: t('session.peak'), color: c.accent } : { text: t('session.steady'), color: c.success }) : undefined}
       />
 

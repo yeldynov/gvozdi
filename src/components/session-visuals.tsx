@@ -3,12 +3,15 @@ import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
+  interpolate,
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
+  withDelay,
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Line, LinearGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, LinearGradient, Path, RadialGradient, Stop, Text as SvgText } from 'react-native-svg';
 
 import { intensityAt, MILD_SEC, PEAK_SEC } from '@/lib/session';
 import { fonts, useColors } from '@/theme';
@@ -46,8 +49,43 @@ const TICKS = Array.from({ length: 60 }, (_, i) => {
   const a = (i / 60) * 2 * Math.PI - Math.PI / 2;
   return { i, x1: 140 + Math.cos(a) * (R - 8), y1: 140 + Math.sin(a) * (R - 8), x2: 140 + Math.cos(a) * (R - 4), y2: 140 + Math.sin(a) * (R - 4) };
 });
+// Nail-board field inside the ring: a hex grid of points, faint at the centre so the digits stay readable.
+const NAILS = (() => {
+  const out: { x: number; y: number; o: number }[] = [];
+  const step = 13;
+  const max = R - 18;
+  for (let row = -10; row <= 10; row++) {
+    const y = row * step * 0.866;
+    for (let col = -10; col <= 10; col++) {
+      const x = col * step + (row % 2 ? step / 2 : 0);
+      const d = Math.hypot(x, y);
+      if (d <= max) out.push({ x: 140 + x, y: 140 + y, o: 0.06 + 0.4 * (d / max) ** 2 });
+    }
+  }
+  return out;
+})();
 
-/** Progress ring with minute ticks, a breathing disc and centred content. */
+/** A ring that expands from the timer and fades, like a gong tone travelling out. */
+function Ripple({ color, delay, active }: { color: string; delay: number; active: boolean }) {
+  const reduced = useReducedMotion();
+  const t = useSharedValue(0);
+  useEffect(() => {
+    if (!active || reduced) {
+      cancelAnimation(t);
+      t.value = 0;
+      return;
+    }
+    t.value = withDelay(delay, withRepeat(withTiming(1, { duration: 6000, easing: Easing.out(Easing.quad) }), -1, false));
+    return () => cancelAnimation(t);
+  }, [active, reduced, delay, t]);
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(t.value, [0, 0.1, 1], [0, 0.35, 0]),
+    transform: [{ scale: interpolate(t.value, [0, 1], [1, 1.3]) }],
+  }));
+  return <Animated.View pointerEvents="none" style={[styles.ripple, { borderColor: color }, style]} />;
+}
+
+/** Progress ring over a nail-board field, with breathing glow, travelling ripples and a glowing tip. */
 export function TimerRing({
   progress,
   color,
@@ -60,33 +98,53 @@ export function TimerRing({
   children: ReactNode;
 }) {
   const c = useColors();
+  const p = Math.min(1, progress);
+  const a = p * 2 * Math.PI - Math.PI / 2;
+  const tip = { x: 140 + Math.cos(a) * R, y: 140 + Math.sin(a) * R };
+  const arc = { cx: 140, cy: 140, r: R, fill: 'none', stroke: color, strokeDasharray: `${C} ${C}`, strokeDashoffset: C * (1 - p), strokeLinecap: 'round' as const, transform: 'rotate(-90 140 140)' };
   return (
     <View style={{ width: RING, height: RING, alignItems: 'center', justifyContent: 'center' }}>
+      {[0, 2000, 4000].map((d) => (
+        <Ripple key={d} color={color} delay={d} active={running} />
+      ))}
+      <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
+        <BreathDot size={RING - 40} active={running} color={color} opacity={0.08} />
+      </View>
       <Svg width={RING} height={RING} viewBox="0 0 280 280" style={StyleSheet.absoluteFill}>
+        <Defs>
+          <RadialGradient id="ringcore" cx="50%" cy="50%" r="50%">
+            <Stop offset="0" stopColor={c.bg} stopOpacity={0.9} />
+            <Stop offset="1" stopColor={c.bg} stopOpacity={0} />
+          </RadialGradient>
+        </Defs>
+        {NAILS.map((n, i) => (
+          <Circle key={i} cx={n.x} cy={n.y} r={1.6} fill={c.text3} opacity={n.o} />
+        ))}
+        <Circle cx={140} cy={140} r={70} fill="url(#ringcore)" />
         <Circle cx={140} cy={140} r={R} fill="none" stroke={c.bg3} strokeWidth={2} />
-        <Circle
-          cx={140}
-          cy={140}
-          r={R}
-          fill="none"
-          stroke={color}
-          strokeWidth={3}
-          strokeDasharray={`${C} ${C}`}
-          strokeDashoffset={C * (1 - Math.min(1, progress))}
-          strokeLinecap="round"
-          transform="rotate(-90 140 140)"
-        />
         {TICKS.map((t) => (
           <Line key={t.i} {...t} stroke={c.text3} strokeWidth={1} opacity={t.i % 5 === 0 ? 0.6 : 0.25} />
         ))}
+        <Circle {...arc} strokeWidth={12} opacity={0.12} />
+        <Circle {...arc} strokeWidth={3} />
+        {p > 0 && (
+          <>
+            <Circle cx={tip.x} cy={tip.y} r={11} fill={color} opacity={0.18} />
+            <Circle cx={tip.x} cy={tip.y} r={5} fill={color} stroke={c.bg} strokeWidth={2} />
+          </>
+        )}
       </Svg>
       <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
-        <BreathDot size={110} active={running} color={c.primary} opacity={0.12} />
+        <BreathDot size={110} active={running} color={color} opacity={0.12} />
       </View>
       {children}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  ripple: { position: 'absolute', width: R * 2, height: R * 2, borderRadius: R, borderWidth: 1.5, left: 140 - R, top: 140 - R },
+});
 
 const W = 296;
 const H = 200;
