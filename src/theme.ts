@@ -18,6 +18,7 @@ const light = {
   accent: '#d98c3c',
   success: '#6f8f6a',
   error: '#b04a30',
+  info: '#3f7896',
   illus: '#c2a577',
 };
 
@@ -36,6 +37,7 @@ const dark: typeof light = {
   accent: '#e39a4f',
   success: '#8fb08a',
   error: '#d9694c',
+  info: '#7fb2d0',
   illus: '#8a6f4a',
 };
 

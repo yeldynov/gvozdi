@@ -1,10 +1,9 @@
-import { useUser } from '@clerk/expo';
-import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { SUPPORT_URL, TabHead } from '@/components/menu';
+import { AccountCard } from '@/components/account-card';
+import { TabHead, WriteToUs } from '@/components/menu';
 import { Button, Card, Choice, Screen, Sheet, Step, Txt } from '@/components/ui';
 import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
@@ -21,7 +20,6 @@ export default function Settings() {
   const setSettings = useStore((s) => s.setSettings);
   const [notice, setNotice] = useState<{ text: string; error?: boolean }>();
   const [confirming, setConfirming] = useState(false);
-  const { user } = useUser();
 
   const onExport = () => {
     const { sessions } = useStore.getState();
@@ -59,18 +57,7 @@ export default function Settings() {
   return (
     <Screen>
       <TabHead />
-      <Card>
-        <Txt variant="label">{t('account.title')}</Txt>
-        <Txt variant="caption">
-          {t('account.signedInCaption', { email: user?.primaryEmailAddress?.emailAddress })}
-        </Txt>
-        <Button
-          ghost
-          label={t('account.manage')}
-          onPress={() => router.push('/account')}
-          style={styles.full}
-        />
-      </Card>
+      <AccountCard />
       <Card>
         <Txt variant="label">{t('settings.language')}</Txt>
         <Choice<Language>
@@ -144,7 +131,7 @@ export default function Settings() {
       <Card>
         <Txt variant="label">{t('settings.contact')}</Txt>
         <Txt variant="caption">{t('settings.contactText')}</Txt>
-        <Button ghost label={t('settings.write')} onPress={() => Linking.openURL(SUPPORT_URL)} style={styles.full} />
+        <WriteToUs style={styles.full} />
       </Card>
 
       <Sheet visible={confirming} onClose={() => setConfirming(false)}>

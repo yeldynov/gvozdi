@@ -1,16 +1,15 @@
 // One passwordless screen: email → code. Signs in if the email is known, otherwise signs up.
-import { useAuth, useSignIn, useSignUp, useUser } from '@clerk/expo';
-import { Redirect, router } from 'expo-router';
+import { useAuth, useSignIn, useSignUp } from '@clerk/expo';
+import { Redirect } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+import { AccountCard } from '@/components/account-card';
 import { BackHeader, Button, Card, Screen, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { useGoogleSignIn } from '@/lib/google-sign-in';
-import { syncNow } from '@/lib/sync';
-import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
 type ClerkErr = { code?: string; errors?: { code?: string }[] } | null;
@@ -26,8 +25,7 @@ const ERRORS: Record<string, string> = {
 export default function Account() {
   const { t } = useTranslation();
   const c = useColors();
-  const { isSignedIn, signOut, getToken } = useAuth();
-  const { user } = useUser();
+  const { isSignedIn } = useAuth();
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
   const googleSignIn = useGoogleSignIn();
@@ -87,18 +85,6 @@ export default function Account() {
       setDone(true);
     });
 
-  // The sessions live in the account, so the device forgets them; otherwise the next sign-in would merge them into another account.
-  // If the last sync fails we stay signed in, so nothing unsynced is lost. This screen is open to guests, so leave for onboarding explicitly.
-  const onSignOut = () =>
-    step(async () => {
-      if (!(await syncNow(getToken))) return setError(t('account.signOutFailed'));
-      await signOut();
-      const st = useStore.getState();
-      st.setSyncCursor(undefined);
-      st.replaceSessions([]);
-      router.replace('/onboarding');
-    });
-
   if (done && isSignedIn) return <Redirect href="/" />;
 
   const input = [styles.input, { color: c.text, backgroundColor: c.surface, borderColor: c.divider }];
@@ -109,13 +95,7 @@ export default function Account() {
       <Txt variant="display">{t('account.title')}</Txt>
 
       {isSignedIn ? (
-        <Card>
-          <Txt variant="label">{t('account.signedInAs')}</Txt>
-          <Txt variant="title">{user?.primaryEmailAddress?.emailAddress}</Txt>
-          <Txt variant="caption">{t('account.syncedText')}</Txt>
-          {error && <Txt style={{ color: c.error }}>{error}</Txt>}
-          <Button ghost label={busy ? '…' : t('account.signOut')} onPress={onSignOut} disabled={busy} style={styles.full} />
-        </Card>
+        <AccountCard />
       ) : (
         <Card>
           <Txt style={{ color: c.text2 }}>{flow ? t('account.codeSent', { email: email.trim() }) : t('account.intro')}</Txt>

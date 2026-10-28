@@ -127,6 +127,7 @@ export function Button({
   disabled,
   style,
   icon,
+  color,
 }: {
   label: string;
   onPress: () => void;
@@ -134,6 +135,8 @@ export function Button({
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
   icon?: ReactNode;
+  /** Ghost only: a hex theme color for the label, also used as a faint tint behind it. */
+  color?: string;
 }) {
   const c = useColors();
   return (
@@ -144,12 +147,12 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: ghost ? c.bg2 : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
+        { backgroundColor: ghost ? (color ? `${color}1f` : c.bg2) : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
       <View style={styles.buttonRow}>
         {icon}
-        <Text style={[styles.buttonText, { color: ghost ? c.text : c.onPrimary }]}>{label}</Text>
+        <Text style={[styles.buttonText, { color: ghost ? (color ?? c.text) : c.onPrimary }]}>{label}</Text>
       </View>
     </Pressable>
   );

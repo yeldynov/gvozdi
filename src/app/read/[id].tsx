@@ -2,11 +2,11 @@ import Feather from '@expo/vector-icons/Feather';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { GuidePic } from '@/components/guide-pics';
-import { PAGES, SUPPORT_URL, type Page, type Section } from '@/components/menu';
-import { Art, BackHeader, Button, Screen, Txt } from '@/components/ui';
+import { PAGES, WriteToUs, type Page, type Section } from '@/components/menu';
+import { Art, BackHeader, Screen, Txt } from '@/components/ui';
 import { space, useColors } from '@/theme';
 
 /** Guide, FAQ, About and journal articles; the text lives in i18n under `read.<id>`. */
@@ -49,7 +49,7 @@ export default function Read() {
           </View>
         ))
       )}
-      {!meta.article && <Button ghost label={t('settings.write')} onPress={() => Linking.openURL(SUPPORT_URL)} />}
+      {!meta.article && <WriteToUs />}
     </Screen>
   );
 }
