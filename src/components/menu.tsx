@@ -50,10 +50,13 @@ export type Page = { title: string; lead: string; sections: Section[] };
 
 /** Top row of a tab: logo, then `children` spread across the row, burger menu at the end. */
 export function TabHead({ children }: { children?: ReactNode }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.head}>
       <View style={styles.headContent}>
-        <Logo />
+        <Pressable accessibilityRole="link" accessibilityLabel={t('tabs.home')} hitSlop={8} onPress={() => router.navigate('/')}>
+          <Logo />
+        </Pressable>
         {children}
       </View>
       <MenuButton />
