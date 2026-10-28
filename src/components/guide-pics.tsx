@@ -186,7 +186,7 @@ export type GuidePicName = keyof typeof PICS;
 
 export function GuidePic({ name, size = 88 }: { name: GuidePicName; size?: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 320 320" accessible={false}>
+    <Svg width={size} height={size} viewBox="0 0 320 320">
       <Blob cx={160} cy={160} rx={156} ry={156} fill={GV.sageL} opacity={0.14} />
       {PICS[name]}
     </Svg>
