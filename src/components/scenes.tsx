@@ -13,7 +13,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Ellipse, G, Line, Path } from 'react-native-svg';
+import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 const GV = {
   sage: '#2D5A4E', sageD: '#214339', sageL: '#3C6B5C',
@@ -41,6 +41,36 @@ function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?:
 }
 function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={GV.taupeD} opacity={0.14} />;
+}
+/** Sadhu board in profile, nails underneath. */
+function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
+  const n = Math.max(5, Math.round(w / 13));
+  return (
+    <G>
+      <Rect x={x} y={y} width={w} height={13} rx={6} fill={GV.taupe} />
+      <Rect x={x} y={y} width={w} height={6} rx={3} fill={GV.taupeL} />
+      <G stroke={INK} strokeWidth={2.4} strokeLinecap="round">
+        {Array.from({ length: n }, (_, i) => {
+          const nx = x + 10 + i * ((w - 20) / (n - 1));
+          return <Line key={i} x1={nx} y1={y + 13} x2={nx} y2={y + 22} />;
+        })}
+      </G>
+    </G>
+  );
+}
+function Hand({ p, r = 7 }: { p: Pt; r?: number }) {
+  return <Circle cx={p[0]} cy={p[1]} r={r} fill={SKIN} />;
+}
+/** Standing legs and bare feet on the board. */
+function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; color: string }) {
+  return (
+    <>
+      <Limb a={hips[0]} b={feet[0]} w={17} color={color} />
+      <Limb a={hips[1]} b={feet[1]} w={17} color={color} />
+      <Ellipse cx={feet[0][0] - 2} cy={feet[0][1] + 2} rx={11} ry={6} fill={SKIN} />
+      <Ellipse cx={feet[1][0] + 2} cy={feet[1][1] + 2} rx={11} ry={6} fill={SKIN} />
+    </>
+  );
 }
 /** Head with long hair, closed eyes and blush. */
 function Head({ cx, cy, r = 21, hair, tilt = 0 }: { cx: number; cy: number; r?: number; hair: string; tilt?: number }) {
@@ -159,7 +189,184 @@ function SceneBreathe({ size }: { size: number }) {
   );
 }
 
-export const SCENES = { breathe: SceneBreathe };
+/** Stepping onto the board, arms out: the arms teeter for balance and the sun swells. */
+function SceneStep({ size }: { size: number }) {
+  const { v: tilt, reduced } = useLoop(3200);
+  const { v: glow } = useLoop(5000);
+  const arms = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(tilt.value, [0, 1], [-4, 4])}deg` }] }));
+  const sun = useAnimatedStyle(() => (reduced ? {} : { transform: [{ scale: 1 + 0.1 * glow.value }] }));
+  const top = GV.terra;
+  const leg = GV.sage;
+  return (
+    <>
+      <Layer size={size}>
+        <Blob cx={170} cy={150} rx={120} ry={120} fill={GV.sageL} opacity={0.16} />
+      </Layer>
+      <Layer size={size} style={[origin(250, 78), sun]}>
+        <Circle cx={250} cy={78} r={26} fill={GV.gold} />
+      </Layer>
+      <DriftLeaf size={size} ms={9000} delay={0} x={70} y={70} rot={20} color={GV.terra} />
+      <DriftLeaf size={size} ms={10000} delay={3000} x={248} y={140} rot={-40} color={GV.gold} />
+      <DriftLeaf size={size} ms={8500} delay={6000} x={120} y={250} rot={70} color={GV.sage} s={0.8} />
+      <Layer size={size}>
+        <Shadow cx={170} cy={296} rx={88} />
+        <BoardBar x={150} y={272} w={120} />
+        <Limb a={[148, 200]} b={[140, 270]} w={17} color={leg} />
+        <Limb a={[160, 200]} b={[196, 246]} w={17} color={leg} />
+        <Limb a={[196, 246]} b={[214, 270]} w={16} color={leg} />
+        <Ellipse cx={138} cy={272} rx={11} ry={6} fill={SKIN} />
+        <Ellipse cx={218} cy={271} rx={11} ry={6} fill={SKIN} />
+        <Path d="M132 124 q22 -12 44 0 l-3 80 q-19 8 -38 0 Z" fill={top} />
+        <Path d="M168 126 l5 78 q-9 4 -16 3 l3 -82 Z" fill={GV.terraD} opacity={0.5} />
+      </Layer>
+      <Layer size={size} style={[origin(158, 134), arms]}>
+        <Limb a={[140, 134]} b={[96, 120]} w={13} color={top} />
+        <Limb a={[176, 134]} b={[222, 150]} w={13} color={top} />
+        <Hand p={[92, 118]} />
+        <Hand p={[226, 152]} />
+      </Layer>
+      <Layer size={size}>
+        <Head cx={154} cy={96} hair={HAIRS.sage} tilt={-4} />
+      </Layer>
+    </>
+  );
+}
+
+/** Composed under a sharp moment: focus marks pulse outward like waves of sensation. */
+function SceneFeel({ size }: { size: number }) {
+  const { v, reduced } = useLoop(2400);
+  const k = size / 320;
+  const wave = (dir: number) =>
+    reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.35, 1]), transform: [{ translateX: dir * 6 * k * v.value }] };
+  const left = useAnimatedStyle(() => wave(-1));
+  const right = useAnimatedStyle(() => wave(1));
+  const top = GV.terra;
+  return (
+    <>
+      <Layer size={size}>
+        <Blob cx={160} cy={150} rx={112} ry={116} fill={GV.terra} opacity={0.12} />
+      </Layer>
+      {(
+        [
+          [left, [[86, 120, 74, 112], [84, 160, 70, 160]]],
+          [right, [[234, 120, 246, 112], [236, 160, 250, 160]]],
+        ] as const
+      ).map(([style, lines], i) => (
+        <Layer key={i} size={size} style={style}>
+          <G stroke={GV.terra} strokeWidth={3} strokeLinecap="round" opacity={0.55}>
+            {lines.map(([x1, y1, x2, y2]) => (
+              <Line key={y1} x1={x1} y1={y1} x2={x2} y2={y2} />
+            ))}
+          </G>
+        </Layer>
+      ))}
+      <DriftLeaf size={size} ms={9000} delay={0} x={70} y={210} rot={50} color={GV.gold} s={0.85} />
+      <DriftLeaf size={size} ms={10000} delay={4000} x={236} y={210} rot={-50} color={GV.sage} s={0.85} />
+      <Layer size={size}>
+        <Shadow cx={160} cy={298} rx={70} />
+        <BoardBar x={104} y={274} w={112} />
+        <Legs hips={[[151, 196], [169, 196]]} feet={[[150, 272], [170, 272]]} color={GV.sage} />
+        <Path d="M135 122 q25 -13 50 0 l-4 82 q-21 9 -42 0 Z" fill={top} />
+        <Path d="M177 124 l4 80 q-9 4 -16 3 l3 -84 Z" fill={GV.terraD} opacity={0.5} />
+        <Limb a={[139, 132]} b={[134, 188]} w={12} color={top} />
+        <Limb a={[181, 132]} b={[186, 188]} w={12} color={top} />
+        <Hand p={[133, 192]} r={8} />
+        <Hand p={[187, 192]} r={8} />
+        <Head cx={160} cy={94} hair={HAIRS.taupe} />
+      </Layer>
+    </>
+  );
+}
+
+/** Glancing at the phone timer: its hand turns slowly while the head drifts. */
+function SceneTime({ size }: { size: number }) {
+  const { v: turn, reduced } = useLoop(6000, { restart: true });
+  const { v: drift } = useLoop(4200);
+  // Timer centre (143, 184) after the phone's rotate(-8 142 178).
+  const hand = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${turn.value * 360}deg` }] }));
+  const head = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(drift.value, [0, 1], [-2, 2])}deg` }] }));
+  const top = GV.sage;
+  return (
+    <>
+      <Layer size={size}>
+        <Blob cx={150} cy={150} rx={118} ry={112} fill={GV.gold} opacity={0.15} />
+      </Layer>
+      <DriftLeaf size={size} ms={9000} delay={0} x={70} y={92} rot={24} color={GV.sage} />
+      <DriftLeaf size={size} ms={10000} delay={4500} x={244} y={150} rot={-40} color={GV.terra} s={0.85} />
+      <Layer size={size}>
+        <Shadow cx={158} cy={298} rx={78} />
+        <BoardBar x={104} y={276} w={116} />
+        <Legs hips={[[150, 198], [168, 198]]} feet={[[150, 274], [170, 274]]} color={GV.taupe} />
+        <Path d="M134 124 q26 -13 50 0 l-4 82 q-21 9 -42 0 Z" fill={top} />
+        <Path d="M176 126 l4 80 q-9 4 -16 3 l3 -84 Z" fill={GV.sageD} opacity={0.45} />
+        <Limb a={[138, 134]} b={[128, 196]} w={12} color={top} />
+        <Hand p={[127, 200]} />
+        <Limb a={[180, 134]} b={[176, 168]} w={12} color={top} />
+        <Limb a={[176, 168]} b={[150, 176]} w={11} color={SKIN} />
+        <G transform="rotate(-8 142 178)">
+          <Rect x={126} y={160} width={34} height={48} rx={7} fill="#1A1A1A" />
+          <Rect x={130} y={166} width={26} height={36} rx={4} fill="#F1E8D5" />
+          <Circle cx={143} cy={184} r={9} fill="none" stroke={GV.terra} strokeWidth={3} />
+        </G>
+      </Layer>
+      <Layer size={size} style={[origin(143.8, 183.8), hand]}>
+        <G transform="rotate(-8 142 178)">
+          <Path d="M143 184 L143 177" stroke={GV.sage} strokeWidth={2} strokeLinecap="round" />
+        </G>
+      </Layer>
+      <Layer size={size} style={[origin(158, 117), head]}>
+        <Head cx={158} cy={96} hair={HAIRS.sage} tilt={6} />
+      </Layer>
+    </>
+  );
+}
+
+/** One arm raised in quiet triumph: the flame flickers and the arm sways. */
+function SceneStreak({ size }: { size: number }) {
+  const { v: flick, reduced } = useLoop(1400);
+  const { v: sway } = useLoop(3000);
+  const flame = useAnimatedStyle(() =>
+    reduced ? {} : { transform: [{ scaleY: interpolate(flick.value, [0, 1], [0.92, 1.08]) }, { scaleX: interpolate(flick.value, [0, 1], [1.03, 0.97]) }] },
+  );
+  const arm = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(sway.value, [0, 1], [-5, 5])}deg` }] }));
+  const top = GV.sage;
+  return (
+    <>
+      <Layer size={size}>
+        <Blob cx={150} cy={150} rx={116} ry={116} fill={GV.gold} opacity={0.17} />
+      </Layer>
+      <Layer size={size} style={[origin(238, 117), flame]}>
+        <G transform="translate(238 86) scale(0.42)">
+          <Path
+            d="M0 -52 C 26 -10 40 14 33 44 C 27 64 16 74 0 74 C -16 74 -27 64 -33 44 C -39 24 -20 10 -16 -14 C -10 2 -4 -6 0 -52 Z"
+            fill={GV.terra}
+          />
+          <Path d="M0 -20 C 14 6 20 24 12 40 C 6 50 -6 50 -12 40 C -18 28 -6 18 -4 0 C 0 8 -2 4 0 -20 Z" fill={GV.gold} />
+        </G>
+      </Layer>
+      <DriftLeaf size={size} ms={9000} delay={0} x={66} y={110} rot={26} color={GV.terra} />
+      <DriftLeaf size={size} ms={10000} delay={4000} x={70} y={230} rot={66} color={GV.sage} s={0.85} />
+      <Layer size={size}>
+        <Shadow cx={156} cy={298} rx={72} />
+        <BoardBar x={100} y={274} w={112} />
+        <Legs hips={[[147, 196], [165, 196]]} feet={[[146, 272], [166, 272]]} color={GV.taupe} />
+        <Path d="M131 122 q25 -13 50 0 l-4 82 q-21 9 -42 0 Z" fill={top} />
+        <Path d="M173 124 l4 80 q-9 4 -16 3 l3 -84 Z" fill={GV.sageD} opacity={0.45} />
+        <Limb a={[135, 132]} b={[126, 196]} w={12} color={top} />
+        <Hand p={[125, 200]} />
+      </Layer>
+      <Layer size={size} style={[origin(177, 130), arm]}>
+        <Limb a={[177, 130]} b={[196, 86]} w={12} color={top} />
+        <Hand p={[198, 80]} r={8} />
+      </Layer>
+      <Layer size={size}>
+        <Head cx={156} cy={94} hair={HAIRS.sage} tilt={4} />
+      </Layer>
+    </>
+  );
+}
+
+export const SCENES = { breathe: SceneBreathe, step: SceneStep, feel: SceneFeel, time: SceneTime, streak: SceneStreak };
 export type SceneName = keyof typeof SCENES;
 
 /** Animated scene at `size`×`size`. */

@@ -21,11 +21,7 @@ import { fonts, radius, space, useColors } from '@/theme';
 
 // Character scenes exported as static SVGs from the gvozdi-pwa design set (onboarding scenes).
 const ART = {
-  step: require('@/assets/art/step.svg'),
   stand: require('@/assets/art/stand.svg'),
-  time: require('@/assets/art/time.svg'),
-  feel: require('@/assets/art/feel.svg'),
-  streak: require('@/assets/art/streak.svg'),
   reflect: require('@/assets/art/reflect.svg'),
   walk: require('@/assets/art/walk.svg'),
   rest: require('@/assets/art/rest.svg'),
