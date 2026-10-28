@@ -1,9 +1,18 @@
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -24,9 +33,33 @@ const ART = {
 };
 export type ArtName = keyof typeof ART;
 
-/** Decorative square illustration. */
+/** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
 export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
-  return <Image source={ART[name]} contentFit="contain" accessible={false} style={{ width: size, height: size, alignSelf: 'center' }} />;
+  const reduced = useReducedMotion();
+  const breath = useSharedValue(0);
+  const sway = useSharedValue(-1);
+  useEffect(() => {
+    if (reduced) return;
+    const ease = Easing.inOut(Easing.sin);
+    breath.value = withRepeat(withTiming(1, { duration: 3500, easing: ease }), -1, true);
+    sway.value = withRepeat(withTiming(1, { duration: 6000, easing: ease }), -1, true);
+    return () => {
+      cancelAnimation(breath);
+      cancelAnimation(sway);
+    };
+  }, [reduced, breath, sway]);
+  const style = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: -size * 0.03 * breath.value },
+      { scale: 1 + 0.05 * breath.value },
+      { rotate: `${1.5 * sway.value}deg` },
+    ],
+  }));
+  return (
+    <Animated.View style={[{ alignSelf: 'center' }, style]}>
+      <Image source={ART[name]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
+    </Animated.View>
+  );
 }
 
 /** Brand lockup from gvozdi-pwa: ring + center nail, lowercase wordmark (always Fraunces, the name is Latin). */
