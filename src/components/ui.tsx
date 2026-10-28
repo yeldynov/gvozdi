@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -80,7 +80,10 @@ export function Screen({ children }: { children: ReactNode }) {
   const c = useColors();
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: c.bg }}>
-      <ScrollView contentContainerStyle={styles.scroll}>{children}</ScrollView>
+      {/* Web: a classic scrollbar takes width, pushing the column off-centre from the tab bar. */}
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={Platform.OS !== 'web'}>
+        {children}
+      </ScrollView>
     </SafeAreaView>
   );
 }
