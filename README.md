@@ -3,7 +3,13 @@
 A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships to iOS, Android and the web (PWA), in English, Ukrainian and Russian.
 
 - Web: https://gvozdi.expo.app
-- Every push to `main` deploys the PWA and publishes an OTA update to native builds (`.eas/workflows/ship.yml`).
+- Live iOS simulator: https://appetize.io/app/b_lyoma6htlukdtl3kzqkvycxcte
+- Every push to `main` deploys the PWA and publishes an OTA update to native builds (`.github/workflows/ship.yml`).
+
+| | | |
+|:-:|:-:|:-:|
+| <img src="docs/screenshots/onboarding.png" width="240" alt="Onboarding"> | <img src="docs/screenshots/home.png" width="240" alt="Home: streak and today's practice"> | <img src="docs/screenshots/practice.png" width="240" alt="Practice"> |
+| <img src="docs/screenshots/session.png" width="240" alt="Peak session with the intensity curve"> | <img src="docs/screenshots/progress.png" width="240" alt="Progress: streak, level and totals"> | <img src="docs/screenshots/history.png" width="240" alt="History grouped by day"> |
 
 ## Features
 
@@ -21,7 +27,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 - History grouped by day, with edit and delete.
 
 **Everything else**
-- Guest-first: no account needed. An optional account (email code) syncs sessions across devices.
+- Email-code account that syncs sessions across devices; guests can try one demo session first.
 - Daily reminders (native) that skip days you've already practised.
 - Export and import a JSON backup; clear all data.
 - Light and dark themes, illustrated onboarding, installable PWA with offline support.
