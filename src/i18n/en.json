@@ -53,7 +53,8 @@
     "levelLongest": "Longest session: {{value}} of {{target}} min",
     "topLevel": "The highest level. Keep standing.",
     "saved": "Session saved. Well done.",
-    "treeEmpty": "Practise to plant the first seed."
+    "treeEmpty": "Practise to plant the first seed.",
+    "treeHint": "Your tree grows as you practise day after day: each streak milestone adds a new stage. A missed day never takes growth away."
   },
   "settings": {
     "title": "Settings",

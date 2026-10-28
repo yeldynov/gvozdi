@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge, DayBars, Tree } from '@/components/progress-visuals';
+import { Badge, DayBars, GrowingTree, Tree } from '@/components/progress-visuals';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import {
   ACHIEVEMENTS,
@@ -101,9 +101,15 @@ export default function Progress() {
       </Card>
 
       <Txt variant="label">{t('progress.achievements')}</Txt>
-      <Card style={{ alignItems: 'center', gap: space[2] }}>
+      <Card style={{ alignItems: 'center', gap: space[2], overflow: 'hidden' }}>
+        <View style={[StyleSheet.absoluteFill, styles.backdrop]}>
+          <GrowingTree size={170} />
+        </View>
         <Tree stage={top ? ACHIEVEMENTS.indexOf(top) + 1 : 0} size={180} />
         <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('progress.treeEmpty')}</Txt>
+        <Txt variant="caption" style={{ textAlign: 'center' }}>
+          {t('progress.treeHint')}
+        </Txt>
       </Card>
       <View style={styles.grid}>
         {ACHIEVEMENTS.map((a) => (
@@ -132,5 +138,6 @@ const styles = StyleSheet.create({
   value: { fontFamily: fonts.textMedium, fontSize: 22, fontVariant: ['tabular-nums'] },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[3] },
   tile: { flexBasis: '45%', flexGrow: 1, padding: space[4], gap: space[1] },
+  backdrop: { justifyContent: 'center', opacity: 0.1, pointerEvents: 'none' },
   badge: { width: '30%', flexGrow: 1, alignItems: 'center', gap: space[2], paddingVertical: space[2] },
 });
