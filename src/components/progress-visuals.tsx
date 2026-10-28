@@ -93,16 +93,24 @@ export function GrowingTree({ size = 140 }: { size?: number }) {
   return (
     <View aria-hidden style={{ flexDirection: 'row', justifyContent: 'center' }}>
       <Art name="stand" size={size} />
-      <View style={{ width: size, height: size }}>
-        {stage > 0 && (
-          <View style={StyleSheet.absoluteFill}>
-            <Tree stage={stage - 1} size={size} />
-          </View>
-        )}
-        <Animated.View key={stage} entering={reduced ? undefined : FadeIn.duration(500)} style={StyleSheet.absoluteFill}>
-          <Tree stage={stage} size={size} />
-        </Animated.View>
-      </View>
+      <TreeGrow stage={stage} size={size} />
+    </View>
+  );
+}
+
+/** The tree at `stage`, fading in over the stage before it; replays whenever `stage` changes. */
+export function TreeGrow({ stage, size, ms = 500, delay = 0 }: { stage: number; size: number; ms?: number; delay?: number }) {
+  const reduced = useReducedMotion();
+  return (
+    <View style={{ width: size, height: size }}>
+      {stage > 0 && !reduced && (
+        <View style={StyleSheet.absoluteFill}>
+          <Tree stage={stage - 1} size={size} />
+        </View>
+      )}
+      <Animated.View key={stage} entering={reduced ? undefined : FadeIn.duration(ms).delay(delay)} style={StyleSheet.absoluteFill}>
+        <Tree stage={stage} size={size} />
+      </Animated.View>
     </View>
   );
 }

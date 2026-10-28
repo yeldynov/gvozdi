@@ -7,10 +7,11 @@ import { router, useLocalSearchParams, usePreventRemove } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Badge } from '@/components/progress-visuals';
+import { TreeGrow } from '@/components/progress-visuals';
+import { LeafBurst } from '@/components/scenes';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Art, Button, Card, Sheet, Txt } from '@/components/ui';
@@ -329,9 +330,10 @@ function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void })
         <Txt variant="label" style={{ color: c.accent }}>
           {t('achievements.unlocked')}
         </Txt>
-        <Animated.View entering={ZoomIn.delay(150).springify()}>
-          <Badge a={a} earned size={120} />
-        </Animated.View>
+        <View aria-hidden>
+          <TreeGrow stage={ACHIEVEMENTS.indexOf(a) + 1} size={200} ms={1200} delay={500} />
+          <LeafBurst size={200} delay={900} />
+        </View>
         <View style={{ alignItems: 'center', gap: space[2] }}>
           <Txt variant="display" style={{ textAlign: 'center' }}>
             {t(`achievements.${a.id}.title`)}

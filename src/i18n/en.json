@@ -21,7 +21,7 @@
     "begin": "Begin",
     "programDay": "21-day program · Day {{day}} of {{total}}",
     "programDone": "{{done}} of {{total}} days done",
-    "programText": "A little longer each day you practise. A missed day just waits for you.",
+    "programText": "Each day you practise, a little longer. Miss a day and the program simply waits.",
     "install": "Keep Gvozdi on your home screen",
     "installText": "Opens full screen and works offline.",
     "installIos": "Tap Share, then “Add to Home Screen”. Opens full screen and works offline.",
@@ -54,7 +54,7 @@
     "topLevel": "The highest level. Keep standing.",
     "saved": "Session saved. Well done.",
     "treeEmpty": "Practise to plant the first seed.",
-    "treeHint": "Your tree grows as you practise day after day: each streak milestone adds a new stage. A missed day never takes growth away."
+    "treeHint": "Your tree grows with your streak and reaches a new stage at each milestone. A missed day never takes growth away."
   },
   "settings": {
     "title": "Settings",
@@ -118,7 +118,7 @@
   },
   "session": {
     "prepareTitle": "Steady!",
-    "prepareText": "Relax. Take a deep breath. As you exhale, stand on the nails. For the first few minutes, there may be discomfort in the feet. Take a deep breath and exhale to relax. Soon the pain will pass and the real practice will begin…",
+    "prepareText": "Relax and take a deep breath. As you breathe out, step onto the nails. The first few minutes may sting. Keep breathing slowly and deeply. The pain soon fades, and then the real practice begins…",
     "start": "Start",
     "remaining": "Time remaining",
     "achieved": "Time achieved",
@@ -133,11 +133,11 @@
     "goalReached": "Goal reached · keep going",
     "curve": "Intensity · climbs to 1:30, eases by 7:00",
     "captions": {
-      "sharp": "Sharp now. That's the nerve, not harm. Breathe out slowly.",
-      "climbing": "Climbing to the peak. Don't shift your weight — let it come.",
+      "sharp": "Sharp now. That's your nerves, not an injury. Breathe out slowly.",
+      "climbing": "Climbing to the peak. Keep your weight still and let it come.",
       "top": "This is the top. It only eases from here.",
-      "past": "Past the worst. Feel the sting loosening.",
-      "adapting": "The body adapts. It's getting easier.",
+      "past": "The worst is over. Feel the sting loosen.",
+      "adapting": "Your body is adjusting. It's getting easier.",
       "goal": "Goal reached. Keep going or finish."
     },
     "pause": "Pause",
@@ -235,7 +235,7 @@
     "start": {
       "kicker": "Start small",
       "title": "A few minutes a day.",
-      "text": "Begin short and add a little as your feet adapt. A free account keeps your sessions and streak on every device.",
+      "text": "Keep it short at first and add a little as your feet adapt. A free account keeps your sessions and streak on every device.",
       "safety": "If you are pregnant, have diabetes, a heart condition or wounds on your feet, ask your doctor first."
     },
     "createAccount": "Create free account",
@@ -255,7 +255,7 @@
   },
   "account": {
     "title": "Account",
-    "intro": "Enter your email. We'll send a code: no password needed. New here? This creates your free account.",
+    "intro": "Enter your email and we'll send you a code. No password needed. If you're new, this creates your free account.",
     "emailPlaceholder": "you@example.com",
     "continue": "Send code",
     "codeSent": "We sent a 6-digit code to {{email}}.",

@@ -134,12 +134,47 @@ function DriftLeaf({ size, ms, delay, ...leaf }: { size: number; ms: number; del
     const wave = Math.sin(t * Math.PI * 2);
     return {
       opacity: interpolate(t, [0, 0.15, 0.75, 1], [0, 1, 1, 0]),
-      transform: [{ translateY: (t * 30 - 8) * k }, { translateX: wave * 7 * k }, { rotate: `${wave * 14}deg` }],
+      transform: [{ translateY: (t * 56 - 12) * k }, { translateX: wave * 14 * k }, { rotate: `${wave * 30}deg` }],
     };
   });
   return (
     <Layer size={size} style={[origin(leaf.x, leaf.y), style]}>
       <FallLeaf {...leaf} />
+    </Layer>
+  );
+}
+
+/** One-shot burst of leaves flying out from the centre and fading; nothing on reduced motion. */
+export function LeafBurst({ size, delay = 0 }: { size: number; delay?: number }) {
+  const reduced = useReducedMotion();
+  if (reduced) return null;
+  const colors = [GV.sage, GV.gold, GV.terra, GV.sageL];
+  return (
+    <>
+      {Array.from({ length: 8 }, (_, i) => (
+        <BurstLeaf key={i} size={size} angle={(i / 8) * Math.PI * 2 - Math.PI / 2} color={colors[i % 4]} delay={delay + i * 40} />
+      ))}
+    </>
+  );
+}
+
+function BurstLeaf({ size, angle, color, delay }: { size: number; angle: number; color: string; delay: number }) {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withDelay(delay, withTiming(1, { duration: 1400, easing: Easing.out(Easing.cubic) }));
+  }, [t, delay]);
+  const r = size * 0.5;
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(t.value, [0, 0.1, 0.6, 1], [0, 1, 1, 0]),
+    transform: [
+      { translateX: Math.cos(angle) * r * t.value },
+      { translateY: Math.sin(angle) * r * t.value + size * 0.08 * t.value * t.value },
+      { rotate: `${t.value * 220}deg` },
+    ],
+  }));
+  return (
+    <Layer size={size} style={[origin(160, 140), style]}>
+      <FallLeaf x={150} y={136} color={color} s={1.3} />
     </Layer>
   );
 }
@@ -152,9 +187,9 @@ function SceneBreathe({ size }: { size: number }) {
   const arcs = useAnimatedStyle(() =>
     reduced
       ? {}
-      : { opacity: interpolate(v.value, [0, 1], [0.55, 1]), transform: [{ scale: interpolate(v.value, [0, 1], [0.9, 1.08]) }] },
+      : { opacity: interpolate(v.value, [0, 1], [0.3, 1]), transform: [{ scale: interpolate(v.value, [0, 1], [0.82, 1.16]) }] },
   );
-  const body = useAnimatedStyle(() => ({ transform: [{ translateY: -5 * k * v.value }] }));
+  const body = useAnimatedStyle(() => ({ transform: [{ translateY: -10 * k * v.value }] }));
   const top = GV.terra;
   return (
     <>
@@ -193,8 +228,8 @@ function SceneBreathe({ size }: { size: number }) {
 function SceneStep({ size }: { size: number }) {
   const { v: tilt, reduced } = useLoop(3200);
   const { v: glow } = useLoop(5000);
-  const arms = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(tilt.value, [0, 1], [-4, 4])}deg` }] }));
-  const sun = useAnimatedStyle(() => (reduced ? {} : { transform: [{ scale: 1 + 0.1 * glow.value }] }));
+  const arms = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(tilt.value, [0, 1], [-9, 9])}deg` }] }));
+  const sun = useAnimatedStyle(() => (reduced ? {} : { transform: [{ scale: 1 + 0.22 * glow.value }] }));
   const top = GV.terra;
   const leg = GV.sage;
   return (
@@ -234,10 +269,10 @@ function SceneStep({ size }: { size: number }) {
 
 /** Composed under a sharp moment: focus marks pulse outward like waves of sensation. */
 function SceneFeel({ size }: { size: number }) {
-  const { v, reduced } = useLoop(2400);
+  const { v, reduced } = useLoop(1800);
   const k = size / 320;
   const wave = (dir: number) =>
-    reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.35, 1]), transform: [{ translateX: dir * 6 * k * v.value }] };
+    reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.15, 1]), transform: [{ translateX: dir * 14 * k * v.value }, { scale: 1 + 0.06 * v.value }] };
   const left = useAnimatedStyle(() => wave(-1));
   const right = useAnimatedStyle(() => wave(1));
   const top = GV.terra;
@@ -284,7 +319,7 @@ function SceneTime({ size }: { size: number }) {
   const { v: drift } = useLoop(4200);
   // Timer centre (143, 184) after the phone's rotate(-8 142 178).
   const hand = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${turn.value * 360}deg` }] }));
-  const head = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(drift.value, [0, 1], [-2, 2])}deg` }] }));
+  const head = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(drift.value, [0, 1], [-5, 5])}deg` }] }));
   const top = GV.sage;
   return (
     <>
@@ -323,12 +358,12 @@ function SceneTime({ size }: { size: number }) {
 
 /** One arm raised in quiet triumph: the flame flickers and the arm sways. */
 function SceneStreak({ size }: { size: number }) {
-  const { v: flick, reduced } = useLoop(1400);
+  const { v: flick, reduced } = useLoop(1100);
   const { v: sway } = useLoop(3000);
   const flame = useAnimatedStyle(() =>
-    reduced ? {} : { transform: [{ scaleY: interpolate(flick.value, [0, 1], [0.92, 1.08]) }, { scaleX: interpolate(flick.value, [0, 1], [1.03, 0.97]) }] },
+    reduced ? {} : { transform: [{ scaleY: interpolate(flick.value, [0, 1], [0.8, 1.2]) }, { scaleX: interpolate(flick.value, [0, 1], [1.08, 0.92]) }] },
   );
-  const arm = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(sway.value, [0, 1], [-5, 5])}deg` }] }));
+  const arm = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(sway.value, [0, 1], [-12, 12])}deg` }] }));
   const top = GV.sage;
   return (
     <>
