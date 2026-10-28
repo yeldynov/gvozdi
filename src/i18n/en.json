@@ -261,6 +261,7 @@
     "codePlaceholder": "000000",
     "verify": "Continue",
     "changeEmail": "Use another email",
+    "google": "Continue with Google",
     "badEmail": "That email doesn't look right.",
     "badCode": "That code isn't right. Try again.",
     "expired": "That code expired. Ask for a new one.",

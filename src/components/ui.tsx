@@ -123,12 +123,14 @@ export function Button({
   ghost,
   disabled,
   style,
+  icon,
 }: {
   label: string;
   onPress: () => void;
   ghost?: boolean;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  icon?: ReactNode;
 }) {
   const c = useColors();
   return (
@@ -142,7 +144,10 @@ export function Button({
         { backgroundColor: ghost ? c.bg2 : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
-      <Text style={[styles.buttonText, { color: ghost ? c.text : c.onPrimary }]}>{label}</Text>
+      <View style={styles.buttonRow}>
+        {icon}
+        <Text style={[styles.buttonText, { color: ghost ? c.text : c.onPrimary }]}>{label}</Text>
+      </View>
     </Pressable>
   );
 }
@@ -228,6 +233,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   buttonText: { fontFamily: fonts.textBold, fontSize: 16 },
+  buttonRow: { flexDirection: 'row', alignItems: 'center', gap: space[2] },
   choice: { flexDirection: 'row', borderRadius: radius.pill, padding: 3 },
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },
   stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
