@@ -33,6 +33,9 @@ src/server/db.ts             Drizzle schema + Neon client (server-only); migrati
 src/lib/sync.ts              useSync(): pushes all sessions, pulls since cursor; runs after changes and on foreground while signed in
 src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
 src/app/achievement/[id].tsx  badge, earned date or progress bar; unlock screen lives in session.tsx after save
+src/components/menu.tsx      TabHead (top row of every tab + burger) → Sheet menu: guide, journal, FAQ, about, Telegram; PAGES registry
+src/app/read/[id].tsx        reading page (guide/faq/about/articles); text in i18n `read.<id>` as {title, lead, sections[{h?, p[]}]}
+src/app/journal.tsx          article list (PAGES with article: true), read time derived from word count
 src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achievement icon)
 src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)

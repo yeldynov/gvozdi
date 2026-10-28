@@ -84,6 +84,8 @@ function Routes() {
         <Stack.Screen name="history/index" />
         <Stack.Screen name="history/[id]" />
         <Stack.Screen name="achievement/[id]" />
+        <Stack.Screen name="journal" />
+        <Stack.Screen name="read/[id]" />
       </Stack.Protected>
       <Stack.Protected guard={!isSignedIn} redirectTo="/">
         <Stack.Screen name="onboarding" />

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { TabHead } from '@/components/menu';
 import { Art, Button, Card, Choice, Screen, Step, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { todayMinutes } from '@/lib/practice';
@@ -12,7 +13,7 @@ import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
-// Zen by default: a free session one tap away; the corner button opens mode and minutes.
+// Zen by default: a free session one tap away; the pill under Begin opens mode and minutes.
 // ponytail: mode and minutes reset per visit; persist a last-used choice in settings if people ask
 export default function Practice() {
   const { t } = useTranslation();
@@ -34,17 +35,8 @@ export default function Practice() {
 
   return (
     <Screen>
-      <View style={styles.head}>
-        <Txt variant="label">{t('practice.title')}</Txt>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={custom ? t('practice.zen') : t('practice.customize')}
-          onPress={toggle}
-          hitSlop={8}
-          style={[styles.gear, { backgroundColor: custom ? c.primary : c.bg2 }]}>
-          <Feather name={custom ? 'x' : 'sliders'} size={24} color={custom ? c.onPrimary : c.text} />
-        </Pressable>
-      </View>
+      <TabHead>
+      </TabHead>
 
       {!custom && (
         <View style={styles.zen}>
@@ -109,13 +101,18 @@ export default function Practice() {
         onPress={begin}
         style={styles.begin}
       />
+      <Pressable
+        accessibilityRole="button"
+        onPress={toggle}
+        style={({ pressed }) => [styles.setup, { borderColor: c.accent, opacity: pressed ? 0.7 : 1 }]}>
+        <Feather name={custom ? 'arrow-left' : 'sliders'} size={18} color={c.accent} />
+        <Text style={[styles.setupText, { color: c.accent }]}>{custom ? t('practice.zen') : t('practice.setup')}</Text>
+      </Pressable>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  gear: { width: 56, height: 56, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   zen: { alignItems: 'center', gap: space[3], paddingVertical: space[4] },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
   tile: { flexBasis: '31%', flexGrow: 1, alignItems: 'center', paddingVertical: space[4], borderRadius: radius.md },
@@ -124,4 +121,15 @@ const styles = StyleSheet.create({
   stepper: { flexDirection: 'row', alignItems: 'center', gap: space[3], paddingVertical: space[3] },
   stepValue: { fontFamily: fonts.textMedium, fontSize: 16, minWidth: 64, textAlign: 'center', fontVariant: ['tabular-nums'] },
   begin: { alignSelf: 'stretch', alignItems: 'center', marginTop: space[2] },
+  setup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: space[2],
+    borderWidth: 1.5,
+    borderRadius: radius.pill,
+    paddingVertical: space[2],
+    paddingHorizontal: space[5],
+  },
+  setupText: { fontFamily: fonts.textMedium, fontSize: 15 },
 });

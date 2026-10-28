@@ -15,20 +15,20 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
-const GV = {
+export const GV = {
   sage: '#2D5A4E', sageD: '#214339', sageL: '#3C6B5C',
   terra: '#D97B4F', terraD: '#C2663B', terraL: '#E89A72',
   taupe: '#8B7355', taupeL: '#A68B68', taupeD: '#6E5A41',
   gold: '#F4A261',
 };
-const SKIN = '#EAC59C';
-const INK = '#33302B';
-const HAIRS = { sage: '#33473F', taupe: '#5A4634', dark: '#3A332B' };
+export const SKIN = '#EAC59C';
+export const INK = '#33302B';
+export const HAIRS = { sage: '#33473F', taupe: '#5A4634', dark: '#3A332B' };
 
 type Pt = [number, number];
 
 // ── kit ────────────────────────────────────────────────────────────────
-function Blob({ cx, cy, rx, ry, fill, opacity }: { cx: number; cy: number; rx: number; ry: number; fill: string; opacity: number }) {
+export function Blob({ cx, cy, rx, ry, fill, opacity }: { cx: number; cy: number; rx: number; ry: number; fill: string; opacity: number }) {
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity={opacity} />;
 }
 function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?: number; color: string; s?: number }) {
@@ -39,11 +39,11 @@ function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?:
     </G>
   );
 }
-function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
+export function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={GV.taupeD} opacity={0.14} />;
 }
 /** Sadhu board in profile, nails underneath. */
-function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
+export function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
   const n = Math.max(5, Math.round(w / 13));
   return (
     <G>
@@ -58,11 +58,11 @@ function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
     </G>
   );
 }
-function Hand({ p, r = 7 }: { p: Pt; r?: number }) {
+export function Hand({ p, r = 7 }: { p: Pt; r?: number }) {
   return <Circle cx={p[0]} cy={p[1]} r={r} fill={SKIN} />;
 }
 /** Standing legs and bare feet on the board. */
-function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; color: string }) {
+export function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; color: string }) {
   return (
     <>
       <Limb a={hips[0]} b={feet[0]} w={17} color={color} />
@@ -72,8 +72,8 @@ function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; color: st
     </>
   );
 }
-/** Head with long hair, closed eyes and blush. */
-function Head({ cx, cy, r = 21, hair, tilt = 0 }: { cx: number; cy: number; r?: number; hair: string; tilt?: number }) {
+/** Head with long hair, closed eyes (or `open`, glancing right) and blush. */
+export function Head({ cx, cy, r = 21, hair, tilt = 0, open }: { cx: number; cy: number; r?: number; hair: string; tilt?: number; open?: boolean }) {
   return (
     <G transform={`rotate(${tilt} ${cx} ${cy})`}>
       <Path
@@ -85,14 +85,23 @@ function Head({ cx, cy, r = 21, hair, tilt = 0 }: { cx: number; cy: number; r?: 
         d={`M${cx - r} ${cy - 2} C ${cx - r + 1} ${cy - r - 4}, ${cx + r - 1} ${cy - r - 4}, ${cx + r} ${cy - 2} C ${cx + r - 5} ${cy - r + 5}, ${cx + 4} ${cy - r + 7}, ${cx + 2} ${cy - r + 5} C ${cx - 2} ${cy - r + 9}, ${cx - r + 6} ${cy - r + 5}, ${cx - r} ${cy - 2} Z`}
         fill={hair}
       />
-      <Path d={`M${cx - 9} ${cy + 1} q 3.4 4 7 0`} stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" />
-      <Path d={`M${cx + 2} ${cy + 1} q 3.4 4 7 0`} stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" />
+      {open ? (
+        <>
+          <Circle cx={cx - 4} cy={cy + 2} r={2.6} fill={INK} />
+          <Circle cx={cx + 7} cy={cy + 2} r={2.6} fill={INK} />
+        </>
+      ) : (
+        <>
+          <Path d={`M${cx - 9} ${cy + 1} q 3.4 4 7 0`} stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" />
+          <Path d={`M${cx + 2} ${cy + 1} q 3.4 4 7 0`} stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" />
+        </>
+      )}
       <Circle cx={cx - 12} cy={cy + 8} r={3.4} fill={GV.terra} opacity={0.32} />
       <Circle cx={cx + 12} cy={cy + 8} r={3.4} fill={GV.terra} opacity={0.32} />
     </G>
   );
 }
-function Limb({ a, b, w = 15, color }: { a: Pt; b: Pt; w?: number; color: string }) {
+export function Limb({ a, b, w = 15, color }: { a: Pt; b: Pt; w?: number; color: string }) {
   return <Line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={color} strokeWidth={w} strokeLinecap="round" />;
 }
 

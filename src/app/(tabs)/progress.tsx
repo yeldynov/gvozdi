@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Badge, DayBars, GrowingTree, Tree } from '@/components/progress-visuals';
+import { TabHead } from '@/components/menu';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import {
   ACHIEVEMENTS,
@@ -47,7 +48,7 @@ export default function Progress() {
 
   return (
     <Screen>
-      <Txt variant="display">{t('progress.title')}</Txt>
+      <TabHead />
       {saved && (
         <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
           <Feather name="check-circle" size={20} color={c.success} />

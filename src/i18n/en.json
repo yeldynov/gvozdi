@@ -11,7 +11,6 @@
     "settings": "Settings"
   },
   "home": {
-    "tagline": "A practice, not an app.",
     "streak_one": "{{count}} day in a row",
     "streak_other": "{{count}} days in a row",
     "noStreak": "Your streak starts today",
@@ -113,7 +112,7 @@
     "begin": "Begin",
     "beginFor": "Begin · {{min}} min",
     "zen": "Back to simple",
-    "customize": "Customize practice",
+    "setup": "Set up practice",
     "zenTitle": "Just stand."
   },
   "session": {
@@ -275,5 +274,237 @@
     "offerText": "{{time}} on the board. Create a free account to save it and start your streak.",
     "offerYes": "Create free account",
     "signOutFailed": "Couldn't sync your sessions, so you're still signed in. Check your connection and try again."
+  },
+  "menu": {
+    "open": "Menu",
+    "guide": "How to stand",
+    "journal": "Journal",
+    "faq": "Questions",
+    "about": "About gvozdi"
+  },
+  "journal": {
+    "intro": "Short reads on the practice: what happens on the board, and how to keep coming back.",
+    "minutes_one": "{{count}} min read",
+    "minutes_other": "{{count}} min read"
+  },
+  "read": {
+    "guide": {
+      "title": "How to stand on the board",
+      "lead": "A short ritual. The board does the work; your part is to stay and breathe.",
+      "sections": [
+        {
+          "h": "Before you start",
+          "p": [
+            "Put the board on a flat surface that doesn't slip. A rug or a yoga mat keeps it in place.",
+            "Stand barefoot, with a table, a wall or a friend's hands within reach.",
+            "Never stand with wounds or skin infections on your feet. If you have a health condition, read the safety answer in Questions first."
+          ]
+        },
+        {
+          "h": "Stepping on",
+          "p": [
+            "Step on with one foot, then slowly shift your weight and bring the other. Holding on is fine.",
+            "Keep your knees soft, not locked, and let your weight spread evenly across both feet."
+          ]
+        },
+        {
+          "h": "Staying",
+          "p": [
+            "Rest your gaze on one point in front of you. Breathe at your own pace; just don't hold your breath.",
+            "The first seconds are the sharpest. The sensation peaks, then eases into warmth. Riding that wave is the practice.",
+            "Start with 30 to 60 seconds. Listen to yourself and build up to two minutes and beyond."
+          ]
+        },
+        {
+          "h": "Stepping off",
+          "p": [
+            "Hold on and step off one foot at a time. Stay on the floor for a moment and notice the warmth and tingling.",
+            "Small red dots on your soles are normal and fade within an hour."
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions",
+      "lead": "Short answers to what people ask most.",
+      "sections": [
+        {
+          "h": "Does it hurt?",
+          "p": [
+            "Yes, at first. The sharpest part is the first 10 to 30 seconds; then it usually turns into warmth and tingling. If the pain becomes stabbing or doesn't ease, step off."
+          ]
+        },
+        {
+          "h": "How long should I stand?",
+          "p": [
+            "Start with 30 to 60 seconds. Many people settle at 2 to 5 minutes, some go to 10 or more. The 21-day program on Home raises the time gradually."
+          ]
+        },
+        {
+          "h": "How often?",
+          "p": [
+            "A little every day works better than long, rare sessions. Once a day is plenty."
+          ]
+        },
+        {
+          "h": "Morning or evening?",
+          "p": [
+            "Mornings wake you up, evenings help you unwind. Pick the time you can keep, and set a reminder in Settings."
+          ]
+        },
+        {
+          "h": "Who shouldn't practise?",
+          "p": [
+            "Talk to a doctor first if you are pregnant, have diabetes or reduced feeling in your feet, varicose veins or thrombosis, a bleeding disorder or take blood thinners, epilepsy, a heart condition, or a recent foot injury or surgery.",
+            "Never stand with open wounds or skin infections on your feet."
+          ]
+        },
+        {
+          "h": "Is this a medical treatment?",
+          "p": [
+            "No. Gvozdi is a practice companion, not medical advice. It doesn't diagnose or treat anything."
+          ]
+        },
+        {
+          "h": "What are the dots on my feet?",
+          "p": [
+            "Small red marks are normal pressure marks and fade within an hour or so. Bruises or broken skin mean the session was too long for now: rest a day and go shorter next time."
+          ]
+        },
+        {
+          "h": "Which nail spacing should I choose?",
+          "p": [
+            "The wider the spacing, the fewer nails share your weight, and the stronger it feels. Tighter spacing is gentler and a good place to start."
+          ]
+        },
+        {
+          "h": "Where are my sessions stored?",
+          "p": [
+            "On your device and in your account, so they appear on any device you sign in on. You can export a backup in Settings at any time."
+          ]
+        },
+        {
+          "h": "How do I delete my data?",
+          "p": [
+            "Settings → Clear all sessions removes them everywhere. To delete your account completely, write to us on Telegram."
+          ]
+        }
+      ]
+    },
+    "about": {
+      "title": "About gvozdi",
+      "lead": "A calm companion for nail-board practice.",
+      "sections": [
+        {
+          "p": [
+            "Gvozdi means \"nails\" in Ukrainian and Russian. The app keeps time while you stand, so you can close your eyes and let the wave pass.",
+            "It grew out of StepSure, our earlier app, and is made by a small independent team."
+          ]
+        },
+        {
+          "h": "Your data",
+          "p": [
+            "We keep only what the app needs: your sessions, notes and settings. Usage analytics help us improve the app, and you can switch them off in Settings. We never sell your data."
+          ]
+        },
+        {
+          "h": "Say hello",
+          "p": [
+            "Questions, ideas or a bug? Write to us on Telegram. And please, take care of yourself."
+          ]
+        }
+      ]
+    },
+    "first-minutes": {
+      "title": "The first two minutes",
+      "lead": "Why the hardest part comes first, and what to do with it.",
+      "sections": [
+        {
+          "p": [
+            "Every session has the same shape. You step on, and within seconds the sensation climbs to a sharp peak. Everything in you says: get off. This is where most people quit.",
+            "If you stay, something shifts. Somewhere between thirty seconds and a minute, the sharpness turns into heat, then into a wide, humming warmth. The peak passed while you were busy enduring it."
+          ]
+        },
+        {
+          "h": "Watching the wave",
+          "p": [
+            "That's why a Peak session shows a curve: to remind you that the wave will crest and fall. You don't have to like the peak. You only have to let it pass."
+          ]
+        },
+        {
+          "h": "What helps",
+          "p": [
+            "Breathe out longer than you breathe in. Soften your knees and your jaw. Count breaths, not seconds.",
+            "There is nothing to win. Two calm minutes are worth more than ten clenched ones."
+          ]
+        }
+      ]
+    },
+    "why-feet": {
+      "title": "Why the feet",
+      "lead": "A lot of you lives in your soles.",
+      "sections": [
+        {
+          "p": [
+            "Your soles are among the most sensitive skin you have, packed with nerve endings that tell you about every pebble. That's why a board of blunt nails takes all of your attention so quickly.",
+            "Strong, safe sensation pulls you into the present. It's hard to rehearse tomorrow's meeting while your feet are this loud. People often call it meditation for those who can't sit still."
+          ]
+        },
+        {
+          "h": "What we don't promise",
+          "p": [
+            "You'll find bold promises online. We'd rather be honest: research on nail boards is thin. What people do report, again and again, is a clear head, warm feet and the quiet pride of doing something hard on purpose. That's enough for us."
+          ]
+        }
+      ]
+    },
+    "habit": {
+      "title": "Small and daily",
+      "lead": "How to make standing a habit that stays.",
+      "sections": [
+        {
+          "p": [
+            "Habits grow from repetition, not intensity. Two minutes every day will change more than half an hour once a week."
+          ]
+        },
+        {
+          "h": "Tie it to something",
+          "p": [
+            "Stand right after brushing your teeth, or while the kettle boils. A routine you already have is the best reminder."
+          ]
+        },
+        {
+          "h": "Keep the board in sight",
+          "p": [
+            "Out of sight, out of practice. Leave the board where you'll see it every morning."
+          ]
+        },
+        {
+          "h": "Miss a day, not two",
+          "p": [
+            "Life happens. Your streak starts over, but your progress stays: the 21-day program simply pauses and waits for you.",
+            "The reminder, the streak and the tree are there to help you, never to judge you."
+          ]
+        }
+      ]
+    },
+    "after": {
+      "title": "After you step off",
+      "lead": "The minute after the board is part of the practice.",
+      "sections": [
+        {
+          "p": [
+            "Don't rush away. Stand on the floor with your eyes closed and feel your feet. Most people notice heat, tingling and a sense of weight sinking into the ground.",
+            "It's a good moment to notice how you feel and write a line in the session note. Over weeks, these notes show patterns that a timer can't."
+          ]
+        },
+        {
+          "h": "Simple aftercare",
+          "p": [
+            "Walk barefoot for a minute. Have a glass of water if you like. If your soles feel tender the next day, rest; the board will wait."
+          ]
+        }
+      ]
+    }
   }
 }

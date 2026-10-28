@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, StyleSheet, View } from 'react-native';
 
+import { SUPPORT_URL, TabHead } from '@/components/menu';
 import { Button, Card, Choice, Screen, Sheet, Step, Txt } from '@/components/ui';
 import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
@@ -12,8 +13,6 @@ import { allowReminders, remindersSupported } from '@/lib/reminder';
 import type { Language, ThemePref } from '@/lib/types';
 import { useStore } from '@/store';
 import { space, useColors } from '@/theme';
-
-const SUPPORT_URL = 'https://t.me/gvozdi_support_bot';
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -59,7 +58,7 @@ export default function Settings() {
 
   return (
     <Screen>
-      <Txt variant="display">{t('settings.title')}</Txt>
+      <TabHead />
       <Card>
         <Txt variant="label">{t('account.title')}</Txt>
         <Txt variant="caption">

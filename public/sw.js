@@ -1,7 +1,7 @@
 // Network-first: always fresh when online, last copy when offline.
 const CACHE = 'gvozdi-v1';
 // Each route's HTML lists its JS chunks; warming these lets every tab open offline.
-const ROUTES = ['/', '/practice', '/progress', '/settings', '/session', '/onboarding', '/account', '/history', '/history/x', '/achievement/x'];
+const ROUTES = ['/', '/practice', '/progress', '/settings', '/session', '/onboarding', '/account', '/history', '/history/x', '/achievement/x', '/journal', '/read/guide'];
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
