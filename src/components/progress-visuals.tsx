@@ -1,26 +1,85 @@
-import Feather from '@expo/vector-icons/Feather';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
+import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
 
-import type { Achievement } from '@/lib/practice';
+import { ACHIEVEMENTS, type Achievement } from '@/lib/practice';
 import { fonts, radius, space, useColors } from '@/theme';
 
-const ICONS: Record<string, keyof typeof Feather.glyphMap> = {
-  first_session: 'check',
-  streak_3: 'sunrise',
-  streak_7: 'sun',
-  sessions_10: 'layers',
-  streak_14: 'trending-up',
-  streak_30: 'shield',
-  streak_60: 'award',
-  streak_100: 'star',
-  streak_365: 'globe',
+// Crown blobs as [dx, dy, r] in crown-radius units; later stages use more of them.
+const CROWN = [
+  [0, 0, 1], [-0.75, 0.25, 0.8], [0.75, 0.25, 0.8], [-0.4, -0.6, 0.8], [0.45, -0.55, 0.75],
+  [-1.2, -0.15, 0.6], [1.2, -0.1, 0.6], [0, -1.05, 0.7], [-0.85, 0.8, 0.55], [0.85, 0.8, 0.55],
+];
+// Stages 4..9 as [trunk height, crown radius, blobs]; 1 seed, 2 sprout, 3 seedling.
+const TREES: Record<number, number[]> = {
+  4: [22, 9, 3], 5: [28, 11, 5], 6: [34, 13, 7], 7: [38, 15, 8], 8: [42, 17, 10], 9: [44, 19, 10],
 };
+const G = 82; // ground line in the 100×100 viewBox
 
-/** Round badge; muted until earned. */
+/** A tree grown to `stage` (0 bare ground … 9 old tree in bloom); all grey when `muted`. */
+export function Tree({ stage, size = 120, muted }: { stage: number; size?: number; muted?: boolean }) {
+  const c = useColors();
+  const leafColor = muted ? c.text3 : c.success;
+  const wood = muted ? c.text3 : c.text2;
+  const leaf = (x: number, y: number, len: number, deg: number, k: string) => (
+    <Ellipse key={k} cx={x + len / 2} cy={y} rx={len / 2} ry={len / 4.5} fill={leafColor} transform={`rotate(${deg} ${x} ${y})`} />
+  );
+  const tree = TREES[stage];
+  let plant = null;
+  if (stage === 1) plant = <Ellipse cx={50} cy={G - 1} rx={4} ry={3} fill={wood} />;
+  else if (stage === 2 || stage === 3) {
+    const h = stage === 2 ? 14 : 24;
+    plant = (
+      <>
+        <Path d={`M50 ${G} Q48 ${G - h / 2} 50 ${G - h}`} stroke={wood} strokeWidth={1.6} fill="none" />
+        {stage === 3 && [leaf(49.5, G - 11, 10, -20, 'a'), leaf(49.5, G - 11, 10, -160, 'b'), leaf(50, G - h, 7, -90, 'c')]}
+        {leaf(50, G - h, stage === 2 ? 9 : 11, -30, 'd')}
+        {leaf(50, G - h, stage === 2 ? 9 : 11, -150, 'e')}
+      </>
+    );
+  } else if (tree) {
+    const [h, r, n] = tree;
+    const w0 = 1.5 + stage * 0.6;
+    const w1 = w0 * 0.45;
+    const cy = G - h;
+    plant = (
+      <>
+        {stage >= 8 && (
+          <Path d={`M${50 - w0} ${G} q-4 1 -8 3 M${50 + w0} ${G} q4 1 8 3`} stroke={wood} strokeWidth={1.4} fill="none" />
+        )}
+        {stage >= 6 && (
+          <Path
+            d={`M50 ${G - h * 0.5} Q${50 - r * 0.4} ${cy + r * 0.4} ${50 - r * 0.8} ${cy + r * 0.1} M50 ${G - h * 0.6} Q${50 + r * 0.4} ${cy + r * 0.5} ${50 + r * 0.85} ${cy + r * 0.15}`}
+            stroke={wood}
+            strokeWidth={1.8}
+            fill="none"
+          />
+        )}
+        <Path
+          d={`M${50 - w0} ${G} Q${50 - w1} ${G - h / 2} ${50 - w1} ${cy} L${50 + w1} ${cy} Q${50 + w1} ${G - h / 2} ${50 + w0} ${G} Z`}
+          fill={wood}
+        />
+        {CROWN.slice(0, n).map(([dx, dy, k], i) => (
+          <Circle key={i} cx={50 + dx * r} cy={cy + dy * r} r={k * r} fill={leafColor} fillOpacity={i % 2 ? 0.85 : 1} />
+        ))}
+        {stage === 9 &&
+          CROWN.slice(1, 8).map(([dx, dy], i) => (
+            <Circle key={`b${i}`} cx={50 + dx * r * 0.9} cy={cy + dy * r * 0.9} r={1.8} fill={muted ? c.surface : c.accent} />
+          ))}
+      </>
+    );
+  }
+  return (
+    <Svg width={size} height={size} viewBox="0 0 100 100">
+      <Ellipse cx={50} cy={G + 3} rx={14 + stage * 2.5} ry={5} fill={muted ? c.text3 : c.illus} fillOpacity={0.45} />
+      {plant}
+    </Svg>
+  );
+}
+
+/** Round badge showing the tree stage this achievement grows; muted until earned. */
 export function Badge({ a, earned, size = 56 }: { a: Achievement; earned: boolean; size?: number }) {
   const c = useColors();
-  const color = earned ? (a.kind === 'count' ? c.success : c.accent) : c.text3;
   return (
     <View
       style={{
@@ -28,13 +87,14 @@ export function Badge({ a, earned, size = 56 }: { a: Achievement; earned: boolea
         height: size,
         borderRadius: radius.pill,
         borderWidth: 1.5,
-        borderColor: earned ? color : c.divider,
+        borderColor: earned ? c.success : c.divider,
         backgroundColor: c.surface,
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
         opacity: earned ? 1 : 0.55,
       }}>
-      <Feather name={ICONS[a.id] ?? 'star'} size={size * 0.4} color={color} />
+      <Tree stage={ACHIEVEMENTS.indexOf(a) + 1} size={size * 0.9} muted={!earned} />
     </View>
   );
 }

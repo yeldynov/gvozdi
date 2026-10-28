@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge, DayBars } from '@/components/progress-visuals';
+import { Badge, DayBars, Tree } from '@/components/progress-visuals';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import {
   ACHIEVEMENTS,
@@ -33,6 +33,7 @@ export default function Progress() {
   const streak = currentStreak(sessions);
   const { level, next, totalMin, longestMin } = levelOf(sessions);
   const earned = earnedAchievementIds(sessions);
+  const top = ACHIEVEMENTS.filter((a) => earned.includes(a.id)).at(-1); // tree grows to the furthest stage earned
   const week = lastDays(sessions);
   const month = lastDays(sessions, new Date(), 30);
   const minutes = (days: typeof week) =>
@@ -100,6 +101,10 @@ export default function Progress() {
       </Card>
 
       <Txt variant="label">{t('progress.achievements')}</Txt>
+      <Card style={{ alignItems: 'center', gap: space[2] }}>
+        <Tree stage={top ? ACHIEVEMENTS.indexOf(top) + 1 : 0} size={180} />
+        <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('progress.treeEmpty')}</Txt>
+      </Card>
       <View style={styles.grid}>
         {ACHIEVEMENTS.map((a) => (
           <Pressable

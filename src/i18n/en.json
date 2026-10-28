@@ -46,13 +46,14 @@
     "month": "Last 30 days",
     "minutesTotal_one": "{{count}} minute",
     "minutesTotal_other": "{{count}} minutes",
-    "achievements": "Achievements",
+    "achievements": "Your tree",
     "level": "Level",
     "nextLevel": "Next: {{name}}",
     "levelTotal": "{{value}} of {{target}} min in total",
     "levelLongest": "Longest session: {{value}} of {{target}} min",
     "topLevel": "The highest level. Keep standing.",
-    "saved": "Session saved. Well done."
+    "saved": "Session saved. Well done.",
+    "treeEmpty": "Practise to plant the first seed."
   },
   "settings": {
     "title": "Settings",
@@ -173,7 +174,7 @@
     "deleteText": "This {{time}} session will be removed from your history and stats."
   },
   "achievements": {
-    "unlocked": "Achievement unlocked",
+    "unlocked": "Your tree grew",
     "continue": "Continue",
     "earnedOn": "Earned {{date}}",
     "earned": "earned",
@@ -181,39 +182,39 @@
     "progress": "{{value}} of {{target}}",
     "notFound": "No such achievement.",
     "first_session": {
-      "title": "First Step",
+      "title": "Seed",
       "desc": "Your first practice"
     },
     "streak_3": {
-      "title": "Three Days",
+      "title": "Sprout",
       "desc": "Three days in a row"
     },
     "streak_7": {
-      "title": "One Week",
+      "title": "Seedling",
       "desc": "Seven days in a row"
     },
     "sessions_10": {
-      "title": "Ten Sessions",
+      "title": "Sapling",
       "desc": "Ten practices behind you"
     },
     "streak_14": {
-      "title": "Two Weeks",
+      "title": "Young Tree",
       "desc": "Fourteen days in a row"
     },
     "streak_30": {
-      "title": "One Month",
+      "title": "Tree",
       "desc": "Thirty days in a row"
     },
     "streak_60": {
-      "title": "Two Months",
+      "title": "Strong Tree",
       "desc": "Sixty days in a row"
     },
     "streak_100": {
-      "title": "Century",
+      "title": "Old Tree",
       "desc": "One hundred days in a row"
     },
     "streak_365": {
-      "title": "One Year",
+      "title": "Tree in Bloom",
       "desc": "A whole year, every day"
     }
   },
