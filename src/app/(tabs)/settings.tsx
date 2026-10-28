@@ -78,10 +78,10 @@ export default function Settings() {
           value={settings.language}
           onChange={(language) => setSettings({ language })}
           options={[
-            { value: 'system', label: t('settings.system') },
-            { value: 'en', label: 'English' },
-            { value: 'uk', label: 'Українська' },
-            { value: 'ru', label: 'Русский' },
+            { value: 'system', label: t('settings.auto') },
+            { value: 'en', label: t('settings.langEn') },
+            { value: 'uk', label: t('settings.langUk') },
+            { value: 'ru', label: t('settings.langRu') },
           ]}
         />
       </Card>
@@ -91,7 +91,7 @@ export default function Settings() {
           value={settings.theme}
           onChange={(theme) => setSettings({ theme })}
           options={[
-            { value: 'system', label: t('settings.system') },
+            { value: 'system', label: t('settings.auto') },
             { value: 'light', label: t('settings.light') },
             { value: 'dark', label: t('settings.dark') },
           ]}
