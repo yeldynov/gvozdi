@@ -218,10 +218,10 @@ export function Step({ icon, label, onPress }: { icon: keyof typeof Feather.glyp
 }
 
 /** Quiet secondary action: small grey text, centred. */
-export function TextLink({ label, onPress }: { label: string; onPress: () => void }) {
+export function TextLink({ label, onPress, style }: { label: string; onPress: () => void; style?: ViewStyle }) {
   const c = useColors();
   return (
-    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress} style={{ alignSelf: 'center', padding: space[2] }}>
+    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress} style={[{ alignSelf: 'center', padding: space[2] }, style]}>
       <Txt variant="caption" style={{ color: c.text2 }}>
         {label}
       </Txt>

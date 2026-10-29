@@ -48,6 +48,7 @@ export default function Home() {
     <Screen>
       <TabHead />
       <Art name={streak ? 'streak' : 'step'} size={200} />
+      <TextLink label={t('home.customize')} onPress={() => setCustomize(true)} style={styles.customize} />
       {!program && !programAsked && live(sessions).length > 0 && (
         <Card>
           <View style={styles.corner}>
@@ -78,7 +79,6 @@ export default function Home() {
         </Card>
       )}
       {live(sessions).length > 0 && <InstallHint />}
-      <TextLink label={t('home.customize')} onPress={() => setCustomize(true)} />
       <Customize visible={customize} onClose={() => setCustomize(false)} />
     </Screen>
   );
@@ -296,6 +296,7 @@ function Customize({ visible, onClose }: { visible: boolean; onClose: () => void
 }
 
 const styles = StyleSheet.create({
+  customize: { alignSelf: 'flex-end', marginBottom: -space[3] },
   dots: { flexDirection: 'row', flexWrap: 'wrap', gap: space[1], marginVertical: space[1] },
   dot: { width: 10, height: 10, borderRadius: radius.pill },
   row: { flexDirection: 'row', gap: space[3], marginTop: space[2] },
