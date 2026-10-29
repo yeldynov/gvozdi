@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Art, Button, Logo, Txt, type ArtName } from '@/components/ui';
@@ -14,6 +14,7 @@ const ART: Record<(typeof PAGES)[number], ArtName> = { welcome: 'step', peak: 'f
 export default function Onboarding() {
   const { t } = useTranslation();
   const c = useColors();
+  const { height } = useWindowDimensions();
   const [page, setPage] = useState(0);
   const key = PAGES[page];
   const last = page === PAGES.length - 1;
@@ -42,7 +43,8 @@ export default function Onboarding() {
         </View>
 
         <View style={styles.body}>
-          <Art name={ART[key]} size={240} />
+          {/* Shrinks on short screens so the buttons stay above the fold. */}
+          <Art name={ART[key]} size={Math.min(240, Math.round(height * 0.22))} />
           <Txt variant="label">{t(`onboarding.${key}.kicker`)}</Txt>
           <Txt variant="display" style={styles.headline}>{t(`onboarding.${key}.title`)}</Txt>
           <Txt style={[styles.text, { color: c.text2 }]}>{t(`onboarding.${key}.text`)}</Txt>
@@ -73,13 +75,13 @@ export default function Onboarding() {
 }
 
 const styles = StyleSheet.create({
-  root: { flexGrow: 1, gap: space[6], padding: space[7], width: '100%', maxWidth: 560, alignSelf: 'center' },
+  root: { flexGrow: 1, gap: space[4], paddingHorizontal: space[7], paddingVertical: space[5], width: '100%', maxWidth: 560, alignSelf: 'center' },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   skip: { fontFamily: fonts.textMedium, fontSize: 15 },
-  body: { flexGrow: 1, justifyContent: 'center', gap: space[4] },
-  headline: { fontSize: 46, lineHeight: 50 },
-  text: { fontSize: 16, lineHeight: 24, maxWidth: 340 },
-  footer: { gap: space[6] },
+  body: { flexGrow: 1, justifyContent: 'center', gap: space[3] },
+  headline: { fontSize: 36, lineHeight: 42 },
+  text: { fontSize: 15, lineHeight: 22, maxWidth: 340 },
+  footer: { gap: space[3] },
   dots: { flexDirection: 'row', gap: space[2], justifyContent: 'center' },
   dot: { width: 8, height: 8, borderRadius: radius.pill },
   cta: { alignSelf: 'stretch', alignItems: 'center' },
