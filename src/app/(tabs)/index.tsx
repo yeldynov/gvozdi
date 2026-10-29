@@ -185,9 +185,12 @@ function Stats() {
         <View aria-hidden style={[styles.tileArt, { right: pad - art * (1 - ground.right), bottom: pad - art * (1 - ground.bottom) }]}>
           <Tree stage={stage} size={art} />
         </View>
-        <Txt variant="display" style={{ fontSize: w * 0.3, lineHeight: w * 0.32 }}>
-          {streak}
-        </Txt>
+        {/* Android throws on fontSize 0, so wait for the first layout. */}
+        {w > 0 && (
+          <Txt variant="display" style={{ fontSize: w * 0.3, lineHeight: w * 0.32 }}>
+            {streak}
+          </Txt>
+        )}
         <Txt variant="caption" style={{ fontSize: 15 }}>
           {t('home.daysInRow', { count: streak })}
         </Txt>
