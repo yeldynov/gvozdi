@@ -23,7 +23,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 src/app/_layout.tsx          root: fonts, i18n, theme, Clerk (+ offline resourceCache), protected route groups (redirectTo)
 src/app/+html.tsx            web shell: manifest, icons, theme-color, SW registration, beforeinstallprompt capture
 public/sw.js                 network-first SW; on each load warms every route's HTML + JS chunks (add new routes to ROUTES)
-src/app/(tabs)/              Home (index), Practice (session setup), Progress, Settings
+src/app/(tabs)/              Home (index: cards today / stats (streak tree + next milestone tiles, open Progress) / week, user-ordered via settings.home + Customize sheet; program invite), Practice (session setup), Progress, Settings
 src/app/onboarding.tsx       3 intro pages (signed-out only); last page: create account / have account / "try a session as a guest"
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; guests get GuestEnd (keep → /account, discard → /onboarding) instead of the save sheet; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
 src/app/account.tsx          email → code; signs in, or signs up if the email is new (open to guests). Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
@@ -44,7 +44,7 @@ src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + ca
 src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)
 src/lib/backup-io.ts         native export (share sheet) / import (document picker); backup-io.web.ts downloads / file input
 src/lib/goal-alert.ts        native goal notification; goal-alert.web.ts is the no-op web twin
-src/lib/analytics.ts         capture(event, props), useAnalytics(); .web.ts twin; events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted, program_joined
+src/lib/analytics.ts         capture(event, props), useAnalytics(); .web.ts twin; events: app_opened, onboarding_completed, session_started/saved/discarded, achievement_unlocked, signed_in/up, install_prompted, program_joined/left
 src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
 src/lib/reminder.ts          native one-shot reminders for 14 days (`reminderDates`, skips a practised today), rescheduled from root _layout on launch/foreground/save/time/language; reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
@@ -114,7 +114,7 @@ npx tsc --noEmit && npx expo lint && npm test
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
-7. Levels and a 21-day program — done; opt-in (`/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
+7. Levels and a 21-day program — done; opt-in (Home invite card or `/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
 8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app is account-gated with a guest demo session (replaced the sign-up prompt rule)
 9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog — done (native icons/splash unseen until `eas build`). Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
 

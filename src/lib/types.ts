@@ -16,6 +16,8 @@ export type Session = {
 export type Language = 'system' | 'en' | 'uk' | 'ru';
 export type ThemePref = 'system' | 'light' | 'dark';
 
+export type HomeCard = 'today' | 'stats' | 'week';
+
 export type Settings = {
   language: Language;
   theme: ThemePref;
@@ -25,6 +27,8 @@ export type Settings = {
   installHintDismissed?: boolean; // web only
   skipPrepare?: boolean; // short countdown instead of the full Steady screen
   program?: string; // dayKey the user joined the 21-day program; unset = not in it
+  programAsked?: boolean; // the program invite was dismissed
   practice?: { mode: SessionMode; min: number }; // last setup on the Practice tab; unset = free
+  home?: HomeCard[]; // visible Home cards in order; unset = DEFAULT_HOME
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };

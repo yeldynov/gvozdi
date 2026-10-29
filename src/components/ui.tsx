@@ -203,7 +203,7 @@ export function Choice<T extends string>({
   );
 }
 
-export function Step({ icon, label, onPress }: { icon: 'minus' | 'plus'; label: string; onPress: () => void }) {
+export function Step({ icon, label, onPress }: { icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }) {
   const c = useColors();
   return (
     <Pressable

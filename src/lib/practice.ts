@@ -211,6 +211,20 @@ export function todayMinutes(sessions: Session[], joined?: string, now = new Dat
   return programDay(sessions, joined, now)?.minutes ?? suggestedMinutes(sessions);
 }
 
+/** Seconds practised today. */
+export function todaySec(sessions: Session[], now = new Date()): number {
+  const today = dayKey(now);
+  return live(sessions)
+    .filter((s) => dayKey(new Date(s.startedAt)) === today)
+    .reduce((sum, s) => sum + s.durationSec, 0);
+}
+
+/** The first achievement not yet earned, with progress toward it; null once all are earned. */
+export function nextAchievement(sessions: Session[]) {
+  const a = ACHIEVEMENTS.find((x) => achievementProgress(x, sessions) < x.target);
+  return a ? { a, value: achievementProgress(a, sessions) } : null;
+}
+
 /** Dev-only: one session a day for `days` days, ending today. */
 export function seedSessions(now = new Date(), days = 180): Session[] {
   return Array.from({ length: days }, (_, i) => {

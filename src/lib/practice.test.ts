@@ -14,12 +14,14 @@ import {
   groupByDay,
   lastDays,
   levelOf,
+  nextAchievement,
   PROGRAM,
   programDay,
   reminderDates,
   shiftTime,
   suggestedMinutes,
   todayMinutes,
+  todaySec,
   totals,
   treeStage,
 } from './practice.ts';
@@ -112,7 +114,11 @@ test('programDay: null until joined, counts days since joining, pauses on gaps, 
   assert.equal(todayMinutes([at(1)], undefined, now), 6); // not joined: adaptive suggestion
 });
 
-test('treeStage starts at a seed and grows per achievement', () => {
+test('todaySec sums only today; nextAchievement is the first unearned', () => {
+  assert.equal(todaySec([at(0, 120), at(0, 60, 9), at(1, 600)], now), 180);
+  assert.deepEqual(nextAchievement([]), { a: ACHIEVEMENTS[0], value: 0 });
+  assert.equal(nextAchievement([at(1), at(0)])?.a.id, 'streak_3');
+  assert.equal(nextAchievement([at(1), at(0)])?.value, 2);
   assert.equal(treeStage([]), 1); // everyone starts with a seed
   assert.equal(treeStage([at(0)]), 2); // first session: sprout
   assert.equal(treeStage([at(2), at(1), at(0)]), 3); // three days in a row: seedling
