@@ -5,13 +5,14 @@ import { Fraunces_300Light } from '@expo-google-fonts/fraunces';
 import { Literata_300Light } from '@expo-google-fonts/literata';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold } from '@expo-google-fonts/inter-tight';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, type ErrorBoundaryProps } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { Button, Screen, Txt } from '@/components/ui';
 import i18n, { resolveLanguage } from '@/i18n';
 import { capture, useAnalytics } from '@/lib/analytics';
 import { dayKey, live } from '@/lib/practice';
@@ -94,6 +95,25 @@ function Routes() {
       <Stack.Screen name="sso-callback" />
       <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
     </Stack>
+  );
+}
+
+// A render error would otherwise leave a blank screen (and crash the next launch); show it with a way out.
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  const { t } = useTranslation();
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
+  return (
+    <Screen>
+      <Txt variant="title">{t('common.error')}</Txt>
+      <Txt variant="caption" selectable>
+        {error.message}
+        {'\n\n'}
+        {error.stack?.split('\n').slice(0, 8).join('\n')}
+      </Txt>
+      <Button label={t('common.retry')} onPress={retry} />
+    </Screen>
   );
 }
 

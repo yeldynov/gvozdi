@@ -2,7 +2,9 @@
   "common": {
     "cancel": "Cancel",
     "close": "Close",
-    "back": "Back"
+    "back": "Back",
+    "error": "Something went wrong",
+    "retry": "Try again"
   },
   "tabs": {
     "home": "Home",
