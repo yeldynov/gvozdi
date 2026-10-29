@@ -194,8 +194,8 @@ function Stats() {
       </Tile>
       {next && (
         <Tile label={`${t('home.cards.milestone')}: ${t(`achievements.${next.a.id}.title`)}`} style={styles.milestoneCard} onPress={toStages}>
-          <Badge a={next.a} earned={false} size={w * 0.4} />
-          <Txt variant="label" style={{ marginTop: space[1] }}>
+          <Badge a={next.a} earned={false} size={w * 0.3} />
+          <Txt variant="label">
             {t('home.cards.milestone')}
           </Txt>
           <Txt variant="title" numberOfLines={1} adjustsFontSizeToFit style={{ fontSize: 21, lineHeight: 26 }}>
