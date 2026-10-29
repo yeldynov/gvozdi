@@ -52,7 +52,7 @@
     "levelLongest": "Longest session: {{value}} of {{target}} min",
     "topLevel": "The highest level. Keep standing.",
     "saved": "Session saved. Well done.",
-    "treeEmpty": "Practise to plant the first seed.",
+    "treeEmpty": "Your seed is planted. The first practice makes it sprout.",
     "treeHint": "Your tree grows with your streak and reaches a new stage at each milestone. A missed day never takes growth away."
   },
   "settings": {
@@ -182,41 +182,42 @@
     "progress": "{{value}} of {{target}}",
     "notFound": "No such achievement.",
     "first_session": {
-      "title": "Seed",
+      "title": "Sprout",
       "desc": "Your first practice"
     },
     "streak_3": {
-      "title": "Sprout",
+      "title": "Seedling",
       "desc": "Three days in a row"
     },
     "streak_7": {
-      "title": "Seedling",
+      "title": "Sapling",
       "desc": "Seven days in a row"
     },
     "sessions_10": {
-      "title": "Sapling",
+      "title": "Young Tree",
       "desc": "Ten practices behind you"
     },
     "streak_14": {
-      "title": "Young Tree",
+      "title": "Tree",
       "desc": "Fourteen days in a row"
     },
     "streak_30": {
-      "title": "Tree",
+      "title": "Strong Tree",
       "desc": "Thirty days in a row"
     },
     "streak_60": {
-      "title": "Strong Tree",
+      "title": "Old Tree",
       "desc": "Sixty days in a row"
     },
     "streak_100": {
-      "title": "Old Tree",
+      "title": "Ancient Tree",
       "desc": "One hundred days in a row"
     },
     "streak_365": {
       "title": "Tree in Bloom",
       "desc": "A whole year, every day"
-    }
+    },
+    "seed": "Seed"
   },
   "onboarding": {
     "skip": "Skip",

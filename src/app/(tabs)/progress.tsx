@@ -16,6 +16,7 @@ import {
   lastDays,
   levelOf,
   totals,
+  treeStage,
 } from '@/lib/practice';
 import { useStore } from '@/store';
 import { fonts, space, useColors } from '@/theme';
@@ -34,7 +35,8 @@ export default function Progress() {
   const streak = currentStreak(sessions);
   const { level, next, totalMin, longestMin } = levelOf(sessions);
   const earned = earnedAchievementIds(sessions);
-  const top = ACHIEVEMENTS.filter((a) => earned.includes(a.id)).at(-1); // tree grows to the furthest stage earned
+  const stage = treeStage(sessions); // tree grows to the furthest stage earned
+  const top = ACHIEVEMENTS[stage - 2];
   const week = lastDays(sessions);
   const month = lastDays(sessions, new Date(), 30);
   const minutes = (days: typeof week) =>
@@ -106,8 +108,9 @@ export default function Progress() {
         <View style={[StyleSheet.absoluteFill, styles.backdrop]}>
           <GrowingTree size={170} />
         </View>
-        <Tree stage={top ? ACHIEVEMENTS.indexOf(top) + 1 : 0} size={180} />
-        <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('progress.treeEmpty')}</Txt>
+        <Tree stage={stage} size={180} />
+        <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
+        {!top && <Txt variant="caption">{t('progress.treeEmpty')}</Txt>}
         <Txt variant="caption" style={{ textAlign: 'center' }}>
           {t('progress.treeHint')}
         </Txt>

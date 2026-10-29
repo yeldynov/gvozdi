@@ -5,7 +5,7 @@ import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
 
 import { Art } from '@/components/ui';
-import { ACHIEVEMENTS, type Achievement } from '@/lib/practice';
+import { achievementStage, type Achievement } from '@/lib/practice';
 import { fonts, radius, space, useColors } from '@/theme';
 
 // Crown blobs as [dx, dy, r] in crown-radius units; later stages use more of them.
@@ -15,11 +15,15 @@ const CROWN = [
 ];
 // Stages 4..9 as [trunk height, crown radius, blobs]; 1 seed, 2 sprout, 3 seedling.
 const TREES: Record<number, number[]> = {
-  4: [22, 9, 3], 5: [28, 11, 5], 6: [34, 13, 7], 7: [38, 15, 8], 8: [42, 17, 10], 9: [44, 19, 10],
+  4: [22, 9, 3], 5: [28, 11, 5], 6: [34, 13, 7], 7: [38, 15, 8], 8: [42, 17, 10], 9: [43, 18.5, 10], 10: [44, 19.5, 10],
 };
 const G = 82; // ground line in the 100×100 viewBox
+const groundRx = (stage: number) => 14 + stage * 2.5;
 
-/** A tree grown to `stage` (0 bare ground … 9 old tree in bloom); all grey when `muted`. */
+/** Where the ground ellipse ends, as fractions of the Tree's size: its right edge and its bottom. */
+export const treeGround = (stage: number) => ({ right: (50 + groundRx(stage)) / 100, bottom: (G + 8) / 100 });
+
+/** A tree grown to `stage` (0 bare ground, 1 seed … 9 old tree, 10 in bloom); all grey when `muted`. */
 export function Tree({ stage, size = 120, muted }: { stage: number; size?: number; muted?: boolean }) {
   const c = useColors();
   const leafColor = muted ? c.text3 : c.success;
@@ -65,7 +69,7 @@ export function Tree({ stage, size = 120, muted }: { stage: number; size?: numbe
         {CROWN.slice(0, n).map(([dx, dy, k], i) => (
           <Circle key={i} cx={50 + dx * r} cy={cy + dy * r} r={k * r} fill={leafColor} fillOpacity={i % 2 ? 0.85 : 1} />
         ))}
-        {stage === 9 &&
+        {stage === 10 &&
           CROWN.slice(1, 8).map(([dx, dy], i) => (
             <Circle key={`b${i}`} cx={50 + dx * r * 0.9} cy={cy + dy * r * 0.9} r={1.8} fill={muted ? c.surface : c.accent} />
           ))}
@@ -74,7 +78,7 @@ export function Tree({ stage, size = 120, muted }: { stage: number; size?: numbe
   }
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100">
-      <Ellipse cx={50} cy={G + 3} rx={14 + stage * 2.5} ry={5} fill={muted ? c.text3 : c.illus} fillOpacity={0.45} />
+      <Ellipse cx={50} cy={G + 3} rx={groundRx(stage)} ry={5} fill={muted ? c.text3 : c.illus} fillOpacity={0.45} />
       {plant}
     </Svg>
   );
@@ -86,10 +90,10 @@ export function GrowingTree({ size = 140 }: { size?: number }) {
   const [tick, setTick] = useState(0);
   useEffect(() => {
     if (reduced) return;
-    const id = setInterval(() => setTick((n) => (n + 1) % 13), 700); // ticks 9..12 hold the full tree
+    const id = setInterval(() => setTick((n) => (n + 1) % 14), 700); // ticks 10..13 hold the full tree
     return () => clearInterval(id);
   }, [reduced]);
-  const stage = reduced ? 9 : Math.min(tick, 9);
+  const stage = reduced ? 10 : Math.min(tick, 10);
   return (
     <View aria-hidden style={{ flexDirection: 'row', justifyContent: 'center' }}>
       <Art name="stand" size={size} />
@@ -132,7 +136,7 @@ export function Badge({ a, earned, size = 56 }: { a: Achievement; earned: boolea
         overflow: 'hidden',
         opacity: earned ? 1 : 0.55,
       }}>
-      <Tree stage={ACHIEVEMENTS.indexOf(a) + 1} size={size * 0.9} muted={!earned} />
+      <Tree stage={achievementStage(a)} size={size * 0.9} muted={!earned} />
     </View>
   );
 }

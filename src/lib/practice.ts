@@ -73,6 +73,17 @@ export function earnedAchievementIds(sessions: Session[]): string[] {
   return ACHIEVEMENTS.filter((a) => achievementProgress(a, sessions) >= a.target).map((a) => a.id);
 }
 
+/** Tree stage an achievement grows: everyone starts with a seed (1), the first achievement makes it sprout (2). */
+export function achievementStage(a: Achievement): number {
+  return ACHIEVEMENTS.indexOf(a) + 2;
+}
+
+/** Tree stage for the furthest achievement earned: 1 seed … ACHIEVEMENTS.length + 1 in bloom. */
+export function treeStage(sessions: Session[]): number {
+  const earned = earnedAchievementIds(sessions);
+  return ACHIEVEMENTS.findLastIndex((a) => earned.includes(a.id)) + 2;
+}
+
 /** ISO time of the session that unlocked the achievement, or null. */
 export function achievementEarnedAt(id: string, sessions: Session[]): string | null {
   const a = ACHIEVEMENTS.find((x) => x.id === id);

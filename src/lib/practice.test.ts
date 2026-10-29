@@ -21,6 +21,7 @@ import {
   suggestedMinutes,
   todayMinutes,
   totals,
+  treeStage,
 } from './practice.ts';
 import type { Session } from './types.ts';
 
@@ -104,6 +105,12 @@ test('programDay advances per practice day, pauses on gaps, ends after 21', () =
   assert.equal(programDay(past, now), null);
   assert.equal(todayMinutes(past.slice(1), now), PROGRAM[20]);
   assert.equal(todayMinutes(past, now), 6); // 5 min last session + 1
+});
+
+test('treeStage starts at a seed and grows per achievement', () => {
+  assert.equal(treeStage([]), 1); // everyone starts with a seed
+  assert.equal(treeStage([at(0)]), 2); // first session: sprout
+  assert.equal(treeStage([at(2), at(1), at(0)]), 3); // three days in a row: seedling
 });
 
 test('reminderDates skips today once practised or past, then one per day', () => {

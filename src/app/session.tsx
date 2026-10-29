@@ -17,7 +17,7 @@ import { PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Art, Button, Card, Sheet, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
-import { ACHIEVEMENTS, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
+import { ACHIEVEMENTS, achievementStage, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
 import {
   clampMinutes,
   elapsedSec,
@@ -330,7 +330,7 @@ function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void })
           {t('achievements.unlocked')}
         </Txt>
         <View aria-hidden>
-          <TreeGrow stage={ACHIEVEMENTS.indexOf(a) + 1} size={200} ms={1200} delay={500} />
+          <TreeGrow stage={achievementStage(a)} size={200} ms={1200} delay={500} />
           <LeafBurst size={200} delay={900} />
         </View>
         <View style={{ alignItems: 'center', gap: space[2] }}>
