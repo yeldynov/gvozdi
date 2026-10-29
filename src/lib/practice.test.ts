@@ -96,15 +96,20 @@ test('levelOf needs both total and longest thresholds', () => {
   assert.equal(l.totalMin, 71);
 });
 
-test('programDay advances per practice day, pauses on gaps, ends after 21', () => {
-  assert.deepEqual(programDay([], now), { day: 1, minutes: 2, done: 0 });
+test('programDay: null until joined, counts days since joining, pauses on gaps, finishes after 21', () => {
+  const joined = '2026-10-01';
+  assert.equal(programDay([at(2)], undefined, now), null);
+  assert.deepEqual(programDay([], joined, now), { day: 1, minutes: 2, done: 0, finished: false });
   // practised 2 days ago and today (gap yesterday): day 2, today counted as done
-  assert.deepEqual(programDay([at(2), at(0), at(0, 60, 9)], now), { day: 2, minutes: 2, done: 2 });
+  assert.deepEqual(programDay([at(2), at(0), at(0, 60, 9)], joined, now), { day: 2, minutes: 2, done: 2, finished: false });
+  // days before joining don't count
+  assert.equal(programDay([at(5), at(2)], '2026-10-24', now)?.day, 2);
   const past = Array.from({ length: 21 }, (_, i) => at(i + 1));
-  assert.equal(programDay(past.slice(1), now)?.day, 21);
-  assert.equal(programDay(past, now), null);
-  assert.equal(todayMinutes(past.slice(1), now), PROGRAM[20]);
-  assert.equal(todayMinutes(past, now), 6); // 5 min last session + 1
+  assert.equal(programDay(past.slice(1), joined, now)?.day, 21);
+  assert.equal(programDay(past, joined, now)?.finished, true);
+  assert.equal(todayMinutes(past.slice(1), joined, now), PROGRAM[20]);
+  assert.equal(todayMinutes(past, joined, now), 6); // finished: 5 min last session + 1
+  assert.equal(todayMinutes([at(1)], undefined, now), 6); // not joined: adaptive suggestion
 });
 
 test('treeStage starts at a seed and grows per achievement', () => {

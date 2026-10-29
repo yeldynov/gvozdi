@@ -37,6 +37,7 @@ export const PAGES: Record<string, { art: ArtName; article?: boolean; accordion?
   guide: { art: 'stand', pics: [['mat', 'support', 'wound'], ['stepOn', 'knees'], ['gaze', 'wave', 'timer'], ['warm', 'dots']] },
   faq: { art: 'reflect', accordion: true },
   about: { art: 'together' },
+  program: { art: 'time' },
   'first-minutes': { art: 'feel', article: true },
   'why-feet': { art: 'step', article: true },
   habit: { art: 'time', article: true },

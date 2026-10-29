@@ -1,12 +1,15 @@
 import Feather from '@expo/vector-icons/Feather';
-import { Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { GuidePic } from '@/components/guide-pics';
 import { PAGES, WriteToUs, type Page, type Section } from '@/components/menu';
-import { Art, BackHeader, Screen, Txt } from '@/components/ui';
+import { Art, BackHeader, Button, Screen, Txt } from '@/components/ui';
+import { capture } from '@/lib/analytics';
+import { dayKey, PROGRAM, programDay } from '@/lib/practice';
+import { useStore } from '@/store';
 import { space, useColors } from '@/theme';
 
 /** Guide, FAQ, About and journal articles; the text lives in i18n under `read.<id>`. */
@@ -49,9 +52,25 @@ export default function Read() {
           </View>
         ))
       )}
+      {id === 'program' && <ProgramJoin />}
       {!meta.article && <WriteToUs />}
     </Screen>
   );
+}
+
+/** End of the program page: join, or where you are if already in. */
+function ProgramJoin() {
+  const { t } = useTranslation();
+  const sessions = useStore((s) => s.sessions);
+  const joined = useStore((s) => s.settings.program);
+  const program = programDay(sessions, joined);
+  if (program && !program.finished) return <Txt variant="label">{t('home.programDay', { day: program.day, total: PROGRAM.length })}</Txt>;
+  const join = () => {
+    useStore.getState().setSettings({ program: dayKey(new Date()) });
+    capture('program_joined', { from: 'read' });
+    router.navigate('/');
+  };
+  return <Button label={t('home.join')} onPress={join} style={{ alignSelf: 'stretch', alignItems: 'center' }} />;
 }
 
 /** Question that opens its answer on tap. */

@@ -28,7 +28,8 @@
     "consent": "Help shape Gvozdi?",
     "consentText": "Share anonymous usage stats: which features get used. Never your notes, name or email. You can change this in Settings.",
     "consentYes": "Share",
-    "consentNo": "No thanks"
+    "consentNo": "No thanks",
+    "join": "Join"
   },
   "progress": {
     "title": "Progress",
@@ -506,6 +507,35 @@
           "h": "Simple aftercare",
           "p": [
             "Walk barefoot for a minute. Have a glass of water if you like. If your soles feel tender the next day, rest; the board will wait."
+          ]
+        }
+      ]
+    },
+    "program": {
+      "title": "The 21-day program",
+      "lead": "A gentle path into daily practice, if you want one.",
+      "sections": [
+        {
+          "p": [
+            "Three weeks, one short session each day you practise. It starts at 2 minutes and grows slowly to 20, so your feet and your attention have time to adapt."
+          ]
+        },
+        {
+          "h": "Your days, not the calendar",
+          "p": [
+            "The program moves one step each day you stand. Miss a day and it simply waits: nothing resets, nothing is lost."
+          ]
+        },
+        {
+          "h": "How it works",
+          "p": [
+            "Home shows today's minutes and how many days are done. Begin starts a session of that length. After day 21 the app goes back to suggesting a little more than your last session."
+          ]
+        },
+        {
+          "h": "Your choice",
+          "p": [
+            "You don't need the program to practise. Join if a plan helps you; leave any time from Home. Your sessions always stay."
           ]
         }
       ]

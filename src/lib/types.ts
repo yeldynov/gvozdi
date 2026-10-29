@@ -24,5 +24,6 @@ export type Settings = {
   reminder?: string; // 'HH:mm'
   installHintDismissed?: boolean; // web only
   skipPrepare?: boolean; // short countdown instead of the full Steady screen
+  program?: string; // dayKey the user joined the 21-day program; unset = not in it
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };

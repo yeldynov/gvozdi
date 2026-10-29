@@ -193,20 +193,22 @@ export function levelOf(sessions: Session[]) {
 export const PROGRAM = [2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15, 17, 20];
 
 /**
- * Today's program day: it advances one step per practice day, so a missed day pauses rather than resets.
- * Null once 21 earlier days have been practised. `done` counts today if already practised.
+ * Today's program day, or null when the user hasn't joined (`joined` is the dayKey they did).
+ * It advances one step per practice day since joining, so a missed day pauses rather than resets.
+ * `done` counts today if already practised; `finished` once 21 earlier days have been practised.
  */
-export function programDay(sessions: Session[], now = new Date()) {
+export function programDay(sessions: Session[], joined?: string, now = new Date()) {
+  if (!joined) return null;
   const today = dayKey(now);
-  const days = practiceDays(sessions);
+  const days = practiceDays(sessions).filter((d) => d >= joined);
   const before = days.filter((d) => d < today).length;
-  if (before >= PROGRAM.length) return null;
-  return { day: before + 1, minutes: PROGRAM[before], done: before + (days.includes(today) ? 1 : 0) };
+  if (before >= PROGRAM.length) return { day: PROGRAM.length, minutes: suggestedMinutes(sessions), done: PROGRAM.length, finished: true };
+  return { day: before + 1, minutes: PROGRAM[before], done: before + (days.includes(today) ? 1 : 0), finished: false };
 }
 
-/** What Home and Practice offer: the program's minutes while it runs, then the adaptive suggestion. */
-export function todayMinutes(sessions: Session[], now = new Date()): number {
-  return programDay(sessions, now)?.minutes ?? suggestedMinutes(sessions);
+/** What Home and Practice offer: the program's minutes while it runs, otherwise the adaptive suggestion. */
+export function todayMinutes(sessions: Session[], joined?: string, now = new Date()): number {
+  return programDay(sessions, joined, now)?.minutes ?? suggestedMinutes(sessions);
 }
 
 /** Dev-only: one session a day for `days` days, ending today. */

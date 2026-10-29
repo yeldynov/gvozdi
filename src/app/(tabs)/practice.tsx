@@ -21,7 +21,8 @@ export default function Practice() {
   const sessions = useStore((s) => s.sessions);
   const [custom, setCustom] = useState(false);
   const [mode, setMode] = useState<SessionMode>('free');
-  const [min, setMin] = useState(() => clampMinutes(todayMinutes(sessions)));
+  const program = useStore((s) => s.settings.program);
+  const [min, setMin] = useState(() => clampMinutes(todayMinutes(sessions, program)));
 
   const toggle = () => {
     setCustom(!custom);
