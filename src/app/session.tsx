@@ -14,7 +14,7 @@ import { TreeGrow } from '@/components/progress-visuals';
 import { LeafBurst } from '@/components/scenes';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
 import { PeakCurve, TimerRing } from '@/components/session-visuals';
-import { Art, Button, Card, Sheet, Txt } from '@/components/ui';
+import { Art, Button, Card, Sheet, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
 import { ACHIEVEMENTS, achievementStage, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
@@ -44,7 +44,8 @@ export default function SessionScreen() {
   const [resume] = useState(() => useStore.getState().running);
   const mode: SessionMode = resume?.mode ?? (params.mode === 'free' || params.mode === 'timed' ? params.mode : 'peak');
   const goalSec = resume ? resume.goalSec : mode === 'free' ? 0 : clampMinutes(Number(params.min) || 5) * 60;
-  const [started, setStarted] = useState(!!resume);
+  const [started, setStarted] = useState(() => !!resume);
+  const skipPrepare = useStore((s) => s.settings.skipPrepare);
   const c = useColors();
 
   const start = () => {
@@ -54,7 +55,13 @@ export default function SessionScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg }}>
-      {started ? <Active mode={mode} goalSec={goalSec} /> : <Prepare mode={mode} goalSec={goalSec} onStart={start} />}
+      {started ? (
+        <Active mode={mode} goalSec={goalSec} />
+      ) : skipPrepare ? (
+        <Countdown mode={mode} goalSec={goalSec} onStart={start} />
+      ) : (
+        <Prepare mode={mode} goalSec={goalSec} onStart={start} />
+      )}
     </SafeAreaView>
   );
 }
@@ -75,7 +82,49 @@ function Prepare({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: numbe
           {t('session.prepareText')}
         </Txt>
       </View>
-      <Button label={t('session.start')} onPress={onStart} style={styles.wide} />
+      <View style={{ gap: space[2] }}>
+        <Button label={t('session.start')} onPress={onStart} style={styles.wide} />
+        <TextLink
+          label={t('session.dontShowAgain')}
+          onPress={() => {
+            useStore.getState().setSettings({ skipPrepare: true });
+            onStart();
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+const COUNTDOWN_SEC = 5;
+
+/** Short gate once the full prepare screen is dismissed for good: a few seconds to step on. */
+function Countdown({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: number; onStart: () => void }) {
+  const { t } = useTranslation();
+  const c = useColors();
+  const { isSignedIn } = useAuth();
+  const [left, setLeft] = useState(COUNTDOWN_SEC);
+  useEffect(() => {
+    if (left <= 0) return onStart();
+    const id = setTimeout(() => setLeft(left - 1), 1000);
+    return () => clearTimeout(id);
+  }, [left, onStart]);
+  return (
+    <View style={styles.page}>
+      <TopBar onClose={() => leave(isSignedIn)} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
+      <View style={styles.center}>
+        <Art name="breathe" size={200} />
+        <Txt variant="display" style={{ textAlign: 'center' }}>
+          {t('session.prepareTitle')}
+        </Txt>
+        <Txt variant="body" style={{ textAlign: 'center', color: c.text2 }}>
+          {t('session.countdownText')}
+        </Txt>
+        <Text accessibilityLiveRegion="polite" style={[styles.big, { color: c.accent }]}>
+          {Math.max(left, 1)}
+        </Text>
+      </View>
+      <TextLink label={t('session.startNow')} onPress={onStart} />
     </View>
   );
 }
@@ -114,6 +163,11 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     allowLeave();
     then();
   };
+
+  // Skipped prepare screen: nothing has stored the clock yet, so a reload could resume it.
+  useEffect(() => {
+    if (!useStore.getState().running) useStore.getState().setRunning({ mode, goalSec, clock });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- once, with the initial clock
 
   useEffect(() => {
     setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});

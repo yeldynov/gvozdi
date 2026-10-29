@@ -107,6 +107,18 @@ export default function Settings() {
         )}
       </Card>
       <Card>
+        <Txt variant="label">{t('settings.prepare')}</Txt>
+        <Txt variant="caption">{t('settings.prepareText')}</Txt>
+        <Choice<'on' | 'off'>
+          value={settings.skipPrepare ? 'off' : 'on'}
+          onChange={(v) => setSettings({ skipPrepare: v === 'off' })}
+          options={[
+            { value: 'off', label: t('settings.off') },
+            { value: 'on', label: t('settings.on') },
+          ]}
+        />
+      </Card>
+      <Card>
         <Txt variant="label">{t('settings.privacy')}</Txt>
         <Txt variant="caption">{t('settings.privacyText')}</Txt>
         <Choice<'on' | 'off'>

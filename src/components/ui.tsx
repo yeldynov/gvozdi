@@ -217,6 +217,18 @@ export function Step({ icon, label, onPress }: { icon: 'minus' | 'plus'; label: 
   );
 }
 
+/** Quiet secondary action: small grey text, centred. */
+export function TextLink({ label, onPress }: { label: string; onPress: () => void }) {
+  const c = useColors();
+  return (
+    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress} style={{ alignSelf: 'center', padding: space[2] }}>
+      <Txt variant="caption" style={{ color: c.text2 }}>
+        {label}
+      </Txt>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   scroll: { padding: space[5], gap: space[4], width: '100%', maxWidth: 560, alignSelf: 'center' },
   display: { fontFamily: fonts.display, fontSize: 34, lineHeight: 40 },

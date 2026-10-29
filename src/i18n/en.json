@@ -90,6 +90,8 @@
     "later": "Later",
     "dataTextSynced": "Sessions are backed up to your account. You can still export a JSON copy any time.",
     "privacy": "Usage stats",
+    "prepare": "Steady screen",
+    "prepareText": "The breathing intro before the clock starts. When off, a 5-second countdown instead.",
     "privacyText": "Anonymous: which features get used. Never your notes, name or email."
   },
   "practice": {
@@ -119,6 +121,9 @@
     "prepareTitle": "Steady!",
     "prepareText": "Relax and take a deep breath. As you breathe out, step onto the nails. The first few minutes may sting. Keep breathing slowly and deeply. The pain soon fades, and then the real practice begins…",
     "start": "Start",
+    "dontShowAgain": "Don't show again",
+    "countdownText": "Breathe out and step onto the nails.",
+    "startNow": "Start now",
     "remaining": "Time remaining",
     "achieved": "Time achieved",
     "onBoard": "On the board",

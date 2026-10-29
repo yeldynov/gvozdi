@@ -23,5 +23,6 @@ export type Settings = {
   haptics: boolean;
   reminder?: string; // 'HH:mm'
   installHintDismissed?: boolean; // web only
+  skipPrepare?: boolean; // short countdown instead of the full Steady screen
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };
