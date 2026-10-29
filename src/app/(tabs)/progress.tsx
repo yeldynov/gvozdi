@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,13 @@ export default function Progress() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
-  const { saved } = useLocalSearchParams<{ saved?: string }>();
+  const { saved, stages } = useLocalSearchParams<{ saved?: string; stages?: string }>();
+  const [stagesOpen, setStagesOpen] = useState(false);
+  if (stages && !stagesOpen) setStagesOpen(true); // Home's milestone tile opens the badges
+  useFocusEffect(useCallback(() => () => setStagesOpen(false), [])); // collapse on leaving the screen
+  useEffect(() => {
+    if (stages) router.setParams({ stages: undefined });
+  }, [stages]);
   useEffect(() => {
     if (!saved) return;
     const id = setTimeout(() => router.setParams({ saved: undefined }), 4000);
@@ -104,32 +110,41 @@ export default function Progress() {
       </Card>
 
       <Txt variant="label">{t('progress.achievements')}</Txt>
-      <Card style={{ alignItems: 'center', gap: space[2], overflow: 'hidden' }}>
-        <View style={[StyleSheet.absoluteFill, styles.backdrop]}>
-          <GrowingTree size={170} />
+      <Pressable
+        accessibilityRole="button"
+        aria-expanded={stagesOpen}
+        onPress={() => setStagesOpen((o) => !o)}
+        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
+        <Card style={{ alignItems: 'center', gap: space[2], overflow: 'hidden' }}>
+          <View style={[StyleSheet.absoluteFill, styles.backdrop]}>
+            <GrowingTree size={170} />
+          </View>
+          <Tree stage={stage} size={180} />
+          <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
+          {!top && <Txt variant="caption">{t('progress.treeEmpty')}</Txt>}
+          <Txt variant="caption" style={{ textAlign: 'center' }}>
+            {t('progress.treeHint')}
+          </Txt>
+          <Feather name={stagesOpen ? 'chevron-up' : 'chevron-down'} size={20} color={c.text3} />
+        </Card>
+      </Pressable>
+      {stagesOpen && (
+        <View style={styles.grid}>
+          {ACHIEVEMENTS.map((a) => (
+            <Pressable
+              key={a.id}
+              accessibilityRole="button"
+              accessibilityLabel={`${t(`achievements.${a.id}.title`)}, ${earned.includes(a.id) ? t('achievements.earned') : t('achievements.locked')}`}
+              onPress={() => router.push({ pathname: '/achievement/[id]', params: { id: a.id } })}
+              style={({ pressed }) => [styles.badge, { opacity: pressed ? 0.7 : 1 }]}>
+              <Badge a={a} earned={earned.includes(a.id)} />
+              <Txt variant="caption" numberOfLines={2} style={{ textAlign: 'center' }}>
+                {t(`achievements.${a.id}.title`)}
+              </Txt>
+            </Pressable>
+          ))}
         </View>
-        <Tree stage={stage} size={180} />
-        <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
-        {!top && <Txt variant="caption">{t('progress.treeEmpty')}</Txt>}
-        <Txt variant="caption" style={{ textAlign: 'center' }}>
-          {t('progress.treeHint')}
-        </Txt>
-      </Card>
-      <View style={styles.grid}>
-        {ACHIEVEMENTS.map((a) => (
-          <Pressable
-            key={a.id}
-            accessibilityRole="button"
-            accessibilityLabel={`${t(`achievements.${a.id}.title`)}, ${earned.includes(a.id) ? t('achievements.earned') : t('achievements.locked')}`}
-            onPress={() => router.push({ pathname: '/achievement/[id]', params: { id: a.id } })}
-            style={({ pressed }) => [styles.badge, { opacity: pressed ? 0.7 : 1 }]}>
-            <Badge a={a} earned={earned.includes(a.id)} />
-            <Txt variant="caption" numberOfLines={2} style={{ textAlign: 'center' }}>
-              {t(`achievements.${a.id}.title`)}
-            </Txt>
-          </Pressable>
-        ))}
-      </View>
+      )}
 
       <Button ghost label={t('history.link')} onPress={() => router.push('/history')} />
     </Screen>
