@@ -103,6 +103,7 @@
     "cleared": "All sessions cleared.",
     "contact": "Contact",
     "contactText": "Questions, ideas or a bug? Write to us on Telegram.",
+    "version": "Version {{version}}",
     "write": "Write to us",
     "reminder": "Daily reminder",
     "reminderText": "A gentle nudge at the same time every day.",

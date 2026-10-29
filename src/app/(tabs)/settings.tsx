@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -145,6 +146,10 @@ export default function Settings() {
         <Txt variant="caption">{t('settings.contactText')}</Txt>
         <WriteToUs style={styles.full} />
       </Card>
+      <Txt variant="caption" style={{ textAlign: 'center' }}>
+        {t('settings.version', { version: Constants.expoConfig?.version })}
+        {process.env.EXPO_PUBLIC_BUILD && ` (${process.env.EXPO_PUBLIC_BUILD})`}
+      </Txt>
 
       <Sheet visible={confirming} onClose={() => setConfirming(false)}>
         <Txt variant="title">{t('settings.clearTitle')}</Txt>
