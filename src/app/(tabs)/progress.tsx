@@ -14,7 +14,6 @@ import {
   earnedAchievementIds,
   formatDuration,
   lastDays,
-  levelOf,
   totals,
   treeStage,
 } from '@/lib/practice';
@@ -39,7 +38,6 @@ export default function Progress() {
   }, [saved]);
   const sum = totals(sessions);
   const streak = currentStreak(sessions);
-  const { level, next, totalMin, longestMin } = levelOf(sessions);
   const earned = earnedAchievementIds(sessions);
   const stage = treeStage(sessions); // tree grows to the furthest stage earned
   const top = ACHIEVEMENTS[stage - 2];
@@ -74,22 +72,6 @@ export default function Progress() {
           <Txt variant="caption">{t('progress.best', { count: bestStreak(sessions) })}</Txt>
         </View>
         <DayBars data={week} labels label={`${t('progress.week')}: ${minutes(week)}`} />
-      </Card>
-
-      <Card>
-        <Txt variant="label">{t('progress.level')}</Txt>
-        <Txt variant="title">{t(`levels.${level.id}`)}</Txt>
-        {next ? (
-          <>
-            <Txt variant="caption">{t('progress.nextLevel', { name: t(`levels.${next.id}`) })}</Txt>
-            <Txt variant="caption">{t('progress.levelTotal', { value: Math.min(totalMin, next.totalMin), target: next.totalMin })}</Txt>
-            <Txt variant="caption">
-              {t('progress.levelLongest', { value: Math.min(longestMin, next.longestMin), target: next.longestMin })}
-            </Txt>
-          </>
-        ) : (
-          <Txt variant="caption">{t('progress.topLevel')}</Txt>
-        )}
       </Card>
 
       <View style={styles.grid}>

@@ -75,11 +75,6 @@
     "minutesTotal_one": "{{count}} minute",
     "minutesTotal_other": "{{count}} minutes",
     "achievements": "Your tree",
-    "level": "Level",
-    "nextLevel": "Next: {{name}}",
-    "levelTotal": "{{value}} of {{target}} min in total",
-    "levelLongest": "Longest session: {{value}} of {{target}} min",
-    "topLevel": "The highest level. Keep standing.",
     "saved": "Session saved. Well done.",
     "treeEmpty": "Your seed is planted. The first practice makes it sprout.",
     "treeHint": "Your tree grows with your streak and reaches a new stage at each milestone. A missed day never takes growth away."
@@ -278,13 +273,6 @@
   "reminder": {
     "title": "Time for the board",
     "body": "A few quiet minutes on the nails."
-  },
-  "levels": {
-    "beginner": "Beginner",
-    "steady": "Steady",
-    "practitioner": "Practitioner",
-    "adept": "Adept",
-    "master": "Master"
   },
   "account": {
     "title": "Account",

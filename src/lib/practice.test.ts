@@ -13,7 +13,6 @@ import {
   formatDuration,
   groupByDay,
   lastDays,
-  levelOf,
   nextAchievement,
   PROGRAM,
   programDay,
@@ -88,15 +87,6 @@ test('shiftTime wraps around midnight', () => {
   assert.equal(shiftTime('00:05', -15), '23:50');
 });
 
-test('levelOf needs both total and longest thresholds', () => {
-  assert.equal(levelOf([]).level.id, 'beginner');
-  // 80 min total but longest only 4 min: still beginner
-  assert.equal(levelOf(Array.from({ length: 20 }, (_, i) => at(i, 240))).level.id, 'beginner');
-  const l = levelOf([at(0, 60 * 60), at(1, 11 * 60)]);
-  assert.equal(l.level.id, 'steady');
-  assert.equal(l.next?.id, 'practitioner');
-  assert.equal(l.totalMin, 71);
-});
 
 test('programDay: null until joined, counts days since joining, pauses on gaps, finishes after 21', () => {
   const joined = '2026-10-01';

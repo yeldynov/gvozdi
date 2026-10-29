@@ -52,7 +52,7 @@ src/theme.ts                 useColors() light/dark (follows settings.theme), ra
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
 src/store.ts                 sessions + settings + running session; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
-src/lib/practice.ts          pure logic: streaks, achievements, stats, levels, 21-day program (todayMinutes), formatDuration
+src/lib/practice.ts          pure logic: streaks, achievements, stats, 21-day program (todayMinutes), formatDuration
 src/lib/*.test.ts            node:test asserts
 src/i18n/{en,uk,ru}.json     translations
 .eas/workflows/ship.yml      manual: web deploy + OTA update (eas workflow:run)
@@ -61,7 +61,7 @@ src/i18n/{en,uk,ru}.json     translations
 
 ## Conventions
 
-- **Derive, don't store.** Streak, stats, achievements and levels are computed from sessions in `src/lib/practice.ts`, never persisted.
+- **Derive, don't store.** Streak, stats and achievements are computed from sessions in `src/lib/practice.ts`, never persisted.
 - **Sessions are never removed.** `deleteSession` sets `deletedAt` (tombstone for sync). Use `live()` from `practice.ts` for anything shown to the user. Every mutation bumps `updatedAt`.
 - Pure logic goes in `src/lib/` with a `*.test.ts` next to it.
 - Colors only via `useColors()`; spacing/radius/fonts from `src/theme.ts`. Check both light and dark.
@@ -114,7 +114,7 @@ npx tsc --noEmit && npx expo lint && npm test
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
-7. Levels and a 21-day program — done; opt-in (Home invite card or `/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
+7. 21-day program — done (levels removed: the tree covers progression); opt-in (Home invite card or `/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
 8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app is account-gated with a guest demo session (replaced the sign-up prompt rule)
 9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog — done (native icons/splash unseen until `eas build`). Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
 
