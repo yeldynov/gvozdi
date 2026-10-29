@@ -280,8 +280,11 @@ function SceneStep({ size }: { size: number }) {
 function SceneFeel({ size }: { size: number }) {
   const { v, reduced } = useLoop(1800);
   const k = size / 320;
-  const wave = (dir: number) =>
-    reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.15, 1]), transform: [{ translateX: dir * 14 * k * v.value }, { scale: 1 + 0.06 * v.value }] };
+  // Called from the style worklets below, so it must be a worklet too (native crashes otherwise; web doesn't care).
+  const wave = (dir: number) => {
+    'worklet';
+    return reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.15, 1]), transform: [{ translateX: dir * 14 * k * v.value }, { scale: 1 + 0.06 * v.value }] };
+  };
   const left = useAnimatedStyle(() => wave(-1));
   const right = useAnimatedStyle(() => wave(1));
   const top = GV.terra;
