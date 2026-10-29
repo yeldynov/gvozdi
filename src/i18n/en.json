@@ -97,7 +97,6 @@
   },
   "practice": {
     "title": "Practice",
-    "question": "How long today?",
     "modes": {
       "peak": "Peak",
       "timed": "Timed",

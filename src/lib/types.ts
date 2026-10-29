@@ -25,5 +25,6 @@ export type Settings = {
   installHintDismissed?: boolean; // web only
   skipPrepare?: boolean; // short countdown instead of the full Steady screen
   program?: string; // dayKey the user joined the 21-day program; unset = not in it
+  practice?: { mode: SessionMode; min: number }; // last setup on the Practice tab; unset = free
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };

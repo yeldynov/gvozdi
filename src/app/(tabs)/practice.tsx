@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -13,24 +13,35 @@ import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
-// Zen by default: a free session one tap away; the pill under Begin opens mode and minutes.
-// ponytail: mode and minutes reset per visit; persist a last-used choice in settings if people ask
+// Zen by default: the saved practice (free until set up) one tap away; the pill under Begin opens mode and minutes.
 export default function Practice() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
+  const { program, practice } = useStore((s) => s.settings);
+  const setSettings = useStore((s) => s.setSettings);
   const [custom, setCustom] = useState(false);
-  const [mode, setMode] = useState<SessionMode>('free');
-  const program = useStore((s) => s.settings.program);
-  const [min, setMin] = useState(() => clampMinutes(todayMinutes(sessions, program)));
-
-  const toggle = () => {
-    setCustom(!custom);
-    setMode(custom ? 'free' : 'peak');
+  const mode: SessionMode = practice?.mode ?? 'free';
+  const min = practice?.min ?? clampMinutes(todayMinutes(sessions, program));
+  const setMode = (m: SessionMode) => {
+    setSettings({ practice: { mode: m, min } });
+    if (m === 'free') setCustom(false); // free is the zen view itself
   };
+  const setMin = (m: number) => setSettings({ practice: { mode, min: clampMinutes(m) } });
+
+  // Every return to the tab starts at the zen view; the setup stays saved.
+  useFocusEffect(useCallback(() => () => setCustom(false), []));
+
+  // Home's "Change" opens straight into setup. The tab stays mounted, so each tap sends a fresh token to react to.
+  const { setup } = useLocalSearchParams<{ setup?: string }>();
+  const [seenSetup, setSeenSetup] = useState<string>();
+  if (setup && setup !== seenSetup) {
+    setSeenSetup(setup);
+    setCustom(true);
+  }
 
   const begin = () => {
-    capture('session_started', { mode, goal_min: mode === 'free' ? undefined : min, customized: custom });
+    capture('session_started', { mode, goal_min: mode === 'free' ? undefined : min, customized: !!practice });
     router.push({ pathname: '/session', params: { mode, min: String(min) } });
   };
 
@@ -39,29 +50,23 @@ export default function Practice() {
       <TabHead>
       </TabHead>
 
-      {!custom && (
-        <View style={styles.zen}>
-          <Art name="stand" size={260} />
-          <Txt variant="display" style={{ textAlign: 'center' }}>
-            {t('practice.zenTitle')}
-          </Txt>
-          <Txt variant="caption" style={{ textAlign: 'center' }}>
-            {t('practice.hints.free')}
-          </Txt>
-        </View>
-      )}
+      {/* Always the illustration; the words describe the practice Begin starts. */}
+      <View style={styles.zen}>
+        <Art name="stand" size={custom ? 140 : 260} />
+        <Txt variant="display" style={{ textAlign: 'center' }}>
+          {mode === 'free' ? t('practice.zenTitle') : `${t(`practice.modes.${mode}`)} · ${min} ${t('practice.min')}`}
+        </Txt>
+        <Txt variant="caption" style={{ textAlign: 'center' }}>
+          {t(`practice.hints.${mode}`)}
+        </Txt>
+      </View>
 
       {custom && (
-        <>
-          <Txt variant="display">{t('practice.question')}</Txt>
-
-          <Choice
-            value={mode}
-            onChange={setMode}
-            options={(['peak', 'timed', 'free'] as const).map((m) => ({ value: m, label: t(`practice.modes.${m}`) }))}
-          />
-          <Txt variant="caption">{t(`practice.hints.${mode}`)}</Txt>
-        </>
+        <Choice
+          value={mode}
+          onChange={setMode}
+          options={(['peak', 'timed', 'free'] as const).map((m) => ({ value: m, label: t(`practice.modes.${m}`) }))}
+        />
       )}
 
       {custom && mode !== 'free' && (
@@ -88,11 +93,11 @@ export default function Practice() {
             <Txt variant="body" style={{ flex: 1, color: c.text2 }}>
               {t('practice.custom')}
             </Txt>
-            <Step icon="minus" label={t('practice.fewer')} onPress={() => setMin((m) => clampMinutes(m - 1))} />
+            <Step icon="minus" label={t('practice.fewer')} onPress={() => setMin(min - 1)} />
             <Text style={[styles.stepValue, { color: c.text }]}>
               {min} {t('practice.min')}
             </Text>
-            <Step icon="plus" label={t('practice.more')} onPress={() => setMin((m) => clampMinutes(m + 1))} />
+            <Step icon="plus" label={t('practice.more')} onPress={() => setMin(min + 1)} />
           </Card>
         </>
       )}
@@ -104,7 +109,7 @@ export default function Practice() {
       />
       <Pressable
         accessibilityRole="button"
-        onPress={toggle}
+        onPress={() => setCustom(!custom)}
         style={({ pressed }) => [styles.setup, { borderColor: c.accent, opacity: pressed ? 0.7 : 1 }]}>
         <Feather name={custom ? 'arrow-left' : 'sliders'} size={18} color={c.accent} />
         <Text style={[styles.setupText, { color: c.accent }]}>{custom ? t('practice.zen') : t('practice.setup')}</Text>
