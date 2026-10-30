@@ -4,7 +4,7 @@ import { Platform, StyleSheet, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { fonts, radius, space, useColors } from '@/theme';
+import { radius, space, useColors } from '@/theme';
 
 const icons = { index: 'home', practice: 'circle', progress: 'bar-chart-2', settings: 'settings' } as const;
 const web = Platform.OS === 'web';
@@ -31,15 +31,12 @@ export default function TabLayout() {
             borderWidth: StyleSheet.hairlineWidth,
             borderBottomLeftRadius: radius.lg,
             borderBottomRightRadius: radius.lg,
-            height: 60,
-            paddingTop: space[1],
-            paddingBottom: space[2],
+            height: 56,
             marginBottom: insets.bottom + space[4],
           }),
         },
-        // Wide browsers would otherwise put labels beside icons.
-        ...(web && { tabBarLabelPosition: 'below-icon' as const }),
-        tabBarLabelStyle: { fontFamily: fonts.textMedium, ...(web && { lineHeight: 14, flexShrink: 0 }) },
+        // Icons only; the title stays as each tab's accessibility label.
+        tabBarShowLabel: false,
         tabBarIcon: ({ color, size }) => (
           <Feather name={icons[route.name as keyof typeof icons]} color={color as string} size={size} />
         ),
