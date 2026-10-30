@@ -1,7 +1,8 @@
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
-import { useEffect, type ReactNode } from 'react';
+import { BottomTabBarHeightContext } from 'expo-router/tabs';
+import { useContext, useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextProps, type ViewStyle } from 'react-native';
 import Animated, {
@@ -78,10 +79,15 @@ export function Logo() {
 
 export function Screen({ children }: { children: ReactNode }) {
   const c = useColors();
+  // Web tab bar floats over the content; native tabs report nothing (0).
+  const tabBar = useContext(BottomTabBarHeightContext) ?? 0;
+  const insets = useSafeAreaInsets();
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: c.bg }}>
       {/* Web: a classic scrollbar takes width, pushing the column off-centre from the tab bar. */}
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={Platform.OS !== 'web'}>
+      <ScrollView
+        contentContainerStyle={[styles.scroll, tabBar > 0 && { paddingBottom: tabBar + insets.bottom + space[4] + space[5] }]}
+        showsVerticalScrollIndicator={Platform.OS !== 'web'}>
         {children}
       </ScrollView>
     </SafeAreaView>
