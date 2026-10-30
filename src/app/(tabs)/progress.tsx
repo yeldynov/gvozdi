@@ -24,13 +24,9 @@ export default function Progress() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
-  const { saved, stages } = useLocalSearchParams<{ saved?: string; stages?: string }>();
+  const { saved } = useLocalSearchParams<{ saved?: string }>();
   const [stagesOpen, setStagesOpen] = useState(false);
-  if (stages && !stagesOpen) setStagesOpen(true); // Home's milestone tile opens the badges
   useFocusEffect(useCallback(() => () => setStagesOpen(false), [])); // collapse on leaving the screen
-  useEffect(() => {
-    if (stages) router.setParams({ stages: undefined });
-  }, [stages]);
   useEffect(() => {
     if (!saved) return;
     const id = setTimeout(() => router.setParams({ saved: undefined }), 4000);
