@@ -13,7 +13,7 @@ import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
 import { fonts, radius, space, useColors } from '@/theme';
 
-// Zen by default: the saved practice (free until set up) one tap away; the pill under Begin opens mode and minutes.
+// Zen by default: free practice one tap away; the pill under Begin opens mode and minutes.
 export default function Practice() {
   const { t } = useTranslation();
   const c = useColors();
@@ -21,11 +21,13 @@ export default function Practice() {
   const { program, practice } = useStore((s) => s.settings);
   const setSettings = useStore((s) => s.setSettings);
   const [custom, setCustom] = useState(false);
-  const mode: SessionMode = practice?.mode ?? 'free';
+  // Zen is always the free stopwatch; setup opens on the saved timed practice, peak until one is picked.
+  const saved = practice?.mode && practice.mode !== 'free' ? practice.mode : 'peak';
+  const mode: SessionMode = custom ? saved : 'free';
   const min = practice?.min ?? clampMinutes(todayMinutes(sessions, program));
   const setMode = (m: SessionMode) => {
+    if (m === 'free') return setCustom(false); // free is the zen view itself
     setSettings({ practice: { mode: m, min } });
-    if (m === 'free') setCustom(false); // free is the zen view itself
   };
   const setMin = (m: number) => setSettings({ practice: { mode, min: clampMinutes(m) } });
 
@@ -41,7 +43,7 @@ export default function Practice() {
   }
 
   const begin = () => {
-    capture('session_started', { mode, goal_min: mode === 'free' ? undefined : min, customized: !!practice });
+    capture('session_started', { mode, goal_min: mode === 'free' ? undefined : min, customized: custom });
     router.push({ pathname: '/session', params: { mode, min: String(min) } });
   };
 
