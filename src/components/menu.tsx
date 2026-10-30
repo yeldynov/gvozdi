@@ -75,6 +75,7 @@ function MenuButton() {
   };
   const items: { icon: keyof typeof Feather.glyphMap | 'telegram'; label: string; onPress: () => void; color?: string }[] = [
     { icon: 'book-open', label: t('menu.guide'), onPress: () => go('/read/guide') },
+    { icon: 'calendar', label: t('menu.program'), onPress: () => go('/read/program') },
     { icon: 'feather', label: t('menu.journal'), onPress: () => go('/journal') },
     { icon: 'help-circle', label: t('menu.faq'), onPress: () => go('/read/faq') },
     { icon: 'info', label: t('menu.about'), onPress: () => go('/read/about') },
