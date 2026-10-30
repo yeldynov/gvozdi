@@ -10,7 +10,14 @@ export default function Root({ children }: PropsWithChildren) {
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+        <title>Gvozdi</title>
         <meta name="description" content="A calm companion for nail-board practice" />
+        <meta property="og:title" content="Gvozdi" />
+        <meta property="og:description" content="A calm companion for nail-board practice" />
+        <meta property="og:url" content="https://gvozdi.expo.app" />
+        <meta property="og:image" content="https://gvozdi.expo.app/og.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="theme-color" content="#f5efe6" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#1b1611" media="(prefers-color-scheme: dark)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
