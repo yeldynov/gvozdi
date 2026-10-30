@@ -213,35 +213,35 @@
     "progress": "{{value}} of {{target}}",
     "notFound": "No such achievement.",
     "first_session": {
-      "title": "Sprout",
+      "title": "First Sprout",
       "desc": "Your first practice"
     },
     "streak_3": {
-      "title": "Seedling",
+      "title": "Slender Shoot",
       "desc": "Three days in a row"
     },
     "streak_7": {
-      "title": "Sapling",
+      "title": "Green Sapling",
       "desc": "Seven days in a row"
     },
     "sessions_10": {
-      "title": "Young Tree",
+      "title": "Whispering Leaves",
       "desc": "Ten practices behind you"
     },
     "streak_14": {
-      "title": "Tree",
+      "title": "Shady Crown",
       "desc": "Fourteen days in a row"
     },
     "streak_30": {
-      "title": "Strong Tree",
+      "title": "Steadfast Trunk",
       "desc": "Thirty days in a row"
     },
     "streak_60": {
-      "title": "Old Tree",
+      "title": "Deep Roots",
       "desc": "Sixty days in a row"
     },
     "streak_100": {
-      "title": "Ancient Tree",
+      "title": "Keeper of the Grove",
       "desc": "One hundred days in a row"
     },
     "streak_365": {
