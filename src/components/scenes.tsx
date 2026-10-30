@@ -188,6 +188,55 @@ function BurstLeaf({ size, angle, color, delay }: { size: number; angle: number;
   );
 }
 
+/** Puffy cloud centred at (x, y), `w` wide. */
+function Cloud({ x, y, w, color, opacity }: { x: number; y: number; w: number; color: string; opacity: number }) {
+  const u = w / 60;
+  return (
+    <G fill={color} opacity={opacity}>
+      <Rect x={x - 30 * u} y={y} width={60 * u} height={14 * u} rx={7 * u} />
+      <Circle cx={x - 12 * u} cy={y + 2 * u} r={11 * u} />
+      <Circle cx={x + 6 * u} cy={y - 2 * u} r={15 * u} />
+      <Circle cx={x + 20 * u} cy={y + 5 * u} r={9 * u} />
+    </G>
+  );
+}
+
+/** One cloud drifting side to side; still on reduced motion. */
+function DriftCloud({ size, ms, dx, ...cloud }: { size: number; ms: number; dx: number; x: number; y: number; w: number; color: string; opacity: number }) {
+  const { v, reduced } = useLoop(ms);
+  const k = size / 320;
+  const style = useAnimatedStyle(() => (reduced ? {} : { transform: [{ translateX: interpolate(v.value, [0, 1], [-dx, dx]) * k }] }));
+  return (
+    <Layer size={size} style={style}>
+      <Cloud {...cloud} />
+    </Layer>
+  );
+}
+
+type CloudSpec = { ms: number; dx: number; x: number; y: number; w: number; color: string; opacity: number };
+const GREY = '#8C9AA6';
+const MIST = '#B9C4CC';
+/** Per-scene clouds, placed clear of raised hands and the flame. */
+const CLOUDS: Record<'step' | 'streak', CloudSpec[]> = {
+  step: [
+    { ms: 14000, dx: 10, x: 232, y: 84, w: 70, color: GREY, opacity: 0.85 },
+    { ms: 17000, dx: 14, x: 84, y: 66, w: 56, color: GV.taupeL, opacity: 0.7 },
+    { ms: 12000, dx: 8, x: 270, y: 64, w: 40, color: MIST, opacity: 0.9 },
+    { ms: 19000, dx: 12, x: 60, y: 116, w: 36, color: GV.sageL, opacity: 0.45 },
+  ],
+  streak: [
+    { ms: 14000, dx: 10, x: 92, y: 62, w: 64, color: GREY, opacity: 0.85 },
+    { ms: 17000, dx: 12, x: 150, y: 40, w: 46, color: GV.taupeL, opacity: 0.7 },
+    { ms: 12000, dx: 8, x: 270, y: 150, w: 40, color: MIST, opacity: 0.9 },
+    { ms: 19000, dx: 12, x: 56, y: 128, w: 36, color: GV.sageL, opacity: 0.45 },
+  ],
+};
+
+/** Not practised yet today: a few mixed clouds over the sky. */
+function Clouds({ size, scene }: { size: number; scene: keyof typeof CLOUDS }) {
+  return CLOUDS[scene].map((c, i) => <DriftCloud key={i} size={size} {...c} />);
+}
+
 // ── scenes ─────────────────────────────────────────────────────────────
 /** Seated, hands at heart; breath arcs widen and the body rises on a 4 s inhale / 4 s exhale. */
 function SceneBreathe({ size }: { size: number }) {
@@ -234,7 +283,7 @@ function SceneBreathe({ size }: { size: number }) {
 }
 
 /** Stepping onto the board, arms out: the arms teeter for balance and the sun swells. */
-function SceneStep({ size }: { size: number }) {
+function SceneStep({ size, clouds }: { size: number; clouds?: boolean }) {
   const { v: tilt, reduced } = useLoop(3200);
   const { v: glow } = useLoop(5000);
   const arms = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(tilt.value, [0, 1], [-9, 9])}deg` }] }));
@@ -249,6 +298,7 @@ function SceneStep({ size }: { size: number }) {
       <Layer size={size} style={[origin(250, 78), sun]}>
         <Circle cx={250} cy={78} r={26} fill={GV.gold} />
       </Layer>
+      {clouds && <Clouds size={size} scene="step" />}
       <DriftLeaf size={size} ms={9000} delay={0} x={70} y={70} rot={20} color={GV.terra} />
       <DriftLeaf size={size} ms={10000} delay={3000} x={248} y={140} rot={-40} color={GV.gold} />
       <DriftLeaf size={size} ms={8500} delay={6000} x={120} y={250} rot={70} color={GV.sage} s={0.8} />
@@ -369,7 +419,7 @@ function SceneTime({ size }: { size: number }) {
 }
 
 /** One arm raised in quiet triumph: the flame flickers and the arm sways. */
-function SceneStreak({ size }: { size: number }) {
+function SceneStreak({ size, clouds }: { size: number; clouds?: boolean }) {
   const { v: flick, reduced } = useLoop(1100);
   const { v: sway } = useLoop(3000);
   const flame = useAnimatedStyle(() =>
@@ -391,6 +441,7 @@ function SceneStreak({ size }: { size: number }) {
           <Path d="M0 -20 C 14 6 20 24 12 40 C 6 50 -6 50 -12 40 C -18 28 -6 18 -4 0 C 0 8 -2 4 0 -20 Z" fill={GV.gold} />
         </G>
       </Layer>
+      {clouds && <Clouds size={size} scene="streak" />}
       <DriftLeaf size={size} ms={9000} delay={0} x={66} y={110} rot={26} color={GV.terra} />
       <DriftLeaf size={size} ms={10000} delay={4000} x={70} y={230} rot={66} color={GV.sage} s={0.85} />
       <Layer size={size}>
@@ -413,15 +464,91 @@ function SceneStreak({ size }: { size: number }) {
   );
 }
 
-export const SCENES = { breathe: SceneBreathe, step: SceneStep, feel: SceneFeel, time: SceneTime, streak: SceneStreak };
+/** Rises and fades on a loop: steam, sparkles. Still in place on reduced motion. */
+function Rise({ size, ms, delay, dy = 40, x, y, children }: { size: number; ms: number; delay: number; dy?: number; x: number; y: number; children: ReactNode }) {
+  const { v, reduced } = useLoop(ms, { restart: true, delay });
+  const k = size / 320;
+  const style = useAnimatedStyle(() => {
+    if (reduced) return {};
+    const t = v.value;
+    return {
+      opacity: interpolate(t, [0, 0.3, 1], [0, 1, 0]),
+      transform: [{ translateY: -t * dy * k }, { scale: interpolate(t, [0, 1], [0.7, 1.1]) }],
+    };
+  });
+  return (
+    <Layer size={size} style={[origin(x, y), style]}>
+      {children}
+    </Layer>
+  );
+}
+const sparkle = (x: number, y: number, r: number) => `M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r} Z`;
+
+/** After practice: seated beside the board with tea, smiling; the glow breathes, steam and sparkles rise. */
+function SceneGlow({ size }: { size: number }) {
+  const { v, reduced } = useLoop(6000);
+  const k = size / 320;
+  const glow = useAnimatedStyle(() => (reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.6, 1]), transform: [{ scale: 1 + 0.08 * v.value }] }));
+  const body = useAnimatedStyle(() => ({ transform: [{ translateY: -6 * k * v.value }] }));
+  const top = GV.sage;
+  return (
+    <>
+      <Layer size={size}>
+        <Blob cx={160} cy={160} rx={120} ry={112} fill={GV.gold} opacity={0.14} />
+      </Layer>
+      <Layer size={size} style={[origin(160, 122), glow]}>
+        <Circle cx={160} cy={122} r={64} fill={GV.gold} opacity={0.22} />
+        <Circle cx={160} cy={122} r={44} fill={GV.gold} opacity={0.22} />
+      </Layer>
+      <Rise size={size} ms={5000} delay={0} dy={50} x={82} y={120}>
+        <Path d={sparkle(82, 120, 7)} fill={GV.gold} />
+      </Rise>
+      <Rise size={size} ms={5600} delay={1800} dy={50} x={236} y={104}>
+        <Path d={sparkle(236, 104, 6)} fill={GV.terra} />
+      </Rise>
+      <Rise size={size} ms={6200} delay={3400} dy={44} x={60} y={196}>
+        <Path d={sparkle(60, 196, 5)} fill={GV.sageL} />
+      </Rise>
+      {[0, 1].map((i) => (
+        <Rise key={i} size={size} ms={3200} delay={i * 1600} dy={30} x={262} y={246}>
+          <Path d="M258 254 q-6 -8 0 -16 q6 -8 0 -16" stroke={GV.taupeL} strokeWidth={3} fill="none" strokeLinecap="round" opacity={0.7} />
+          <Path d="M268 252 q-5 -7 0 -14 q5 -7 0 -14" stroke={GV.taupeL} strokeWidth={2.5} fill="none" strokeLinecap="round" opacity={0.5} />
+        </Rise>
+      ))}
+      <Layer size={size}>
+        <Shadow cx={160} cy={288} rx={130} ry={11} />
+        <BoardBar x={14} y={262} w={62} />
+        <Rect x={250} y={258} width={26} height={24} rx={6} fill={GV.terra} />
+        <Path d="M276 264 q10 0 10 8 q0 8 -10 8" stroke={GV.terra} strokeWidth={4} fill="none" />
+        <Rect x={250} y={258} width={26} height={6} rx={3} fill={GV.terraD} />
+        <Path d="M86 276 C 86 244 122 232 160 232 C 198 232 234 244 234 276 C 200 290 120 290 86 276 Z" fill={GV.taupe} />
+        <Path d="M120 250 q40 -16 80 0" stroke={GV.taupeD} strokeWidth={3} fill="none" opacity={0.4} strokeLinecap="round" />
+      </Layer>
+      <Layer size={size} style={body}>
+        <Path d="M134 150 q26 -14 52 0 l-6 86 q-20 7 -40 0 Z" fill={top} />
+        <Path d="M178 152 l-5 84 q-9 3 -15 2 l4 -86 Z" fill={GV.sageD} opacity={0.45} />
+        <Limb a={[140, 160]} b={[118, 204]} w={12} color={top} />
+        <Limb a={[118, 204]} b={[106, 238]} w={11} color={top} />
+        <Limb a={[180, 160]} b={[202, 204]} w={12} color={top} />
+        <Limb a={[202, 204]} b={[214, 238]} w={11} color={top} />
+        <Hand p={[104, 242]} />
+        <Hand p={[216, 242]} />
+        <Head cx={160} cy={120} hair={HAIRS.taupe} tilt={-3} />
+        <Path d="M154 130 q6 5 12 0" stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" transform="rotate(-3 160 120)" />
+      </Layer>
+    </>
+  );
+}
+
+export const SCENES = { breathe: SceneBreathe, step: SceneStep, feel: SceneFeel, time: SceneTime, streak: SceneStreak, glow: SceneGlow };
 export type SceneName = keyof typeof SCENES;
 
-/** Animated scene at `size`×`size`. */
-export function Scene({ name, size }: { name: SceneName; size: number }) {
-  const Comp = SCENES[name];
+/** Animated scene at `size`×`size`; `clouds` puts drifting clouds over step/streak. */
+export function Scene({ name, size, clouds }: { name: SceneName; size: number; clouds?: boolean }) {
+  const Comp: (p: { size: number; clouds?: boolean }) => ReactNode = SCENES[name];
   return (
     <View style={{ width: size, height: size }}>
-      <Comp size={size} />
+      <Comp size={size} clouds={clouds} />
     </View>
   );
 }

@@ -30,7 +30,7 @@ const ART = {
 export type ArtName = keyof typeof ART | SceneName;
 
 /** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
-export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
+export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number; clouds?: boolean }) {
   const reduced = useReducedMotion();
   const breath = useSharedValue(0);
   const sway = useSharedValue(-1);
@@ -54,7 +54,7 @@ export function Art({ name, size = 220 }: { name: ArtName; size?: number }) {
   return (
     <Animated.View style={[{ alignSelf: 'center' }, style]}>
       {name in SCENES ? (
-        <Scene name={name as SceneName} size={size} />
+        <Scene name={name as SceneName} size={size} clouds={clouds} />
       ) : (
         <Image source={ART[name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
       )}
