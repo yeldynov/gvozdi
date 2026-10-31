@@ -2,33 +2,18 @@ import Feather from '@expo/vector-icons/Feather';
 import { router, type Href } from 'expo-router';
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import Svg, { Circle, Line, Path } from 'react-native-svg';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Svg, { Circle, Line } from 'react-native-svg';
 
 import type { GuidePicName } from '@/components/guide-pics';
 import { Button, Logo, Sheet, Txt, type ArtName } from '@/components/ui';
 import { radius, space, useColors } from '@/theme';
 
-export const SUPPORT_URL = 'https://t.me/gvozdi_support_bot';
-const openSupport = () => Linking.openURL(SUPPORT_URL);
-
-// Telegram's mark (simple-icons), drawn in the button's color.
-function TelegramMark({ color, size = 18 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path
-        fill={color}
-        d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
-      />
-    </Svg>
-  );
-}
-
-/** The "write to us" button: Telegram blue-ish, with its mark. */
+/** The "write to us" button: opens the contact form. */
 export function WriteToUs({ style }: { style?: StyleProp<ViewStyle> }) {
   const { t } = useTranslation();
   const c = useColors();
-  return <Button ghost color={c.info} icon={<TelegramMark color={c.info} />} label={t('settings.write')} onPress={openSupport} style={style} />;
+  return <Button ghost color={c.info} icon={<Feather name="mail" size={18} color={c.info} />} label={t('settings.write')} onPress={() => router.push('/contact')} style={style} />;
 }
 
 /** Reading pages (`read.<id>` in i18n); journal articles are listed on /journal in this order. */
@@ -73,13 +58,13 @@ function MenuButton() {
     setOpen(false);
     router.push(href);
   };
-  const items: { icon: keyof typeof Feather.glyphMap | 'telegram'; label: string; onPress: () => void; color?: string }[] = [
+  const items: { icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; color?: string }[] = [
     { icon: 'book-open', label: t('menu.guide'), onPress: () => go('/read/guide') },
     { icon: 'calendar', label: t('menu.program'), onPress: () => go('/read/program') },
     { icon: 'feather', label: t('menu.journal'), onPress: () => go('/journal') },
     { icon: 'help-circle', label: t('menu.faq'), onPress: () => go('/read/faq') },
     { icon: 'info', label: t('menu.about'), onPress: () => go('/read/about') },
-    { icon: 'telegram', label: t('settings.contact'), onPress: openSupport, color: c.info },
+    { icon: 'mail', label: t('settings.contact'), onPress: () => go('/contact'), color: c.info },
   ];
   return (
     <>
@@ -106,7 +91,7 @@ function MenuButton() {
               accessibilityRole="link"
               onPress={item.onPress}
               style={({ pressed }) => [styles.item, { borderColor: c.divider, opacity: pressed ? 0.6 : 1 }]}>
-              {item.icon === 'telegram' ? <TelegramMark color={c.info} size={20} /> : <Feather name={item.icon} size={20} color={c.text2} />}
+              <Feather name={item.icon} size={20} color={item.color ?? c.text2} />
               <Txt style={{ flex: 1, color: item.color ?? c.text }}>{item.label}</Txt>
               <Feather name="chevron-right" size={18} color={c.text3} />
             </Pressable>

@@ -93,6 +93,7 @@ function Routes() {
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
       <Stack.Screen name="account" />
+      <Stack.Screen name="contact" />
       <Stack.Screen name="sso-callback" />
       <Stack.Screen name="session" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />
     </Stack>

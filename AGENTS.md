@@ -28,13 +28,14 @@ src/app/(tabs)/              Home (index: cards today / stats (streak tree + nex
 src/app/onboarding.tsx       3 intro pages (signed-out only); last page: create account / have account / "try a session as a guest"
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; guests get GuestEnd (keep → /account, discard → /onboarding) instead of the save sheet; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
 src/app/account.tsx          email → code; signs in, or signs up if the email is new (open to guests). Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
+src/app/contact.tsx          contact form (open to guests) → EmailJS REST; EXPO_PUBLIC_EMAILJS_{SERVICE_ID,TEMPLATE_ID,PUBLIC_KEY}, template params email/message/app
 src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
 src/server/db.ts             Drizzle schema + Neon client (server-only); migrations in drizzle/ (npm run db:generate / db:migrate)
 src/lib/sync.ts              useSync(): pushes all sessions, pulls since cursor; runs after changes and on foreground while signed in
 src/app/history/              list grouped by day (index) and detail with edit/delete ([id])
 src/app/achievement/[id].tsx  badge, earned date or progress bar; unlock screen lives in session.tsx after save
-src/components/menu.tsx      TabHead (top row of every tab + burger) → Sheet menu: guide, journal, FAQ, about, Telegram; PAGES registry
+src/components/menu.tsx      TabHead (top row of every tab + burger) → Sheet menu: guide, journal, FAQ, about, contact; PAGES registry
 src/app/read/[id].tsx        reading page (guide/faq/about/articles); text in i18n `read.<id>` as {title, lead, sections[{h?, p[]}]}
 src/components/guide-pics.tsx  still vignettes per guide paragraph (PAGES.guide.pics), drawn with the kit exported from scenes.tsx
 src/app/journal.tsx          article list (PAGES with article: true), read time derived from word count
@@ -115,7 +116,7 @@ npx tsc --noEmit && npx expo lint && npm test
 2. Session timer (setup, prepare gate, peak/timed/free, keep-awake, haptics, gong, goal notification, save sheet) — done; native paths untested until the first `eas build`
 3. History: grouped by day, detail with edit/delete — done (entry: Progress → All sessions)
 4. Progress: streak card, totals, day-bar charts, achievements grid + detail, unlock screen after save — done
-5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = t.me/gvozdi_support_bot
+5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = /contact form (EmailJS)
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. 21-day program — done (levels removed: the tree covers progression); opt-in (Home invite card or `/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
 8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app is account-gated with a guest demo session (replaced the sign-up prompt rule)

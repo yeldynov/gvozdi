@@ -113,5 +113,10 @@ export function useColors(): Colors {
   const pref = useStore((s) => s.settings.theme);
   const herb = useSkin() === 'herbarium';
   const mode = pref === 'system' ? system : pref;
-  return mode === 'dark' ? (herb ? herbDark : dark) : herb ? herbLight : light;
+  return palette(herb ? 'herbarium' : 'earthy', mode === 'dark');
+}
+
+/** A skin's colors regardless of the active one (the skin picker previews both). */
+export function palette(skin: Skin, isDark: boolean): Colors {
+  return skin === 'herbarium' ? (isDark ? herbDark : herbLight) : isDark ? dark : light;
 }

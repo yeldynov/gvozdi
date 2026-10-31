@@ -93,6 +93,7 @@
     "dark": "Dark",
     "earthy": "Earthy",
     "herbarium": "Herbarium",
+    "eco": "eco",
     "data": "Your data",
     "export": "Export",
     "import": "Import",
@@ -106,7 +107,7 @@
     "clearConfirm": "Clear",
     "cleared": "All sessions cleared.",
     "contact": "Contact",
-    "contactText": "Questions, ideas or a bug? Write to us on Telegram.",
+    "contactText": "Questions, ideas or a bug? Write to us.",
     "version": "Version {{version}}",
     "write": "Write to us",
     "reminder": "Daily reminder",
@@ -279,6 +280,16 @@
     "title": "Time for the board",
     "body": "A few quiet minutes on the nails."
   },
+  "contact": {
+    "title": "Write to us",
+    "intro": "Questions, ideas or a bug? We read every message and reply by email.",
+    "email": "Your email",
+    "message": "Message",
+    "messagePlaceholder": "What's on your mind?",
+    "send": "Send",
+    "sent": "Thank you! Your message is on its way. We'll reply by email.",
+    "failed": "Couldn't send. Check your connection and try again."
+  },
   "account": {
     "title": "Account",
     "intro": "Enter your email and we'll send you a code. No password needed. If you're new, this creates your free account.",
@@ -413,7 +424,7 @@
         {
           "h": "How do I delete my data?",
           "p": [
-            "Settings → Clear all sessions removes them everywhere. To delete your account completely, write to us on Telegram."
+            "Settings → Clear all sessions removes them everywhere. To delete your account completely, write to us (menu → Contact)."
           ]
         }
       ]
@@ -437,7 +448,7 @@
         {
           "h": "Say hello",
           "p": [
-            "Questions, ideas or a bug? Write to us on Telegram. And please, take care of yourself."
+            "Questions, ideas or a bug? Write to us. And please, take care of yourself."
           ]
         }
       ]
