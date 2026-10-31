@@ -288,7 +288,8 @@
     "messagePlaceholder": "What's on your mind?",
     "send": "Send",
     "sent": "Thank you! Your message is on its way. We'll reply by email.",
-    "failed": "Couldn't send. Check your connection and try again."
+    "failed": "Couldn't send. Check your connection and try again.",
+    "telegram": "Write in Telegram"
   },
   "account": {
     "title": "Account",
