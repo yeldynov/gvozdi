@@ -10,7 +10,7 @@ import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
 import { dayKey, live, shiftTime } from '@/lib/practice';
 import { allowReminders, remindersSupported } from '@/lib/reminder';
-import type { Language, ThemePref } from '@/lib/types';
+import type { Language, Skin, ThemePref } from '@/lib/types';
 import { useStore } from '@/store';
 import { space, useColors } from '@/theme';
 
@@ -81,6 +81,14 @@ export default function Settings() {
             { value: 'system', label: t('settings.auto') },
             { value: 'light', label: t('settings.light') },
             { value: 'dark', label: t('settings.dark') },
+          ]}
+        />
+        <Choice<Skin>
+          value={settings.skin ?? 'earthy'}
+          onChange={(skin) => setSettings({ skin })}
+          options={[
+            { value: 'earthy', label: t('settings.earthy') },
+            { value: 'herbarium', label: t('settings.herbarium') },
           ]}
         />
       </Card>

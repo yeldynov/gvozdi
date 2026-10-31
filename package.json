@@ -6,6 +6,7 @@
     "@clerk/backend": "^3.26.3",
     "@clerk/expo": "^4.14.2",
     "@expo-google-fonts/fraunces": "^0.4.1",
+    "@expo-google-fonts/golos-text": "^0.4.2",
     "@expo-google-fonts/inter-tight": "^0.4.2",
     "@expo-google-fonts/literata": "^0.4.3",
     "@expo/vector-icons": "^15.0.2",

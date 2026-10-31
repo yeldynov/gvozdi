@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--cobalt:#1E3A8C;--enamel:#F2F4F3;--rim:#15181E;--red:#C9302C;--ink:#15181E;--ink2:#5A6170;--line:#D9DDE2}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:#E6E9EC;font-family:'Golos Text',sans-serif;color:var(--ink)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 14px}
+.brand{font-family:Oswald;font-weight:600;font-size:22px;letter-spacing:.06em;text-transform:uppercase}
+.burger{width:44px;height:44px;border-radius:12px;display:grid;place-items:center}
+.burger i{display:block;width:20px;height:2px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink)}
+/* the signature: house-number plate */
+.plates{display:flex;gap:12px;padding:0 20px}
+.plate{flex:1.15;background:var(--cobalt);border-radius:22px;padding:6px;border:3px solid var(--rim)}
+.plate .in{border:2px solid #F2F4F3;border-radius:16px;height:186px;position:relative;color:#fff;padding:14px 16px;display:flex;flex-direction:column;justify-content:flex-end}
+.screw{position:absolute;top:10px;width:8px;height:8px;border-radius:50%;background:#C6CCD8}
+.screw.l{left:10px}.screw.r{right:10px}
+.num{font-family:Oswald;font-weight:600;font-size:112px;line-height:.9}
+.cap{font-size:15px;font-weight:500;opacity:.9}
+.tree{flex:1;background:var(--enamel);border:3px solid var(--rim);border-radius:22px;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.tree svg{display:block;margin:0 auto}
+.lab{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.ms{font-family:Oswald;font-weight:500;font-size:24px;line-height:1.05}
+.bar{height:6px;border-radius:3px;background:var(--line);margin-top:6px}.bar b{display:block;height:100%;width:43%;background:var(--cobalt);border-radius:3px}
+.sign{margin:12px 20px 0;background:var(--enamel);border:3px solid var(--rim);border-radius:22px;padding:18px}
+.row{display:flex;justify-content:space-between;align-items:baseline}
+.no{font-family:Oswald;font-size:16px;font-weight:500;color:var(--cobalt)}
+.big{font-family:Oswald;font-weight:600;font-size:46px;line-height:1;margin:10px 0 4px}
+.sub{font-size:15px;color:var(--ink2);line-height:1.4}
+.dots{display:flex;gap:4px;margin:14px 0}
+.dots span{flex:1;height:8px;border-radius:2px;background:var(--line)}.dots span.d{background:var(--cobalt)}
+.go{display:block;width:100%;height:58px;border:0;border-radius:16px;background:var(--red);color:#fff;font-family:Oswald;font-size:24px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.week{margin:12px 20px 0;display:flex;justify-content:space-between;align-items:end}
+.d7{display:flex;gap:8px}
+.d7 div{text-align:center;font-size:12px;font-weight:600;color:var(--ink2)}
+.m{width:28px;height:28px;border-radius:8px;border:2.5px solid var(--rim);margin-bottom:4px}
+.m.full{background:var(--cobalt)}.m.half{background:linear-gradient(to top,var(--cobalt) 50%,transparent 50%)}
+.wk{font-family:Oswald;font-size:26px;font-weight:600;line-height:1}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(242,244,243,.82);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:7px;border:2.5px solid var(--ink2)}.tabs i.on{border-color:var(--cobalt);background:var(--cobalt)}
+</style></head><body>
+<div class="top"><span class="brand">Гвозди · Gvozdi</span><span class="burger"><i></i></span></div>
+<div class="plates">
+  <div class="plate"><div class="in"><span class="screw l"></span><span class="screw r"></span><div class="num">3</div><div class="cap">days in a row</div></div></div>
+  <div class="tree">
+    <svg width="96" height="92" viewBox="0 0 96 92"><rect x="8" y="80" width="80" height="6" rx="2" fill="#15181E"/><path d="M48 80V42" stroke="#15181E" stroke-width="5" stroke-linecap="round"/><path d="M48 56 30 44M48 50l18-12" stroke="#15181E" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="40" r="11" fill="#1E3A8C"/><circle cx="68" cy="34" r="13" fill="#1E3A8C"/><circle cx="48" cy="28" r="15" fill="#1E3A8C"/></svg>
+    <div><div class="lab">Next milestone</div><div class="ms">A full week</div><div class="bar"><b></b></div></div>
+  </div>
+</div>
+<div class="sign">
+  <div class="row"><span class="lab">21-day program · Day 9 of 21</span><span class="no">No. 30</span></div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="sub" style="margin-bottom:14px">Each day you practise, a little longer. Miss a day and the program simply waits.</div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="week">
+  <div><div class="lab">This week</div><div class="wk">46 min</div></div>
+  <div class="d7"><div><div class="m full"></div>T</div><div><div class="m full"></div>F</div><div><div class="m"></div>S</div><div><div class="m"></div>S</div><div><div class="m half"></div>M</div><div><div class="m full"></div>T</div><div><div class="m" style="border-color:#C9302C"></div>W</div></div>
+</div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

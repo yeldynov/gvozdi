@@ -13,11 +13,13 @@ import { needsConsent } from '@/lib/consent';
 import { ACHIEVEMENTS, currentStreak, dayKey, lastDays, live, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
 import { clampMinutes } from '@/lib/session';
 import type { HomeCard } from '@/lib/types';
+import * as herb from '@/skins/herbarium/home';
 import { useStore } from '@/store';
-import { radius, space, useColors } from '@/theme';
+import { radius, space, useColors, useSkin } from '@/theme';
 
 const DEFAULT_HOME: HomeCard[] = ['today', 'stats', 'week'];
 const CARDS: Record<HomeCard, () => ReactNode> = { today: Today, stats: Stats, week: Week };
+const HERB_CARDS: Record<HomeCard, () => ReactNode> = { today: herb.Today, stats: herb.Stats, week: herb.Week };
 
 export default function Home() {
   const { t } = useTranslation();
@@ -26,6 +28,7 @@ export default function Home() {
   const home = useHome();
   const setSettings = useStore((s) => s.setSettings);
   const [customize, setCustomize] = useState(false);
+  const cards = useSkin() === 'herbarium' ? HERB_CARDS : CARDS;
   const streak = currentStreak(sessions);
 
   // Consent is asked only in the EU/EEA/UK/CH (by IP country); elsewhere, or when the country is unknown, it's approved.
@@ -47,7 +50,7 @@ export default function Home() {
   return (
     <Screen>
       <TabHead />
-      {todaySec(sessions) > 0 ? <Art name="glow" size={200} /> : <Art name={streak ? 'streak' : 'step'} size={200} clouds />}
+      {cards === CARDS && (todaySec(sessions) > 0 ? <Art name="glow" size={200} /> : <Art name={streak ? 'streak' : 'step'} size={200} clouds />)}
       <TextLink label={t('home.customize')} onPress={() => setCustomize(true)} style={styles.customize} />
       {!program && !programAsked && live(sessions).length > 0 && (
         <Card>
@@ -65,7 +68,7 @@ export default function Home() {
         </Card>
       )}
       {home.map((id) => {
-        const C = CARDS[id];
+        const C = cards[id];
         return <C key={id} />;
       })}
       {analytics === undefined && askConsent && (

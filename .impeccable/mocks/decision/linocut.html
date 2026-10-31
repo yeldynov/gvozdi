@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300&family=Golos+Text:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FAFAF7;--ink:#1C1F1A;--green:#2E7D4F;--red:#C23B32;--ink2:#5F635B;--line:#E2E3DD}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--paper);font-family:'Golos Text',sans-serif;color:var(--ink)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 6px}
+.logo{display:flex;align-items:center;gap:8px;font-family:Fraunces;font-weight:300;font-size:26px}
+.burger i{display:block;width:20px;height:2px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink);margin:12px}
+.hero{display:flex;align-items:flex-end;padding:0 20px;height:290px;border-bottom:2px solid var(--ink)}
+.hero svg{flex:none}
+.st{padding:0 0 18px 6px}
+.n{font-family:'Golos Text';font-weight:700;font-size:96px;line-height:.9}
+.cap{font-size:16px;font-weight:500}
+.ms{font-size:13px;color:var(--ink2);margin-top:8px;line-height:1.4}
+.card{margin:16px 20px 0}
+.lab{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.big{font-weight:700;font-size:32px;margin:6px 0 10px;letter-spacing:-.01em}
+.dots{display:flex;gap:3px;margin-bottom:14px}.dots span{flex:1;height:6px;background:var(--line)}.dots span.d{background:var(--green)}
+.go{width:100%;height:56px;border:0;border-radius:6px;background:var(--ink);color:var(--paper);font-size:18px;font-weight:700;font-family:'Golos Text'}
+.week{margin:16px 20px 0;display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:12px}
+.dd{display:flex;gap:10px}.dd span{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink)}.dd span.f{background:var(--green);border-color:var(--green)}.dd span.t{border-color:var(--red)}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(250,250,247,.86);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink2)}.tabs i.on{border-color:var(--ink);background:var(--ink)}
+</style></head><body>
+<div class="top"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#1C1F1A" stroke-width="1.2"/><circle cx="12" cy="12" r="1.8" fill="#1C1F1A"/></svg>gvozdi</span><span class="burger"><i></i></span></div>
+<div class="hero">
+  <svg width="190" height="270" viewBox="0 0 190 270"><path d="M92 270l4-200 6 0-2 200z" fill="#1C1F1A"/><g fill="#1C1F1A"><path d="M95 200 40 160l6-6 52 38z"/><path d="M98 170l58-40 5 7-60 40z"/><path d="M96 120 54 86l6-6 40 32z"/></g><g fill="#2E7D4F"><path d="M44 158C14 160 2 138 4 120c26 0 40 18 40 38z"/><path d="M158 134c28-14 30-36 22-50-24 8-30 30-22 50z"/><path d="M58 82C34 76 28 56 32 44c22 4 30 20 26 38z"/><path d="M100 70c-14-18-8-44 4-54 14 14 12 38-4 54z"/></g><g stroke="#FAFAF7" stroke-width="1.6"><path d="M10 124c12 6 22 16 30 30M174 90c-6 12-12 26-14 40M38 50c6 8 12 18 18 28M104 22c0 14-2 30-4 44"/></g><circle cx="132" cy="96" r="8" fill="#C23B32"/></svg>
+  <div class="st"><div class="n">3</div><div class="cap">days in a row</div><div class="ms">Next: a full week<br>3 of 7</div></div>
+</div>
+<div class="card">
+  <div class="lab">21-day program · Day 9 of 21</div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="week"><div><div class="lab">This week</div><div style="font-weight:500;font-size:17px">46 minutes</div></div><div class="dd"><span class="f"></span><span class="f"></span><span></span><span></span><span class="f"></span><span class="f"></span><span class="t"></span></div></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

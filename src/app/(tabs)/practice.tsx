@@ -11,12 +11,14 @@ import { todayMinutes } from '@/lib/practice';
 import { clampMinutes, PRESET_MINUTES } from '@/lib/session';
 import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
-import { fonts, radius, space, useColors } from '@/theme';
+import { fonts, herbFonts, radius, space, useColors, useSkin } from '@/theme';
 
 // Zen by default: free practice one tap away; the pill under Begin opens mode and minutes.
 export default function Practice() {
   const { t } = useTranslation();
   const c = useColors();
+  const herb = useSkin() === 'herbarium';
+  const Stepper = herb ? View : Card;
   const sessions = useStore((s) => s.sessions);
   const { program, practice } = useStore((s) => s.settings);
   const setSettings = useStore((s) => s.setSettings);
@@ -47,13 +49,11 @@ export default function Practice() {
     router.push({ pathname: '/session', params: { mode, min: String(min) } });
   };
 
-  return (
-    <Screen>
-      <TabHead>
-      </TabHead>
-
+  // Herbarium puts all of this on one sheet.
+  const body = (
+    <>
       {/* Always the illustration; the words describe the practice Begin starts. */}
-      <View style={styles.zen}>
+      <View style={[styles.zen, herb && { paddingVertical: 0 }]}>
         <Art name="stand" size={custom ? 140 : 260} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
           {mode === 'free' ? t('practice.zenTitle') : `${t(`practice.modes.${mode}`)} · ${min} ${t('practice.min')}`}
@@ -91,7 +91,7 @@ export default function Practice() {
             })}
           </View>
 
-          <Card style={styles.stepper}>
+          <Stepper style={{ ...styles.stepper, ...(herb && { paddingVertical: 0 }) }}>
             <Txt variant="body" style={{ flex: 1, color: c.text2 }}>
               {t('practice.custom')}
             </Txt>
@@ -100,27 +100,40 @@ export default function Practice() {
               {min} {t('practice.min')}
             </Text>
             <Step icon="plus" label={t('practice.more')} onPress={() => setMin(min + 1)} />
-          </Card>
+          </Stepper>
         </>
       )}
 
       <Button
         label={mode === 'free' ? t('practice.begin') : t('practice.beginFor', { min })}
         onPress={begin}
-        style={styles.begin}
+        style={[styles.begin, herb && { marginTop: 0 }]}
       />
+    </>
+  );
+
+  return (
+    <Screen>
+      <TabHead>
+      </TabHead>
+
+      {herb ? <Card style={styles.sheet}>{body}</Card> : body}
       <Pressable
         accessibilityRole="button"
         onPress={() => setCustom(!custom)}
-        style={({ pressed }) => [styles.setup, { borderColor: c.accent, opacity: pressed ? 0.7 : 1 }]}>
-        <Feather name={custom ? 'arrow-left' : 'sliders'} size={18} color={c.accent} />
-        <Text style={[styles.setupText, { color: c.accent }]}>{custom ? t('practice.zen') : t('practice.setup')}</Text>
+        style={({ pressed }) => [
+          styles.setup,
+          herb ? { borderWidth: 0, minHeight: 44, backgroundColor: c.bg2, opacity: pressed ? 0.85 : 1 } : { borderColor: c.accent, opacity: pressed ? 0.7 : 1 },
+        ]}>
+        <Feather name={custom ? 'arrow-left' : 'sliders'} size={18} color={herb ? c.text : c.accent} />
+        <Text style={[styles.setupText, herb && { fontFamily: herbFonts.textMedium }, { color: herb ? c.text : c.accent }]}>{custom ? t('practice.zen') : t('practice.setup')}</Text>
       </Pressable>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  sheet: { gap: space[4], paddingVertical: space[6] },
   zen: { alignItems: 'center', gap: space[3], paddingVertical: space[4] },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
   tile: { flexBasis: '31%', flexGrow: 1, alignItems: 'center', paddingVertical: space[4], borderRadius: radius.md },

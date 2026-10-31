@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--mount:#F4F5F0;--leaf:#3F6A3A;--ink:#22261F;--ink2:#646B5E;--line:#D8DCD2;--ochre:#B8892B}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:#E9ECE5;font-family:'Golos Text',sans-serif;color:var(--ink)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 12px}
+.logo{display:flex;align-items:center;gap:8px;font-family:Fraunces;font-weight:300;font-size:26px}
+.burger i{display:block;width:20px;height:1.6px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink);margin:12px}
+.sheet{margin:0 16px;background:var(--mount);border-radius:16px;height:300px;position:relative;overflow:hidden}
+.sheet svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+.tag{position:absolute;right:12px;bottom:12px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:'JetBrains Mono';font-size:11px;line-height:1.5;color:var(--ink2)}
+.tag b{color:var(--ink);font-weight:500}
+.streak{position:absolute;left:18px;top:16px}
+.n{font-family:"Golos Text";font-weight:500;font-size:64px;line-height:1}
+.cap{font-size:15px;color:var(--ink2)}
+.card{margin:12px 16px 0;background:var(--mount);border-radius:16px;padding:18px}
+.lab{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+.big{font-family:"Golos Text";font-weight:500;font-size:30px;margin:6px 0 10px}
+.dots{display:flex;gap:3px;margin-bottom:14px}.dots span{flex:1;height:5px;border-radius:3px;background:var(--line)}.dots span.d{background:var(--leaf)}
+.go{width:100%;height:54px;border:0;border-radius:14px;background:var(--leaf);color:#fff;font-family:'Golos Text';font-size:18px;font-weight:600}
+.week{margin:12px 16px 0;background:var(--mount);border-radius:16px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.lv{display:flex;gap:8px}.lv i{width:14px;height:20px;border-radius:14px 0;border:1.5px solid var(--leaf)}.lv i.f{background:var(--leaf)}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(244,245,240,.85);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink2)}.tabs i.on{border-color:var(--leaf);background:var(--leaf)}
+</style></head><body>
+<div class="top"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#22261F" stroke-width="1.2"/><circle cx="12" cy="12" r="1.8" fill="#22261F"/></svg>gvozdi</span><span class="burger"><i></i></span></div>
+<div class="sheet">
+  <div class="streak"><div class="n">3</div><div class="cap">days in a row</div></div>
+  <svg width="220" height="260" viewBox="0 0 220 260"><g stroke="#3F6A3A" stroke-width="2" fill="none" stroke-linecap="round"><path d="M110 260C108 200 114 150 108 70"/><path d="M109 200 70 170M110 170l42-30M108 120 80 96M109 100l30-26"/></g><g fill="#3F6A3A"><path d="M70 170c-22 2-38-10-40-26 20-2 36 8 40 26z"/><path d="M152 140c18-10 38-4 44 10-18 10-36 6-44-10z"/><path d="M80 96c-18-4-28-18-26-30 16 2 26 14 26 30z"/><path d="M139 74c10-16 28-20 38-12-10 16-26 18-38 12z"/><path d="M108 70c-8-14-4-30 6-36 8 12 6 28-6 36z"/></g><path d="M60 258h100" stroke="#B8892B" stroke-width="3" stroke-linecap="round"/></svg>
+  <div class="tag"><b>No. 30 · sapling</b><br>since 28 Oct 2026</div>
+</div>
+<div class="card">
+  <div class="lab">21-day program · Day 9 of 21</div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="week"><div><div class="lab">This week</div><div style="font-size:17px;font-weight:500">46 minutes</div></div><div class="lv"><i class="f"></i><i class="f"></i><i></i><i></i><i class="f"></i><i class="f"></i><i></i></div></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

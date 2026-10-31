@@ -1,0 +1,55 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans+SC:wght@500;700&family=Alegreya+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--plate:#F3ECDD;--sepia:#8A7356;--rule:#CDBFA6;--leaf:#3E5B33;--fruit:#9E2A2B;--ink:#2A2620;--ink2:#6E6556}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--plate);font-family:'Alegreya Sans',sans-serif;color:var(--ink)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 10px}
+.brand{font-family:Alegreya;font-style:italic;font-weight:500;font-size:24px}
+.burger i{display:block;width:20px;height:1.5px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink);margin:12px}
+.folio{margin:0 20px;border-top:1px solid var(--sepia);border-bottom:1px solid var(--sepia);padding:10px 0 8px}
+.stages{display:flex;justify-content:space-between;align-items:flex-end;height:150px;border-bottom:1px solid var(--rule)}
+.st{flex:1;text-align:center;position:relative}
+.st svg{display:block;margin:0 auto}
+.st.now::before{content:"";position:absolute;inset:-6px 4px -1px;border:1px solid var(--leaf)}
+.capr{display:flex;justify-content:space-between;padding-top:6px}
+.capr span{flex:1;text-align:center;font-family:'Alegreya Sans SC';font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink2)}
+.capr span.now{color:var(--leaf);font-weight:700}
+.streak{margin:16px 20px 0;display:flex;align-items:baseline;gap:12px}
+.n{font-family:Alegreya;font-weight:700;font-size:72px;line-height:.9;color:var(--leaf)}
+.sp{font-family:Alegreya;font-style:italic;font-size:22px}
+.sp small{display:block;font-family:'Alegreya Sans SC';font-style:normal;font-size:13px;color:var(--ink2);letter-spacing:.05em}
+.plate{margin:16px 20px 0;border:1px solid var(--sepia);padding:16px 18px 18px;background:#F7F2E7}
+.lab{font-family:'Alegreya Sans SC';font-size:13px;font-weight:700;letter-spacing:.07em;color:var(--sepia)}
+.big{font-family:Alegreya;font-weight:500;font-size:34px;line-height:1.05;margin:6px 0 10px}
+.dots{display:flex;gap:4px;margin-bottom:10px}
+.dots span{flex:1;height:5px;background:var(--rule)}.dots span.d{background:var(--leaf)}
+.sub{font-size:15px;line-height:1.4;color:var(--ink2);margin-bottom:14px}
+.go{width:100%;height:54px;border:0;background:var(--leaf);color:#F7F2E7;font-family:Alegreya;font-size:21px;font-weight:700}
+.wk{margin:12px 20px 0;display:flex;justify-content:space-between;font-family:'Alegreya Sans SC';font-size:13px;color:var(--ink2);letter-spacing:.05em}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(243,236,221,.86);backdrop-filter:blur(20px);border-top:1px solid var(--rule);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink2)}.tabs i.on{border-color:var(--leaf);background:var(--leaf)}
+</style></head><body>
+<div class="top"><span class="brand">Gvozdi</span><span class="burger"><i></i></span></div>
+<div class="folio">
+  <div class="stages">
+    <div class="st"><svg width="50" height="40" viewBox="0 0 50 40"><path d="M25 40V30" stroke="#3E5B33" stroke-width="1.5"/><ellipse cx="25" cy="27" rx="5" ry="4" fill="#8A7356"/></svg></div>
+    <div class="st"><svg width="50" height="70" viewBox="0 0 50 70"><path d="M25 70V30" stroke="#3E5B33" stroke-width="1.5"/><path d="M25 44c-10-2-14-10-12-16 8 2 12 8 12 16zM25 38c8-2 12-9 10-15-7 2-10 7-10 15z" fill="#3E5B33"/></svg></div>
+    <div class="st now"><svg width="60" height="110" viewBox="0 0 60 110"><path d="M30 110V20M30 70 14 56M30 52l16-14M30 34 20 24" stroke="#3E5B33" stroke-width="1.6"/><g fill="#3E5B33"><ellipse cx="12" cy="52" rx="8" ry="4" transform="rotate(-30 12 52)"/><ellipse cx="48" cy="34" rx="8" ry="4" transform="rotate(30 48 34)"/><ellipse cx="18" cy="20" rx="7" ry="3.5" transform="rotate(-40 18 20)"/><ellipse cx="34" cy="14" rx="7" ry="3.5" transform="rotate(30 34 14)"/></g><circle cx="30" cy="10" r="5" fill="#9E2A2B"/></svg></div>
+    <div class="st"><svg width="60" height="130" viewBox="0 0 60 130" opacity=".35"><path d="M30 130V18M30 80 10 62M30 60l20-18M30 40 14 26M30 30l14-12" stroke="#6E6556" stroke-width="1.4" stroke-dasharray="3 3"/></svg></div>
+    <div class="st"><svg width="60" height="146" viewBox="0 0 60 146" opacity=".35"><path d="M30 146V10M30 90 8 70M30 66l22-20M30 44 12 28M30 32l18-14" stroke="#6E6556" stroke-width="1.4" stroke-dasharray="3 3"/></svg></div>
+  </div>
+  <div class="capr"><span>seed</span><span>sprout</span><span class="now">sapling</span><span>young tree</span><span>full crown</span></div>
+</div>
+<div class="streak"><span class="n">3</span><span class="sp">days in a row<small>next · a full week, 3 of 7</small></span></div>
+<div class="plate">
+  <div class="lab">21-day program · day 9 of 21</div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="sub">Each day you practise, a little longer. Miss a day and the program simply waits.</div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="wk"><span>this week</span><span>46 minutes</span></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

@@ -1,0 +1,60 @@
+{
+  "title": "Choose the visual world for Gvozdi",
+  "question": "Safer hand, steered by you: the growing plant leads Home, the logo stays, small and familiar.",
+  "options": [
+    {
+      "id": "herbarium",
+      "kind": "grounded",
+      "label": "Herbarium Sheet",
+      "lineage": "School herbarium sheets: a pressed specimen on a mount with a typed label",
+      "thesis": "Your practice as a living specimen mounted on Home, labelled like a herbarium sheet.",
+      "palette": ["#F4F5F0", "#3F6A3A", "#22261F", "#B8892B"],
+      "materials": ["cool white mount board", "pressed-specimen drawing", "typed specimen label"],
+      "viewport": "Logo top left; the plant mounted large in the first card with a corner label (No. 30 · sapling · 3 days); today's practice below with a green Begin; the week as a strip of small leaf marks.",
+      "risk": "Close to Botanical Folio by design; needs the cool mount white, not cream, to read as new.",
+      "html": ".impeccable/mocks/decision/herbarium.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "greenhouse",
+      "kind": "grounded",
+      "label": "Greenhouse at Dawn",
+      "lineage": "A windowsill greenhouse at first light, the hour most people step on the board",
+      "thesis": "Home is the plant on the sill before sunrise: deep green, a pale glowing plant, one warm light for Begin.",
+      "palette": ["#14231A", "#DCEBD8", "#7FB07A", "#E8C468"],
+      "materials": ["deep green glass", "pale leaf line drawing", "low warm light"],
+      "viewport": "Logo top left in pale ink; the plant glowing on a dark green ground across the top half; today's practice on a slightly lighter pane with a warm amber Begin; the week as seven small panes.",
+      "risk": "Dark-first; light mode needs its own careful daylight version or it looks like an afterthought.",
+      "html": ".impeccable/mocks/decision/greenhouse.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "linocut",
+      "kind": "grounded",
+      "label": "Linocut Plant",
+      "lineage": "Folk linocut and lubok prints: carved line, two flat inks",
+      "thesis": "The plant carved as a block print, growing one cut at a time; everything else is quiet two-ink print.",
+      "palette": ["#FAFAF7", "#1C1F1A", "#2E7D4F", "#C23B32"],
+      "materials": ["flat printed ink", "carved line", "white printing paper"],
+      "viewport": "Logo top left; a bold carved plant in black and green beside a big streak number; today's practice below with a black Begin; the red berry marks today only.",
+      "risk": "Carved art must be drawn well at every stage; a clumsy cut reads as clip-art.",
+      "html": ".impeccable/mocks/decision/linocut.html",
+      "htmlFrame": "390x844"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "The category standard",
+    "thesis": "Executed like Forest and Finch: a clean white app where one growing tree is the reward.",
+    "palette": ["#FFFFFF", "#F2F4F2", "#1B1B1B", "#2E8B4A"],
+    "materials": ["system type", "rounded cards", "soft 3D-ish tree illustration"],
+    "viewport": "Large title, a centred tree on a soft disc, streak under it, a wide green Begin, the week below.",
+    "risk": "Looks like every growth-habit app; Gvozdi's board-specific craft disappears.",
+    "html": ".impeccable/mocks/decision/canon2.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

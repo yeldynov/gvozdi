@@ -2,6 +2,7 @@ import { ClerkProvider, useAuth } from '@clerk/expo';
 import { resourceCache } from '@clerk/expo/resource-cache';
 import { tokenCache } from '@clerk/expo/token-cache';
 import { Fraunces_300Light } from '@expo-google-fonts/fraunces';
+import { GolosText_400Regular, GolosText_500Medium, GolosText_600SemiBold } from '@expo-google-fonts/golos-text';
 import { Literata_300Light } from '@expo-google-fonts/literata';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold } from '@expo-google-fonts/inter-tight';
 import { useFonts } from 'expo-font';
@@ -27,7 +28,7 @@ const subscribeHydration = (cb: () => void) => useStore.persist.onFinishHydratio
 const isHydrated = () => useStore.persist.hasHydrated();
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({ Fraunces_300Light, Literata_300Light, InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold });
+  const [fontsLoaded] = useFonts({ Fraunces_300Light, Literata_300Light, InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold, GolosText_400Regular, GolosText_500Medium, GolosText_600SemiBold });
   const hydrated = useSyncExternalStore(subscribeHydration, isHydrated, () => false);
   const language = useStore((s) => s.settings.language);
   const reminder = useStore((s) => s.settings.reminder);

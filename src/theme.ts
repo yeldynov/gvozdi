@@ -1,5 +1,6 @@
 import { useColorScheme } from 'react-native';
 
+import type { Skin } from '@/lib/types';
 import { useStore } from '@/store';
 
 // Earthy palette from gvozdi-pwa (src/globals.css .palette-earthy); dark is its warm night counterpart.
@@ -41,6 +42,46 @@ const dark: typeof light = {
   illus: '#8a6f4a',
 };
 
+// Herbarium skin: cool white mount sheets on a sage ground, specimen green for growth and the main action, ochre for soil and earned marks.
+// Dark is the same sheet at night: green-black mount, pale leaf ink.
+const herbLight: typeof light = {
+  isDark: false,
+  bg: '#e9ece5',
+  bg2: '#dfe3da',
+  bg3: '#d3d8cc',
+  surface: '#f4f5f0',
+  text: '#22261f',
+  text2: '#5a6154',
+  text3: '#6f7669',
+  divider: 'rgba(34, 38, 31, 0.12)',
+  primary: '#3f6a3a',
+  onPrimary: '#ffffff',
+  accent: '#9a7020',
+  success: '#4f7f45',
+  error: '#a8442e',
+  info: '#3f6e8c',
+  illus: '#b8892b',
+};
+
+const herbDark: typeof light = {
+  isDark: true,
+  bg: '#111711',
+  bg2: '#1c251c',
+  bg3: '#263226',
+  surface: '#19211a',
+  text: '#e4ede0',
+  text2: '#a3b39e',
+  text3: '#859480',
+  divider: 'rgba(228, 237, 224, 0.1)',
+  primary: '#9ccb8f',
+  onPrimary: '#10180f',
+  accent: '#d9ae52',
+  success: '#8dbf80',
+  error: '#e07a62',
+  info: '#86b6d3',
+  illus: '#a8822f',
+};
+
 export type Colors = typeof light;
 
 export const radius = { xs: 8, sm: 12, md: 18, lg: 24, xl: 32, pill: 999 };
@@ -55,9 +96,22 @@ export const fonts = {
   textBold: 'InterTight_600SemiBold',
 };
 
+// Herbarium: Golos Text everywhere (it has Cyrillic); Fraunces stays only in the Latin wordmark.
+export const herbFonts = {
+  display: 'GolosText_500Medium',
+  text: 'GolosText_400Regular',
+  textMedium: 'GolosText_500Medium',
+  textBold: 'GolosText_600SemiBold',
+};
+
+export function useSkin(): Skin {
+  return useStore((s) => s.settings.skin ?? 'earthy');
+}
+
 export function useColors(): Colors {
   const system = useColorScheme();
   const pref = useStore((s) => s.settings.theme);
+  const herb = useSkin() === 'herbarium';
   const mode = pref === 'system' ? system : pref;
-  return mode === 'dark' ? dark : light;
+  return mode === 'dark' ? (herb ? herbDark : dark) : herb ? herbLight : light;
 }

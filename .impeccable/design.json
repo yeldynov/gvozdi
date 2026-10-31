@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T09:58:09.728Z",
+  "title": "Design System: Gvozdi",
+  "extensions": {
+    "colorMeta": {
+      "mount-ground": {
+        "role": "neutral",
+        "displayName": "Mount Ground",
+        "tonalRamp": [
+          "#262625",
+          "#444543",
+          "#636461",
+          "#81837f",
+          "#9fa19d",
+          "#bec0ba",
+          "#dadcd6",
+          "#f1f3ef"
+        ]
+      },
+      "mount-ground-2": {
+        "role": "neutral",
+        "displayName": "Mount Ground 2",
+        "tonalRamp": [
+          "#262725",
+          "#444543",
+          "#626460",
+          "#81837e",
+          "#9fa29b",
+          "#bdc1b9",
+          "#d9ddd4",
+          "#f1f3ef"
+        ]
+      },
+      "mount-ground-3": {
+        "role": "neutral",
+        "displayName": "Mount Ground 3",
+        "tonalRamp": [
+          "#262724",
+          "#444542",
+          "#62645f",
+          "#80837c",
+          "#9ea299",
+          "#bdc1b6",
+          "#d9ddd3",
+          "#f1f3ef"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "tonalRamp": [
+          "#262626",
+          "#454544",
+          "#636462",
+          "#828280",
+          "#a0a19e",
+          "#bfc0bc",
+          "#dbdcd7",
+          "#f2f3ee"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "#262626",
+          "#454545",
+          "#636363",
+          "#828282",
+          "#a1a1a1",
+          "#bfbfbf",
+          "#dbdbdb",
+          "#f2f2f2"
+        ]
+      },
+      "label-ink": {
+        "role": "neutral",
+        "displayName": "Label Ink",
+        "tonalRamp": [
+          "#242821",
+          "#434640",
+          "#62645f",
+          "#81837f",
+          "#a0a19e",
+          "#bec0be",
+          "#dbdcda",
+          "#f2f2f2"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "tonalRamp": [
+          "#242722",
+          "#42473d",
+          "#5f6659",
+          "#7e847a",
+          "#9ea29a",
+          "#bdc0bb",
+          "#dadcd9",
+          "#f2f2f1"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "tonalRamp": [
+          "#252723",
+          "#42463f",
+          "#60665a",
+          "#7e8479",
+          "#9ea299",
+          "#bdc0ba",
+          "#dadcd9",
+          "#f2f2f1"
+        ]
+      },
+      "specimen-green": {
+        "role": "primary",
+        "displayName": "Specimen Green",
+        "tonalRamp": [
+          "#1a2b18",
+          "#2e4e2b",
+          "#467041",
+          "#6b8c67",
+          "#8fa88c",
+          "#b3c4b1",
+          "#d5ded3",
+          "#f0f3ef"
+        ]
+      },
+      "on-specimen": {
+        "role": "neutral",
+        "displayName": "On Specimen",
+        "tonalRamp": [
+          "#262626",
+          "#454545",
+          "#636363",
+          "#828282",
+          "#a1a1a1",
+          "#bfbfbf",
+          "#dbdbdb",
+          "#f2f2f2"
+        ]
+      },
+      "leaf-green": {
+        "role": "primary",
+        "displayName": "Leaf Green",
+        "tonalRamp": [
+          "#1b2b17",
+          "#304e2a",
+          "#46703d",
+          "#658f5c",
+          "#8aaa84",
+          "#b0c6ac",
+          "#d3dfd0",
+          "#eff4ee"
+        ]
+      },
+      "soil-ochre": {
+        "role": "tertiary",
+        "displayName": "Soil Ochre",
+        "tonalRamp": [
+          "#32250c",
+          "#5a4315",
+          "#83611f",
+          "#ab7f28",
+          "#c59e51",
+          "#d8bd89",
+          "#e9dabd",
+          "#f7f2e7"
+        ]
+      },
+      "earned-ochre": {
+        "role": "tertiary",
+        "displayName": "Earned Ochre",
+        "tonalRamp": [
+          "#33250b",
+          "#5c4313",
+          "#85611c",
+          "#a57f38",
+          "#bb9f69",
+          "#d1be99",
+          "#e5dac6",
+          "#f6f2eb"
+        ]
+      },
+      "rust": {
+        "role": "error",
+        "displayName": "Rust",
+        "tonalRamp": [
+          "#491e14",
+          "#843524",
+          "#ae513d",
+          "#be7363",
+          "#ce9689",
+          "#deb8af",
+          "#ecd7d2",
+          "#f8f1ef"
+        ]
+      },
+      "river-blue": {
+        "role": "info",
+        "displayName": "River Blue",
+        "tonalRamp": [
+          "#182934",
+          "#2a4a5e",
+          "#3d6b88",
+          "#6288a1",
+          "#88a5b8",
+          "#afc3cf",
+          "#d2dde4",
+          "#eff3f5"
+        ]
+      },
+      "night-ground": {
+        "role": "neutral",
+        "displayName": "Night Ground",
+        "tonalRamp": [
+          "#222822",
+          "#414641",
+          "#616561",
+          "#808380",
+          "#9fa19f",
+          "#bec0be",
+          "#dbdcdb",
+          "#f2f2f2"
+        ]
+      },
+      "night-sheet": {
+        "role": "neutral",
+        "displayName": "Night Sheet",
+        "tonalRamp": [
+          "#212822",
+          "#404741",
+          "#5f6560",
+          "#7f837f",
+          "#9ea29f",
+          "#bec0be",
+          "#dadcdb",
+          "#f2f2f2"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "tonalRamp": [
+          "#252725",
+          "#434642",
+          "#61655f",
+          "#7f847c",
+          "#9ca39a",
+          "#bac2b7",
+          "#d6ded2",
+          "#eef4ec"
+        ]
+      },
+      "pale-leaf": {
+        "role": "primary",
+        "displayName": "Pale Leaf",
+        "tonalRamp": [
+          "#20291d",
+          "#394a34",
+          "#526b4b",
+          "#6c8c63",
+          "#85ad7a",
+          "#a0cd93",
+          "#cae3c3",
+          "#ecf5e9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "numeral": {
+        "displayName": "Numeral",
+        "purpose": "Streak count on the specimen sheet only."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Screen titles and the today line."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and sheet headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text and rows."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Supporting lines in ink-2."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase back links and small section labels."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Button labels."
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "The Latin \"gvozdi\" lockup only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "tab-bar",
+        "value": "0 8px 24px rgba(0, 0, 0, 0.12)",
+        "purpose": "Floating web tab bar only (with backdrop blur 20px, saturate 1.6); content sheets stay flat."
+      },
+      {
+        "name": "sheet-scrim",
+        "value": "rgba(0, 0, 0, 0.45)",
+        "purpose": "Backdrop behind bottom sheets; tapping it closes the sheet."
+      }
+    ],
+    "motion": [
+      {
+        "name": "tab-lens",
+        "value": "spring(damping 18, stiffness 220, mass 0.9); stretch 140ms then spring(damping 9, stiffness 180)",
+        "purpose": "Web tab bar lens slides to the active tab, stretching briefly as it moves."
+      },
+      {
+        "name": "tree-grow",
+        "value": "fade-in 1200ms, 500ms delay (unlock screen); 500ms default",
+        "purpose": "New growth stage fades in over the previous one; static with Reduce Motion."
+      },
+      {
+        "name": "breath",
+        "value": "4000ms sine in-out, repeat reversed (4s in / 4s out)",
+        "purpose": "Breathing disc behind the session timer digits while running."
+      },
+      {
+        "name": "art-breath",
+        "value": "3500ms sine in-out, repeat; sway 6000ms",
+        "purpose": "Illustrations breathe and sway; still with Reduce Motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "column",
+        "value": "560px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action on a screen, full-width when it is the sheet's main action.",
+      "html": "<button class=\"ds-btn-primary\">Begin · 10 min</button>",
+      "css": ".ds-btn-primary{font-family:'Golos Text',system-ui,sans-serif;font-weight:600;font-size:16px;background:#3f6a3a;color:#fff;border:none;border-radius:12px;min-height:48px;padding:12px 24px;cursor:pointer;transition:opacity .15s}.ds-btn-primary:hover{opacity:.92}.ds-btn-primary:active{opacity:.85}.ds-btn-primary:focus-visible{outline:2px solid #3f6a3a;outline-offset:3px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions beside or instead of the green one.",
+      "html": "<button class=\"ds-btn-ghost\">Read more</button>",
+      "css": ".ds-btn-ghost{font-family:'Golos Text',system-ui,sans-serif;font-weight:600;font-size:16px;background:#dfe3da;color:#22261f;border:none;border-radius:12px;min-height:48px;padding:12px 24px;cursor:pointer;transition:opacity .15s}.ds-btn-ghost:hover{opacity:.9}.ds-btn-ghost:active{opacity:.85}.ds-btn-ghost:focus-visible{outline:2px solid #3f6a3a;outline-offset:3px}"
+    },
+    {
+      "name": "Sheet",
+      "kind": "card",
+      "refersTo": "sheet-card",
+      "description": "Every card: flat, borderless, on the mount ground.",
+      "html": "<div class=\"ds-ground\"><div class=\"ds-sheet\"><div class=\"ds-title\">Try the 21-day program</div><div class=\"ds-cap\">A gentle plan from 2 to 20 minutes.</div></div></div>",
+      "css": ".ds-ground{background:#e9ece5;padding:20px}.ds-sheet{font-family:'Golos Text',system-ui,sans-serif;background:#f4f5f0;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:8px}.ds-title{font-weight:500;font-size:24px;line-height:30px;letter-spacing:-.3px;color:#22261f}.ds-cap{font-size:14px;line-height:20px;color:#5a6154}"
+    },
+    {
+      "name": "Segmented Choice",
+      "kind": "chip",
+      "refersTo": "choice-segment",
+      "description": "Single choice in a pill track; selected segment is specimen green.",
+      "html": "<div class=\"ds-choice\" role=\"radiogroup\"><button role=\"radio\" aria-checked=\"true\" class=\"ds-seg on\">Light</button><button role=\"radio\" aria-checked=\"false\" class=\"ds-seg\">Dark</button><button role=\"radio\" aria-checked=\"false\" class=\"ds-seg\">System</button></div>",
+      "css": ".ds-choice{display:flex;background:#dfe3da;border-radius:999px;padding:3px}.ds-seg{font-family:'Golos Text',system-ui,sans-serif;flex:1;border:none;background:none;border-radius:999px;padding:8px;font-weight:500;font-size:14px;color:#5a6154;cursor:pointer}.ds-seg.on{background:#3f6a3a;color:#fff}.ds-seg:focus-visible{outline:2px solid #3f6a3a;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Email and code entry; the only hairline border in the system.",
+      "html": "<input class=\"ds-input\" placeholder=\"you@example.com\">",
+      "css": ".ds-input{font-family:'Golos Text',system-ui,sans-serif;font-size:16px;color:#22261f;background:transparent;border:1px solid rgba(34,38,31,.12);border-radius:18px;padding:12px 16px;width:100%}.ds-input:focus-visible{outline:none;border-color:#3f6a3a}"
+    },
+    {
+      "name": "Week Strip",
+      "kind": "custom",
+      "description": "Seven leaves, oldest first: filled on practised days, outlined on rest days.",
+      "html": "<div class=\"ds-week\"><span>45 min this week</span><div class=\"ds-leaves\"><i class=\"ds-leaf on\"></i><i class=\"ds-leaf on\"></i><i class=\"ds-leaf\"></i><i class=\"ds-leaf on\"></i><i class=\"ds-leaf on\"></i><i class=\"ds-leaf on\"></i><i class=\"ds-leaf on\"></i></div></div>",
+      "css": ".ds-week{font-family:'Golos Text',system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;background:#f4f5f0;border-radius:18px;padding:16px 20px;font-weight:500;font-size:16px;color:#22261f}.ds-leaves{display:flex;gap:8px}.ds-leaf{width:14px;height:20px;border:1.5px solid #3f6a3a;border-radius:14px 0 14px 0;box-sizing:border-box}.ds-leaf.on{background:#3f6a3a}"
+    },
+    {
+      "name": "Icon Step",
+      "kind": "button",
+      "refersTo": "icon-step",
+      "description": "Round corner tool or reorder control.",
+      "html": "<button class=\"ds-step\" aria-label=\"Close\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M18 6 6 18M6 6l12 12\"/></svg></button>",
+      "css": ".ds-step{width:36px;height:36px;border-radius:999px;border:none;background:#dfe3da;color:#22261f;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.ds-step:hover{opacity:.9}.ds-step:focus-visible{outline:2px solid #3f6a3a;outline-offset:2px}"
+    },
+    {
+      "name": "Bottom Sheet",
+      "kind": "custom",
+      "refersTo": "bottom-sheet",
+      "description": "Every confirmation: slides up over a 45% scrim, mount-ground with 24px top corners.",
+      "html": "<div class=\"ds-scrim\"><div class=\"ds-bsheet\"><div class=\"ds-bs-title\">Discard this session?</div><div class=\"ds-bs-row\"><button class=\"ds-bs-ghost\">Keep going</button><button class=\"ds-bs-danger\">Discard</button></div></div></div>",
+      "css": ".ds-scrim{background:rgba(0,0,0,.45);height:240px;display:flex;align-items:flex-end;justify-content:center}.ds-bsheet{font-family:'Golos Text',system-ui,sans-serif;background:#e9ece5;border-radius:24px 24px 0 0;padding:24px;display:flex;flex-direction:column;gap:20px;width:100%;max-width:560px}.ds-bs-title{font-weight:500;font-size:24px;line-height:30px;letter-spacing:-.3px;color:#22261f}.ds-bs-row{display:flex;gap:12px}.ds-bs-ghost,.ds-bs-danger{font-family:'Golos Text',system-ui,sans-serif;flex:1;font-weight:600;font-size:16px;border:none;border-radius:12px;min-height:48px;padding:12px 24px;cursor:pointer;transition:opacity .15s}.ds-bs-ghost{background:#dfe3da;color:#22261f}.ds-bs-danger{background:rgba(168,68,46,.12);color:#a8442e}.ds-bs-ghost:hover,.ds-bs-danger:hover{opacity:.9}.ds-bs-ghost:active,.ds-bs-danger:active{opacity:.85}.ds-bs-ghost:focus-visible,.ds-bs-danger:focus-visible{outline:2px solid #3f6a3a;outline-offset:3px}"
+    },
+    {
+      "name": "Web Tab Bar",
+      "kind": "nav",
+      "description": "Frosted floating bar on web with a white lens under the active tab; native platforms use system tabs.",
+      "html": "<div class=\"ds-tabwrap\"><nav class=\"ds-tabbar\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\" aria-label=\"Home\" class=\"ds-tab on\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><path d=\"M9 22V12h6v10\"/></svg></button><button role=\"tab\" aria-selected=\"false\" aria-label=\"Practice\" class=\"ds-tab\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></button><button role=\"tab\" aria-selected=\"false\" aria-label=\"Progress\" class=\"ds-tab\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M18 20V10M12 20V4M6 20v-6\"/></svg></button><button role=\"tab\" aria-selected=\"false\" aria-label=\"Settings\" class=\"ds-tab\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z\"/></svg></button></nav></div>",
+      "css": ".ds-tabwrap{background:linear-gradient(135deg,#e9ece5,#d3d8cc);padding:24px 20px}.ds-tabbar{display:flex;height:56px;padding:4px;border-radius:24px;background:rgba(244,245,240,.6);border:1px solid rgba(34,38,31,.12);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);box-shadow:0 8px 24px rgba(0,0,0,.12);max-width:520px;margin:0 auto}.ds-tab{flex:1;display:flex;align-items:center;justify-content:center;border:none;background:none;border-radius:20px;color:#6f7669;cursor:pointer;transition:background .2s,color .2s}.ds-tab.on{color:#3f6a3a;background:rgba(255,255,255,.75);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 10px rgba(34,38,31,.1)}.ds-tab:hover{color:#22261f}.ds-tab.on:hover{color:#3f6a3a}.ds-tab:focus-visible{outline:2px solid #3f6a3a;outline-offset:-2px}"
+    },
+    {
+      "name": "Timer Stem",
+      "kind": "custom",
+      "description": "Timed and Free sessions: a specimen-green stem grows round the ring with a slim leaf at its tip; digits sit on a soft breathing disc.",
+      "html": "<div class=\"ds-timer\"><svg width=\"280\" height=\"280\" viewBox=\"0 0 280 280\"><circle cx=\"140\" cy=\"140\" r=\"124\" fill=\"none\" stroke=\"#d3d8cc\" stroke-width=\"2\"/><circle cx=\"140\" cy=\"140\" r=\"124\" fill=\"none\" stroke=\"#3f6a3a\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-dasharray=\"779.1 779.1\" stroke-dashoffset=\"467.5\" transform=\"rotate(-90 140 140)\"/><path d=\"M0 0C3 -6.5 11 -6 17 0C11 6 3 6.5 0 0Z\" fill=\"#3f6a3a\" transform=\"translate(212.9 240.3) rotate(104)\"/></svg><i class=\"ds-breath\"></i><span class=\"ds-digits\">04:00</span></div>",
+      "css": ".ds-timer{position:relative;width:280px;height:280px;display:flex;align-items:center;justify-content:center;background:#e9ece5}.ds-timer svg{position:absolute;inset:0}.ds-breath{position:absolute;width:110px;height:110px;border-radius:50%;background:#3f6a3a;opacity:.1;animation:ds-breath 4s ease-in-out infinite alternate}.ds-digits{position:relative;font-family:'Golos Text',system-ui,sans-serif;font-weight:500;font-size:64px;line-height:72px;color:#22261f;font-variant-numeric:tabular-nums}@keyframes ds-breath{from{transform:scale(.8)}to{transform:scale(1)}}@media (prefers-reduced-motion:reduce){.ds-breath{animation:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Herbarium Sheet",
+    "overview": "**Creative North Star: \"The Herbarium Sheet\"**\n\nYour practice is a living specimen mounted on a sheet. Every screen is a cool white mount laid on a sage ground, and the one thing that grows on it is a linden drawn from your sessions: a sprout at first, a tree with roots and blossom after months. The plant is the progress display; numbers stay few and large, and nothing else competes with it.\n\nThe world is quiet and botanical rather than wellness-soft. Hierarchy comes from weight and size in a single sans (Golos Text), not from colour or ornament. Sheets are plain rounded rectangles with no borders and no shadows; depth is the step from ground to sheet. Specimen green marks growth and the one primary action on a screen; ochre is reserved for the soil line and earned marks. Dark mode is the same sheet at night: green-black mount, pale leaf ink.\n\nIt deliberately leaves behind the earlier cream ground, serif headlines and terracotta card stack.",
+    "keyCharacteristics": [
+      "Cool mount ground, flat sheets, no borders or shadows on content.",
+      "One sans family carries everything; a large numeral is the only display moment on Home.",
+      "The linden tree, drawn at one shared scale for every stage, is the signature.",
+      "Green means growth or \"go\"; ochre means soil or earned.",
+      "Light and dark are designed as a pair, not inverted."
+    ],
+    "rules": [
+      {
+        "name": "The One Green Rule",
+        "body": "Each screen has at most one filled green button. Secondary actions are ghost buttons on `mount-ground-2`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ochre Is Earth Rule",
+        "body": "Ochre appears only as soil, blossom and earned marks. If it isn't ground or reward, it isn't ochre.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight Not Colour Rule",
+        "body": "Hierarchy is carried by size and weight. Don't colour a heading to make it louder.",
+        "section": "typography"
+      },
+      {
+        "name": "The Cyrillic Parity Rule",
+        "body": "Every face used must render Cyrillic. Fraunces does not, so it never leaves the wordmark.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Sheet Rule",
+        "body": "A sheet never gets a shadow or an outline. If two things need separating, put them on separate sheets.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take every colour from `useColors()` and design light and night together.",
+      "**Do** keep one filled green button per screen; everything else is ghost or an icon step.",
+      "**Do** let the tree be the progress display: one shared scale across stages, drawn on the ochre soil line.",
+      "**Do** keep text in Golos Text through `Txt` so EN, UK and RU match.",
+      "**Do** keep controls at 48px tall (buttons) or give smaller round controls hit slop."
+    ],
+    "donts": [
+      "**Don't** add shadows or borders to sheets.",
+      "**Don't** use ochre for text, buttons or anything that isn't soil, blossom or an earned mark.",
+      "**Don't** bring back the cream ground, serif headlines or terracotta of the previous look.",
+      "**Don't** pin labels, captions or milestone text onto the specimen sheet; the plant carries the meaning.",
+      "**Don't** use Fraunces outside the wordmark.",
+      "**Don't** put a disc, sun or glow behind an illustrated figure; it stands on the soil line on the sheet."
+    ]
+  }
+}

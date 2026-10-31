@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "fraunces",
+        "createdAt": "2026-10-31T08:39:35.032Z",
+        "reason": "user: the logo in the top-left corner should stay the same; Fraunces is limited to the existing gvozdi wordmark"
+      }
+    ]
+  }
+}

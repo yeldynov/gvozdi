@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111;--grid:#C9D2E3;--moss:#2F6B3A;--ink2:#5B6170}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;font-family:Manrope,sans-serif;color:var(--ink);
+background:#fff;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:3px 2px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:56px 27px 0;height:98px}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.01em}
+.burger i{display:block;width:20px;height:2px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink);margin:12px}
+.hero{padding:24px 27px 0;display:flex;align-items:flex-end;gap:16px}
+.dig{display:grid;grid-template-columns:repeat(5,24px);grid-auto-rows:24px}
+.dig b{display:grid;place-items:center}.dig b::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--ink)}
+.dig b.o::after{background:transparent}
+.cap{font-weight:600;font-size:16px;line-height:24px;padding-bottom:0}
+.cap small{display:block;color:var(--ink2);font-weight:400;font-size:14px}
+.plane{margin:48px 27px 0;background:var(--moss);color:#fff;padding:22px 24px 24px;min-height:264px}
+.lab{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.big{font-weight:800;font-size:44px;line-height:48px;margin:12px 0}
+.dots{display:grid;grid-template-columns:repeat(21,1fr);gap:3px;margin-bottom:12px}
+.dots span{height:10px;border-radius:50%;background:rgba(255,255,255,.3);aspect-ratio:1}.dots span.d{background:#fff}
+.sub{font-size:15px;line-height:22px;opacity:.9;margin-bottom:18px}
+.go{width:100%;height:56px;border:0;background:#fff;color:var(--moss);font-family:Manrope;font-weight:800;font-size:20px}
+.cells{display:grid;grid-template-columns:1fr 1fr;margin:24px 27px 0;background:#fff;border:1px solid var(--ink)}
+.cells div{padding:12px 14px;height:96px}.cells div+div{border-left:1px solid var(--ink)}
+.v{font-weight:800;font-size:30px;line-height:36px}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-top:1px solid var(--grid);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--ink2)}.tabs i.on{border-color:var(--moss);background:var(--moss)}
+</style></head><body>
+<div class="top"><span class="brand">gvozdi</span><span class="burger"><i></i></span></div>
+<div class="hero">
+  <div class="dig">
+    <b></b><b></b><b></b><b></b><b class="o"></b>
+    <b class="o"></b><b class="o"></b><b class="o"></b><b class="o"></b><b></b>
+    <b class="o"></b><b class="o"></b><b class="o"></b><b class="o"></b><b></b>
+    <b class="o"></b><b></b><b></b><b></b><b class="o"></b>
+    <b class="o"></b><b class="o"></b><b class="o"></b><b class="o"></b><b></b>
+    <b class="o"></b><b class="o"></b><b class="o"></b><b class="o"></b><b></b>
+    <b></b><b></b><b></b><b></b><b class="o"></b>
+  </div>
+  <div class="cap">days in a row<small>Next: a full week · 3 of 7</small></div>
+</div>
+<div class="plane">
+  <div class="lab">21-day program · Day 9 of 21</div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="sub">Each day you practise, a little longer. Miss a day and the program simply waits.</div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="cells"><div><div class="lab" style="color:var(--ink2)">This week</div><div class="v">46 min</div></div><div><div class="lab" style="color:var(--ink2)">Sessions</div><div class="v">29</div></div></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

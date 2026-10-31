@@ -1,0 +1,248 @@
+{
+ "title": "Choose the visual world for Gvozdi",
+ "question": "Choose again: Botanical Folio is now sketched beside Enamelware (the roll), Tear-off Calendar and Nail Grid Specimen.",
+ "options": [
+  {
+   "id": "assigned",
+   "kind": "assigned",
+   "label": "Enamelware",
+   "kicker": "THE ROLL",
+   "lineage": "Enamel mugs, basins and cobalt house-number plates from Kyiv and Odesa courtyards",
+   "thesis": "Practice as an everyday object you use every morning: sturdy, glossy, rimmed, slightly chipped.",
+   "palette": [
+    "#1E3A8C",
+    "#F2F4F3",
+    "#15181E",
+    "#C9302C"
+   ],
+   "materials": [
+    "fired enamel with a dark rim",
+    "pressed-steel corners",
+    "condensed sign lettering"
+   ],
+   "viewport": "Under the native tab bar: the streak as a cobalt enamel house-number plate (white numeral, inset rim line); below it today's practice on a white enamel sign with a red Begin, then the week as a row of rim marks.",
+   "risk": "Can read as retro kitchen kitsch if decals and chips get sprinkled around instead of staying on the plates.",
+   "raised": [
+    {
+     "from": "challenger-saville",
+     "raise": "Every practice carries its sequence number (No. 30), set on today's plate like a house number."
+    },
+    {
+     "from": "challenger-orienteering",
+     "raise": "The red decal is reserved for one thing on each screen: today's action."
+    },
+    {
+     "from": "challenger-emission",
+     "raise": "Week states use form as well as hue: full plate for practised, half-plate for partial, open rim for rest days."
+    },
+    {
+     "from": "challenger-botanical",
+     "raise": "The streak tree is drawn at one fixed scale on one ground, so growth compares day to day."
+    },
+    {
+     "from": "challenger-metro",
+     "raise": "No chrome besides the plates: no card borders, shadows or gradients; the enamel edge is the container."
+    }
+   ],
+   "html": ".impeccable/mocks/decision/assigned.html",
+   "htmlFrame": "390x844"
+  },
+  {
+   "id": "model-pick",
+   "kind": "pick",
+   "label": "Tear-off Calendar",
+   "kicker": "IMPECCABLE’S PICK",
+   "lineage": "The wall tear-off calendar (отрывной календарь), one sheet per day",
+   "thesis": "Each day is one sheet: you practise, you tear it, and the stub grows thicker.",
+   "palette": [
+    "#E9E8E3",
+    "#141414",
+    "#D2232A",
+    "#3B3B3B"
+   ],
+   "materials": [
+    "newsprint sheet",
+    "letterpress numerals",
+    "stapled binding stub"
+   ],
+   "viewport": "Today's sheet fills Home: a huge date numeral (red on rest days), weekday, then '31 minutes on the board' and Begin; the stub of torn sheets above shows the streak.",
+   "risk": "The most obvious reading of a daily habit, and the paper ground sits close to the cream look being replaced.",
+   "html": ".impeccable/mocks/decision/model-pick.html",
+   "htmlFrame": "390x844"
+  },
+  {
+   "id": "challenger-crouwel",
+   "kind": "challenger",
+   "catalogId": "crouwel-grid-specimen",
+   "label": "Nail Grid Specimen",
+   "verdict": "competitive",
+   "lineage": "Wim Crouwel's gridded type specimens, fused with the board's grid of nails",
+   "thesis": "The nail board is a grid of points, so every numeral is built from nail dots on a visible grid.",
+   "palette": [
+    "#FFFFFF",
+    "#111111",
+    "#C9D2E3",
+    "#2F6B3A"
+   ],
+   "materials": [
+    "visible construction grid",
+    "dot-matrix numerals",
+    "one moss accent plane"
+   ],
+   "viewport": "The streak numeral built from nail dots across the top half, today's practice snapped to whole grid cells below, the grid faintly visible behind everything.",
+   "case": "Strong match with the board (nails are a grid), but the dot numerals cost some legibility at a glance.",
+   "risk": "Dot-built numerals get hard to read small or in Cyrillic text; only the numbers can carry it.",
+   "html": ".impeccable/mocks/decision/challenger-crouwel.html",
+   "htmlFrame": "390x844",
+   "hero": "https://impeccable.style/worlds/cards/crouwel-grid-specimen-hero.webp"
+  },
+  {
+   "id": "challenger-emission",
+   "kind": "challenger",
+   "catalogId": "operate-c-emission-line-rail",
+   "label": "Emission Line Rail",
+   "verdict": "declined",
+   "lineage": "glass spectrogram plates",
+   "thesis": "Days as hairline emission lines on a charcoal band.",
+   "palette": [
+    "#1C1D20",
+    "#E8E4DA",
+    "#F2C230"
+   ],
+   "materials": [
+    "charcoal continuum",
+    "hairline lines"
+   ],
+   "viewport": "A rail of day lines with today doubled.",
+   "risk": "Cold and lab-like for a barefoot morning ritual.",
+   "case": "Loses both axes: no one at the board identifies with a spectrogram.",
+   "kept": "State carried by form, not only hue (week marks).",
+   "hero": "https://impeccable.style/worlds/cards/operate-c-emission-line-rail-hero.webp"
+  },
+  {
+   "id": "challenger-metro",
+   "kind": "challenger",
+   "catalogId": "digital-design-canon-metro-typographic-tiles",
+   "label": "Metro Tiles",
+   "verdict": "declined",
+   "lineage": "Windows Phone Metro",
+   "thesis": "Giant lowercase type and flat tiles as the whole interface.",
+   "palette": [
+    "#000000",
+    "#FFFFFF",
+    "#1BA1E2"
+   ],
+   "materials": [
+    "flat tiles",
+    "cropped type"
+   ],
+   "viewport": "Panorama of tiles with cropped headlines.",
+   "risk": "Reads as a 2012 phone, not a practice.",
+   "case": "Loses both axes: tech nostalgia, a panorama fights the native tabs.",
+   "kept": "Chrome deleted: the plate edge is the only container.",
+   "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+  },
+  {
+   "id": "challenger-orienteering",
+   "kind": "challenger",
+   "catalogId": "notation-diagram-systems-orienteering-map",
+   "label": "Orienteering Map",
+   "verdict": "declined",
+   "lineage": "ISOM orienteering maps",
+   "thesis": "The 21 days as a purple course over terrain.",
+   "palette": [
+    "#FFFFFF",
+    "#B5651D",
+    "#9B2FAE"
+   ],
+   "materials": [
+    "contour lines",
+    "course overprint"
+   ],
+   "viewport": "Program days as numbered controls.",
+   "risk": "Too sporty and busy for a calm ritual.",
+   "case": "Loses both axes: racing semantics contradict 'never pressure'.",
+   "kept": "One reserved colour for the active leg (today's action).",
+   "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map-hero.webp"
+  },
+  {
+   "id": "challenger-botanical",
+   "kind": "challenger",
+   "catalogId": "editorial-sequence-montage-botanical-folio-season",
+   "label": "Botanical Folio",
+   "verdict": "competitive",
+   "lineage": "Botanical folio plates, one plant followed through its stages at a fixed scale",
+   "thesis": "The streak tree as a specimen: every growth stage drawn at one scale, today's stage framed.",
+   "palette": [
+    "#F3ECDD",
+    "#3E5B33",
+    "#9E2A2B",
+    "#8A7356"
+   ],
+   "materials": [
+    "folio plate ground",
+    "sepia hairline rules",
+    "engraved italic and small caps"
+   ],
+   "viewport": "A folio strip of five tree stages along one baseline (today framed, future stages dotted), the streak numeral in leaf green, then today's practice on a plate with a green Begin.",
+   "risk": "Cream ground plus italic serif is the incumbent look again; it needs a cooler plate or bolder greens to read as new.",
+   "case": "Adopted on your request: strong on product clarity (the tree is already the progress model), but its cream and engraved serif sit close to the look being replaced.",
+   "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp",
+   "html": ".impeccable/mocks/decision/challenger-botanical.html",
+   "htmlFrame": "390x844"
+  },
+  {
+   "id": "challenger-saville",
+   "kind": "challenger",
+   "catalogId": "brand-identity-canon-saville-catalog-sleeve",
+   "label": "Catalog Sleeve",
+   "verdict": "declined",
+   "lineage": "Factory Records FAC numbering",
+   "thesis": "Every session as a numbered catalog entry.",
+   "palette": [
+    "#0D0D0D",
+    "#FFFFFF",
+    "#E0402E"
+   ],
+   "materials": [
+    "matte black",
+    "pulse plot"
+   ],
+   "viewport": "Session pulse plot with a FAC-style number.",
+   "risk": "Coded labels fight glanceability.",
+   "case": "Loses both axes: too cryptic for a glance from the board.",
+   "kept": "Sequential practice numbers."
+  }
+ ],
+ "reroll": {
+  "registers": [
+   "safer",
+   "bolder"
+  ]
+ },
+ "buildPath": {
+  "value": "code"
+ },
+ "canon": true,
+ "canonCard": {
+  "kind": "canon",
+  "label": "The category standard",
+  "thesis": "A clean iOS-native habit app: grouped inset lists, system type, one tint.",
+  "palette": [
+   "#F2F2F7",
+   "#FFFFFF",
+   "#000000",
+   "#34A853"
+  ],
+  "materials": [
+   "system grouped background",
+   "SF type",
+   "activity-ring style progress"
+  ],
+  "viewport": "Large title 'Today', a ring for today's minutes, streak and next milestone as inset rows, a Begin button.",
+  "risk": "Indistinguishable from any habit tracker by design.",
+  "html": ".impeccable/mocks/decision/canon.html",
+  "htmlFrame": "390x844"
+ },
+ "steer": true
+}

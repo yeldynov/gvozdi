@@ -4,6 +4,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 
 - GitHub `yeldynov/gvozdi`, EAS project `@shangnik/gvozdi`, web https://gvozdi.expo.app
 - Bundle id / package: `com.shangnik.gvozdi`
+- Two skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset) and `herbarium` (botanical: sage/green tokens, Golos Text, linden tree, meadow charts). Where they disagree on behaviour, the default wins (user decision).
 - Account required (user decision): `Stack.Protected` in root `_layout` gates tabs/history/achievement on Clerk `isSignedIn`. Guests get onboarding, `/account` and one demo session; finishing it offers "create an account to keep it" (kept locally, pushed by `useSync` after sign-in). Earthy brand. Languages EN / UK / RU.
 - MVP scope excludes: Library, Paywall, Board/Pure/Breath session variants, mood check-in, social sharing, web push.
 
@@ -48,7 +49,8 @@ src/lib/analytics.ts         capture(event, props), useAnalytics(); .web.ts twin
 src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
 src/lib/reminder.ts          native one-shot reminders for 14 days (`reminderDates`, skips a practised today), rescheduled from root _layout on launch/foreground/save/time/language; reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
-src/theme.ts                 useColors() light/dark (follows settings.theme), radius, space, fonts
+src/theme.ts                 useColors() light/dark per skin (settings.theme + settings.skin), useSkin(), radius, space, fonts / herbFonts
+src/skins/herbarium/         herbarium-only pieces: Home cards, Progress screen, Tree/Meadow, TimerRing/PeakCurve, scenes; SVG art in assets/art/herbarium/; spec in DESIGN.md
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
 src/store.ts                 sessions + settings + running session; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
@@ -64,7 +66,8 @@ src/i18n/{en,uk,ru}.json     translations
 - **Derive, don't store.** Streak, stats and achievements are computed from sessions in `src/lib/practice.ts`, never persisted.
 - **Sessions are never removed.** `deleteSession` sets `deletedAt` (tombstone for sync). Use `live()` from `practice.ts` for anything shown to the user. Every mutation bumps `updatedAt`.
 - Pure logic goes in `src/lib/` with a `*.test.ts` next to it.
-- Colors only via `useColors()`; spacing/radius/fonts from `src/theme.ts`. Check both light and dark.
+- Colors only via `useColors()`; spacing/radius/fonts from `src/theme.ts`. Check both light and dark, in both skins.
+- Skins: small differences are `useSkin() === 'herbarium'` conditionals in place; whole redesigned pieces live in `src/skins/herbarium/` and the shared screen picks them. Behaviour (card order, settings layout, copy) stays shared.
 - All user-facing text goes through i18n, in all three files. UK and RU plurals need `_one/_few/_many/_other`; EN needs `_one/_other`.
 - No `Alert` (does nothing on web). Confirmations are in-app modals.
 - Save/side effects in event handlers, never inside a state updater.

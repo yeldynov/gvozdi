@@ -18,7 +18,8 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Svg, { Circle } from 'react-native-svg';
 
 import { Scene, SCENES, type SceneName } from '@/components/scenes';
-import { fonts, radius, space, useColors } from '@/theme';
+import { Scene as HerbScene } from '@/skins/herbarium/scenes';
+import { fonts, herbFonts, radius, space, useColors, useSkin } from '@/theme';
 
 // Character scenes exported as static SVGs from the gvozdi-pwa design set (onboarding scenes).
 const ART = {
@@ -28,11 +29,20 @@ const ART = {
   rest: require('@/assets/art/rest.svg'),
   together: require('@/assets/art/together.svg'),
 };
+const HERB_ART: typeof ART = {
+  stand: require('@/assets/art/herbarium/stand.svg'),
+  reflect: require('@/assets/art/herbarium/reflect.svg'),
+  walk: require('@/assets/art/herbarium/walk.svg'),
+  rest: require('@/assets/art/herbarium/rest.svg'),
+  together: require('@/assets/art/herbarium/together.svg'),
+};
 export type ArtName = keyof typeof ART | SceneName;
 
 /** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
 export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number; clouds?: boolean }) {
   const reduced = useReducedMotion();
+  const herb = useSkin() === 'herbarium';
+  const SceneFor = herb ? HerbScene : Scene;
   const breath = useSharedValue(0);
   const sway = useSharedValue(-1);
   useEffect(() => {
@@ -55,9 +65,9 @@ export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number
   return (
     <Animated.View style={[{ alignSelf: 'center' }, style]}>
       {name in SCENES ? (
-        <Scene name={name as SceneName} size={size} clouds={clouds} />
+        <SceneFor name={name as SceneName} size={size} clouds={clouds} />
       ) : (
-        <Image source={ART[name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
+        <Image source={(herb ? HERB_ART : ART)[name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
       )}
     </Animated.View>
   );
@@ -116,14 +126,22 @@ type Variant = 'display' | 'title' | 'body' | 'label' | 'caption';
 export function Txt({ variant = 'body', style, ...props }: TextProps & { variant?: Variant }) {
   const c = useColors();
   const { i18n } = useTranslation();
+  const herb = useSkin() === 'herbarium';
   const color = variant === 'label' || variant === 'caption' ? c.text2 : c.text;
-  const cyrillic = (variant === 'display' || variant === 'title') && i18n.language !== 'en';
-  return <Text accessibilityRole={variant === 'display' ? 'header' : undefined} {...props} style={[styles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]} />;
+  const cyrillic = !herb && (variant === 'display' || variant === 'title') && i18n.language !== 'en';
+  return (
+    <Text
+      accessibilityRole={variant === 'display' ? 'header' : undefined}
+      {...props}
+      style={[styles[variant], herb && herbStyles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]}
+    />
+  );
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
   const c = useColors();
-  return <View style={[styles.card, { backgroundColor: c.surface, borderColor: c.divider }, style]}>{children}</View>;
+  const herb = useSkin() === 'herbarium';
+  return <View style={[styles.card, herb && herbStyles.card, { backgroundColor: c.surface, borderColor: c.divider }, style]}>{children}</View>;
 }
 
 export function Button({
@@ -145,6 +163,7 @@ export function Button({
   color?: string;
 }) {
   const c = useColors();
+  const herb = useSkin() === 'herbarium';
   return (
     <Pressable
       accessibilityRole="button"
@@ -153,12 +172,13 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
+        herb && herbStyles.button,
         { backgroundColor: ghost ? (color ? `${color}1f` : c.bg2) : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
       <View style={styles.buttonRow}>
         {icon}
-        <Text style={[styles.buttonText, { color: ghost ? (color ?? c.text) : c.onPrimary }]}>{label}</Text>
+        <Text style={[styles.buttonText, herb && { fontFamily: herbFonts.textBold }, { color: ghost ? (color ?? c.text) : c.onPrimary }]}>{label}</Text>
       </View>
     </Pressable>
   );
@@ -262,4 +282,15 @@ const styles = StyleSheet.create({
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },
   stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   choiceText: { fontFamily: fonts.textMedium, fontSize: 14 },
+});
+
+// Herbarium skin: Golos Text, borderless sheets, squarer buttons with a 48pt target.
+const herbStyles = StyleSheet.create({
+  display: { fontFamily: herbFonts.display, letterSpacing: -0.5 },
+  title: { fontFamily: herbFonts.display, letterSpacing: -0.3 },
+  body: { fontFamily: herbFonts.text },
+  label: { fontFamily: herbFonts.textMedium },
+  caption: { fontFamily: herbFonts.text, fontSize: 14, lineHeight: 20 },
+  card: { borderRadius: radius.md, borderWidth: 0 },
+  button: { borderRadius: radius.sm, minHeight: 48, justifyContent: 'center' },
 });

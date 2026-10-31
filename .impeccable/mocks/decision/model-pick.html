@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@700;800&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#E9E8E3;--ink:#141414;--red:#D2232A;--bind:#3B3B3B;--ink2:#5E5E5A}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:#C9C8C2;font-family:'PT Sans',sans-serif;color:var(--ink)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 12px}
+.brand{font-family:'Alumni Sans';font-weight:800;font-size:26px;letter-spacing:.04em}
+.burger i{display:block;width:20px;height:2px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink);margin:12px}
+.pad{margin:0 16px;position:relative}
+.bind{height:22px;background:var(--bind);border-radius:4px 4px 0 0;display:flex;justify-content:space-around;align-items:center}
+.bind i{width:8px;height:8px;border-radius:50%;background:#C9C8C2}
+.stub{height:20px;background:repeating-linear-gradient(to bottom,#dcdbd5 0 2px,#bdbcb6 2px 3px);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:12px;font-weight:700;color:var(--ink2)}
+.sheet{background:var(--paper);padding:18px 20px 22px;min-height:560px;box-shadow:0 1px 0 #bdbcb6}
+.hd{display:flex;justify-content:space-between;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.date{font-family:'Alumni Sans';font-weight:800;font-size:220px;line-height:.82;text-align:center;margin:18px 0 0}
+.wd{text-align:center;font-family:'Alumni Sans';font-weight:700;font-size:34px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:12px}
+.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);padding:8px 0;border-bottom:1px solid var(--ink)}
+.task{font-family:'Alumni Sans';font-weight:800;font-size:44px;line-height:1;margin:16px 0 6px}
+.sub{font-size:15px;color:var(--ink2);line-height:1.4;margin-bottom:16px}
+.go{width:100%;height:56px;border:0;background:var(--ink);color:var(--paper);font-family:'Alumni Sans';font-weight:800;font-size:28px;letter-spacing:.06em;text-transform:uppercase}
+.perf{height:8px;background:radial-gradient(circle at 4px 0,#C9C8C2 3px,transparent 3.5px) 0 0/12px 8px;margin:0 16px}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(233,232,227,.85);backdrop-filter:blur(20px);border-top:1px solid #bdbcb6;display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--ink2)}.tabs i.on{border-color:var(--ink);background:var(--ink)}
+</style></head><body>
+<div class="top"><span class="brand">ГВОЗДИ</span><span class="burger"><i></i></span></div>
+<div class="pad">
+  <div class="bind"><i></i><i></i></div>
+  <div class="stub">3 days in a row · torn</div>
+  <div class="sheet">
+    <div class="hd"><span>October 2026</span><span>Day 9 of 21</span></div>
+    <div class="date">31</div>
+    <div class="wd">Saturday</div>
+    <div class="meta"><span>Sunrise 07:14</span><span>46 min this week</span></div>
+    <div class="task">11 minutes on the board</div>
+    <div class="sub">Each day you practise, a little longer. Miss a day and the program simply waits.</div>
+    <button class="go">Begin</button>
+  </div>
+</div>
+<div class="perf"></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>

@@ -7,7 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, w
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { radius, space, useColors } from '@/theme';
+import { radius, space, useColors, useSkin } from '@/theme';
 
 const icons = { index: 'home', practice: 'circle', progress: 'bar-chart-2', settings: 'settings' } as const;
 const HEIGHT = 56;
@@ -19,6 +19,7 @@ const css = (style: Record<string, string>) => style as object;
 /** Frosted glass card floating over the content, with a lens that slides (and stretches) to the active tab. */
 function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const c = useColors();
+  const herb = useSkin() === 'herbarium';
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const onHeight = useContext(BottomTabBarHeightCallbackContext);
@@ -45,7 +46,7 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
         {
           bottom: insets.bottom + space[4],
           width: barWidth,
-          backgroundColor: c.isDark ? 'rgba(42, 34, 25, 0.6)' : 'rgba(251, 246, 238, 0.6)',
+          backgroundColor: herb ? (c.isDark ? 'rgba(25, 33, 26, 0.6)' : 'rgba(244, 245, 240, 0.6)') : c.isDark ? 'rgba(42, 34, 25, 0.6)' : 'rgba(251, 246, 238, 0.6)',
           borderColor: c.divider,
         },
         css({ backdropFilter: 'blur(20px) saturate(1.6)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)' }),
@@ -58,7 +59,7 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
           css({
             boxShadow: c.isDark
               ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 10px rgba(0, 0, 0, 0.25)'
-              : 'inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 10px rgba(45, 36, 25, 0.1)',
+              : `inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 10px ${herb ? 'rgba(34, 38, 31, 0.1)' : 'rgba(45, 36, 25, 0.1)'}`,
           }),
           lens,
         ]}

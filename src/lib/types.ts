@@ -15,12 +15,14 @@ export type Session = {
 
 export type Language = 'system' | 'en' | 'uk' | 'ru';
 export type ThemePref = 'system' | 'light' | 'dark';
+export type Skin = 'earthy' | 'herbarium';
 
 export type HomeCard = 'today' | 'stats' | 'week';
 
 export type Settings = {
   language: Language;
   theme: ThemePref;
+  skin?: Skin; // unset = earthy
   sound: boolean;
   haptics: boolean;
   reminder?: string; // 'HH:mm'

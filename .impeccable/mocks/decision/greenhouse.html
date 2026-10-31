@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#14231A;--pane:#1D3124;--pale:#DCEBD8;--leaf:#7FB07A;--sun:#E8C468;--ink2:#9DB59A;--line:#2A4232}
+*{box-sizing:border-box;margin:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--ground);font-family:'Golos Text',sans-serif;color:var(--pale)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:58px 20px 0;position:relative;z-index:2}
+.logo{display:flex;align-items:center;gap:8px;font-family:Fraunces;font-weight:300;font-size:26px}
+.burger i{display:block;width:20px;height:1.6px;background:var(--pale);box-shadow:0 6px 0 var(--pale),0 -6px 0 var(--pale);margin:12px}
+.hero{height:300px;position:relative;margin-top:-10px}
+.hero svg{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+.streak{position:absolute;left:20px;bottom:18px}
+.n{font-family:"Golos Text";font-weight:500;font-size:60px;line-height:1}
+.cap{font-size:15px;color:var(--ink2)}
+.card{margin:8px 16px 0;background:var(--pane);border-radius:18px;padding:18px}
+.lab{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+.big{font-family:"Golos Text";font-weight:500;font-size:30px;margin:6px 0 10px}
+.dots{display:flex;gap:3px;margin-bottom:14px}.dots span{flex:1;height:5px;border-radius:3px;background:var(--line)}.dots span.d{background:var(--leaf)}
+.go{width:100%;height:54px;border:0;border-radius:14px;background:var(--sun);color:#14231A;font-size:18px;font-weight:600;font-family:'Golos Text'}
+.week{margin:12px 16px 0;display:flex;gap:6px}
+.week div{flex:1;height:54px;border-radius:10px;background:var(--pane);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px;font-size:12px;color:var(--ink2);position:relative;overflow:hidden}
+.week div b{position:absolute;left:0;right:0;bottom:0;background:rgba(127,176,122,.35)}
+.tabs{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(20,35,26,.8);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-top:14px}
+.tabs i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink2)}.tabs i.on{border-color:var(--sun);background:var(--sun)}
+</style></head><body>
+<div class="top"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#DCEBD8" stroke-width="1.2"/><circle cx="12" cy="12" r="1.8" fill="#DCEBD8"/></svg>gvozdi</span><span class="burger"><i></i></span></div>
+<div class="hero">
+  <svg width="200" height="250" viewBox="0 0 200 250"><g stroke="#DCEBD8" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M100 250C98 190 104 140 98 60"/><path d="M99 195 62 168M100 165l40-28M98 118 72 94M99 98l28-24"/><path d="M62 168c-22 2-36-10-38-24 20-2 34 8 38 24zM140 137c18-10 36-4 42 10-18 10-34 6-42-10zM72 94c-18-4-26-16-24-28 16 2 24 12 24 28zM127 74c10-16 26-20 36-12-10 16-24 18-36 12zM98 60c-8-14-4-28 6-34 8 12 6 26-6 34z" fill="rgba(127,176,122,.25)"/></g><path d="M50 248h100" stroke="#2A4232" stroke-width="4" stroke-linecap="round"/></svg>
+  <div class="streak"><div class="n">3</div><div class="cap">days in a row</div></div>
+</div>
+<div class="card">
+  <div class="lab">21-day program · Day 9 of 21</div>
+  <div class="big">11 min suggested</div>
+  <div class="dots"><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <button class="go">Begin · 11 min</button>
+</div>
+<div class="week"><div><b style="height:70%"></b>T</div><div><b style="height:80%"></b>F</div><div>S</div><div>S</div><div><b style="height:40%"></b>M</div><div><b style="height:85%"></b>T</div><div style="outline:1.5px solid #E8C468">W</div></div>
+<div class="tabs"><i class="on"></i><i></i><i></i><i></i></div>
+</body></html>
