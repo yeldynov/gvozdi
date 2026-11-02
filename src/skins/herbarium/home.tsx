@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button, Card, Sheet, Step, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
-import { ACHIEVEMENTS, currentStreak, lastDays, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
+import { currentStreak, lastDays, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
 import { clampMinutes } from '@/lib/session';
 import { Tree } from '@/skins/herbarium/progress-visuals';
 import { useStore } from '@/store';
@@ -83,9 +83,8 @@ export function Today() {
 }
 
 const toProgress = () => router.navigate('/progress');
-const toAchievement = (id: string) => router.push({ pathname: '/achievement/[id]', params: { id } });
 
-/** The specimen sheet: the tree grown from your sessions and the streak. Opens the next milestone. */
+/** The specimen sheet: the tree grown from your sessions and the streak. Opens Progress. */
 export function Stats() {
   const { t } = useTranslation();
   const c = useColors();
@@ -94,9 +93,7 @@ export function Stats() {
   const streak = currentStreak(sessions);
   const next = nextAchievement(sessions);
   const stage = treeStage(sessions);
-  const current = ACHIEVEMENTS[stage - 2]; // the furthest earned, the one the tree shows; none while a seed
   const art = w * 0.8;
-  const target = next ?? (current && { a: current });
   const label = [
     streak ? t('home.streak', { count: streak }) : t('home.noStreak'),
     next && `${t('home.cards.milestone')}: ${t(`achievements.${next.a.id}.title`)}, ${t('achievements.progress', { value: next.value, target: next.a.target })}`,
@@ -107,7 +104,7 @@ export function Stats() {
     <Pressable
       accessibilityRole="link"
       accessibilityLabel={label}
-      onPress={target ? () => toAchievement(target.a.id) : toProgress}
+      onPress={toProgress}
       onLayout={(e) => setW(e.nativeEvent.layout.width)}>
       <Card style={styles.specimen}>
         <View aria-hidden style={[styles.plant, { width: art, height: art, left: w * 0.6 - art / 2, bottom: -art * 0.06 }]}>

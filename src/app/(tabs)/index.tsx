@@ -10,7 +10,7 @@ import { Badge, DayBars, Tree, treeGround } from '@/components/progress-visuals'
 import { Art, Button, Card, Screen, Sheet, Step, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { needsConsent } from '@/lib/consent';
-import { ACHIEVEMENTS, currentStreak, dayKey, lastDays, live, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
+import { currentStreak, dayKey, lastDays, live, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
 import { clampMinutes } from '@/lib/session';
 import type { HomeCard } from '@/lib/types';
 import * as herb from '@/skins/herbarium/home';
@@ -168,9 +168,8 @@ function Today() {
 }
 
 const toProgress = () => router.navigate('/progress');
-const toAchievement = (id: string) => router.push({ pathname: '/achievement/[id]', params: { id } });
 
-/** Two square tiles: the streak over its tree, and the next achievement. Each opens its achievement's detail. */
+/** Two square tiles: the streak over its tree, and the next achievement. Both open Progress. */
 function Stats() {
   const { t } = useTranslation();
   const c = useColors();
@@ -179,13 +178,12 @@ function Stats() {
   const streak = currentStreak(sessions);
   const next = nextAchievement(sessions);
   const stage = treeStage(sessions);
-  const current = ACHIEVEMENTS[stage - 2]; // the furthest earned, the one the tree shows; none while a seed
   const art = w * Math.max(0.68, 1.05 - stage * 0.05); // small plants larger; grown crowns smaller so they clear the text
   const ground = treeGround(stage);
   const pad = space[5]; // ground edge sits as far from the right and bottom as the text from the top and left
   return (
     <View style={styles.tiles}>
-      <Tile label={t('home.streak', { count: streak })} onWidth={setW} style={styles.streakCard} onPress={current ? () => toAchievement(current.id) : toProgress}>
+      <Tile label={t('home.streak', { count: streak })} onWidth={setW} style={styles.streakCard}>
         <View aria-hidden style={[styles.tileArt, { right: pad - art * (1 - ground.right), bottom: pad - art * (1 - ground.bottom) }]}>
           <Tree stage={stage} size={art} />
         </View>
@@ -200,7 +198,7 @@ function Stats() {
         </Txt>
       </Tile>
       {next && (
-        <Tile label={`${t('home.cards.milestone')}: ${t(`achievements.${next.a.id}.title`)}`} style={styles.milestoneCard} onPress={() => toAchievement(next.a.id)}>
+        <Tile label={`${t('home.cards.milestone')}: ${t(`achievements.${next.a.id}.title`)}`} style={styles.milestoneCard}>
           <Badge a={next.a} earned={false} size={w * 0.3} />
           <Txt variant="label">
             {t('home.cards.milestone')}
