@@ -42,17 +42,17 @@ function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?:
 export function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={GV.taupeD} opacity={0.14} />;
 }
-/** Sadhu board in profile, nails underneath. */
+/** Sadhu board in profile: base on the ground, nails pointing up. */
 export function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
   const n = Math.max(5, Math.round(w / 13));
   return (
     <G>
-      <Rect x={x} y={y} width={w} height={13} rx={6} fill={GV.taupe} />
-      <Rect x={x} y={y} width={w} height={6} rx={3} fill={GV.taupeL} />
+      <Rect x={x} y={y + 9} width={w} height={13} rx={6} fill={GV.taupe} />
+      <Rect x={x} y={y + 9} width={w} height={6} rx={3} fill={GV.taupeL} />
       <G stroke={INK} strokeWidth={2.4} strokeLinecap="round">
         {Array.from({ length: n }, (_, i) => {
           const nx = x + 10 + i * ((w - 20) / (n - 1));
-          return <Line key={i} x1={nx} y1={y + 13} x2={nx} y2={y + 22} />;
+          return <Line key={i} x1={nx} y1={y + 10} x2={nx} y2={y + 1} />;
         })}
       </G>
     </G>
