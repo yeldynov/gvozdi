@@ -147,8 +147,9 @@ function Plate() {
                   accessibilityLabel={[title, got ? t('achievements.earned') : t('achievements.locked'), toward].filter(Boolean).join(', ')}
                   onPress={() => router.push({ pathname: '/achievement/[id]', params: { id: a.id } })}
                   style={({ pressed }) => [styles.figure, { opacity: pressed ? 0.7 : 1 }]}>
-                  <View style={{ opacity: got ? 1 : 0.55 }}>
-                    <Tree stage={i + 2} size={CELL} muted={!got} soil={false} />
+                  {/* grown up to the tree's stage, like the soil: a count milestone can land before an earlier streak one */}
+                  <View style={{ opacity: i + 2 <= stage ? 1 : 0.55 }}>
+                    <Tree stage={i + 2} size={CELL} muted={i + 2 > stage} soil={false} />
                   </View>
                   <Txt variant="caption" numberOfLines={2} style={[styles.name, got && { color: c.text }]}>
                     {title}
