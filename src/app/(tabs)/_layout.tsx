@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { Tabs } from 'expo-router';
 import { BottomTabBarHeightCallbackContext, type BottomTabBarProps } from 'expo-router/tabs';
 import { useContext, useEffect } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -13,10 +13,13 @@ const icons = { index: 'home', practice: 'circle', progress: 'bar-chart-2', sett
 const HEIGHT = 56;
 const PAD = space[1];
 
+// No backdrop blur on Android without expo-blur, so the card is nearly opaque there.
+const ALPHA = Platform.OS === 'web' ? 0.6 : 0.94;
+
 // react-native-web passes these through to CSS; RN's types don't know them.
 const css = (style: Record<string, string>) => style as object;
 
-/** Frosted glass card floating over the content, with a lens that slides (and stretches) to the active tab. */
+/** Frosted glass card floating over the content (Android + web; iOS uses _layout.ios.tsx), with a lens that slides (and stretches) to the active tab. */
 function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const c = useColors();
   const herb = useSkin() === 'herbarium';
@@ -46,7 +49,9 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
         {
           bottom: insets.bottom + space[4],
           width: barWidth,
-          backgroundColor: herb ? (c.isDark ? 'rgba(25, 33, 26, 0.6)' : 'rgba(244, 245, 240, 0.6)') : c.isDark ? 'rgba(42, 34, 25, 0.6)' : 'rgba(251, 246, 238, 0.6)',
+          backgroundColor: herb
+            ? c.isDark ? `rgba(25, 33, 26, ${ALPHA})` : `rgba(244, 245, 240, ${ALPHA})`
+            : c.isDark ? `rgba(42, 34, 25, ${ALPHA})` : `rgba(251, 246, 238, ${ALPHA})`,
           borderColor: c.divider,
         },
         css({ backdropFilter: 'blur(20px) saturate(1.6)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)' }),

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useColors } from '@/theme';
 
-// System tab bar: Liquid Glass on iOS 26+, Material on Android. Web has its own bar in _layout.web.tsx.
+// System tab bar: Liquid Glass on iOS 26+. Android and web use the glass card in _layout.tsx.
 const tabs = [
   { name: 'index', label: 'tabs.home', sf: 'house', feather: 'home' },
   { name: 'practice', label: 'tabs.practice', sf: 'circle', feather: 'circle' },
@@ -17,7 +17,7 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const c = useColors();
   return (
-    <NativeTabs tintColor={c.primary} iconColor={{ default: c.text3, selected: c.primary }} backgroundColor={c.surface} indicatorColor={c.bg3}>
+    <NativeTabs tintColor={c.primary} iconColor={{ default: c.text3, selected: c.primary }} backgroundColor={c.surface}>
       {tabs.map((tab) => (
         <NativeTabs.Trigger key={tab.name} name={tab.name}>
           <NativeTabs.Trigger.Icon
