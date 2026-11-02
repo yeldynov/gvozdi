@@ -1,4 +1,3 @@
-import { useAuth } from '@clerk/expo';
 import Feather from '@expo/vector-icons/Feather';
 import { setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
@@ -37,8 +36,7 @@ import { fonts, herbFonts, radius, space, useColors, useSkin } from '@/theme';
 
 const gong = require('@/assets/sounds/gong.m4a');
 
-// Guests can't reach the tabs, so their fallback is onboarding.
-const leave = (signedIn = true) => (router.canGoBack() ? router.back() : router.replace(signedIn ? '/' : '/onboarding'));
+const leave = () => (router.canGoBack() ? router.back() : router.replace('/'));
 const toProgress = () => router.dismissTo({ pathname: '/progress', params: { saved: '1' } });
 
 // A running session lives in the store (`running`), so after an OS kill or reload this screen resumes it instead of the params.
@@ -72,10 +70,9 @@ export default function SessionScreen() {
 function Prepare({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: number; onStart: () => void }) {
   const { t } = useTranslation();
   const c = useColors();
-  const { isSignedIn } = useAuth();
   return (
     <View style={styles.page}>
-      <TopBar onClose={() => leave(isSignedIn)} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
+      <TopBar onClose={leave} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
       <View style={styles.center}>
         <Art name="breathe" size={240} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
@@ -106,7 +103,6 @@ function Countdown({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: num
   const { t } = useTranslation();
   const c = useColors();
   const herb = useSkin() === 'herbarium';
-  const { isSignedIn } = useAuth();
   const [left, setLeft] = useState(COUNTDOWN_SEC);
   useEffect(() => {
     if (left <= 0) return onStart();
@@ -115,7 +111,7 @@ function Countdown({ mode, goalSec, onStart }: { mode: SessionMode; goalSec: num
   }, [left, onStart]);
   return (
     <View style={styles.page}>
-      <TopBar onClose={() => leave(isSignedIn)} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
+      <TopBar onClose={leave} label={t(`practice.modes.${mode}`) + (goalSec ? ` · ${goalSec / 60} ${t('practice.min')}` : '')} />
       <View style={styles.center}>
         <Art name="breathe" size={200} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
@@ -147,9 +143,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const [clock, setClock] = useState<Clock>(() => useStore.getState().running?.clock ?? startClock(Date.now()));
   const [now, setNow] = useState(() => Date.now());
   const [sheet, setSheet] = useState<'save' | 'discard' | null>(null);
-  const { isSignedIn } = useAuth();
   const [unlocked, setUnlocked] = useState<Achievement>(); // after save
-  const [guestEnd, setGuestEnd] = useState(false); // guests can't save: offer an account instead
   const running = clock.pausedAt === null;
   const elapsed = elapsedSec(clock, now);
   const reached = goalSec > 0 && elapsed >= goalSec;
@@ -161,11 +155,11 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
 
   // Back gesture, hardware back or browser back ask before throwing the session away.
   const pendingBack = useRef<() => void>(undefined);
-  const allowLeave = usePreventRemove(!unlocked && !guestEnd, ({ repeat }) => {
+  const allowLeave = usePreventRemove(!unlocked, ({ repeat }) => {
     pendingBack.current = repeat;
     setSheet('discard');
   });
-  const exit = (then: () => void = () => leave(isSignedIn)) => {
+  const exit = (then: () => void = leave) => {
     useStore.getState().setRunning(undefined);
     allowLeave();
     then();
@@ -218,8 +212,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const finish = () => {
     if (!elapsed) return exit();
     updateClock(pauseClock(clock, Date.now()));
-    if (isSignedIn) setSheet('save');
-    else setGuestEnd(true);
+    setSheet('save');
   };
 
   const record = (tension?: Tension, note = '') =>
@@ -231,13 +224,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
-
-  // Held on the device as a guest; useSync uploads it once the account exists.
-  const keepAsGuest = () => {
-    record();
-    capture('session_saved', { mode, duration_sec: elapsed, goal_sec: goalSec || undefined, goal_reached: reached, guest: true });
-    exit(() => router.replace('/account'));
-  };
 
   const save = (tension: Tension | undefined, note: string) => {
     const before = earnedAchievementIds(useStore.getState().sessions);
@@ -263,18 +249,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const big = (value: string, color = c.text) => <Text style={[styles.big, herb && styles.herbBig, { color }]}>{value}</Text>;
 
   if (unlocked) return <Unlocked a={unlocked} onContinue={toProgress} />;
-  if (guestEnd)
-    return (
-      <GuestEnd
-        elapsed={elapsed}
-        onKeep={keepAsGuest}
-        onDiscard={() => {
-          capture('session_discarded', { mode, duration_sec: elapsed, guest: true });
-          exit(() => router.replace('/onboarding'));
-        }}
-      />
-    );
-
   return (
     <View style={styles.page}>
       <TopBar
@@ -405,28 +379,6 @@ function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void })
         </View>
       </View>
       <Button label={t('achievements.continue')} onPress={onContinue} style={styles.wide} />
-    </Animated.View>
-  );
-}
-
-function GuestEnd({ elapsed, onKeep, onDiscard }: { elapsed: number; onKeep: () => void; onDiscard: () => void }) {
-  const { t } = useTranslation();
-  const c = useColors();
-  return (
-    <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
-      <View style={styles.center}>
-        <Art name="together" size={220} />
-        <View style={{ alignItems: 'center', gap: space[2] }}>
-          <Txt variant="display" style={{ textAlign: 'center' }}>
-            {t('account.offerTitle')}
-          </Txt>
-          <Txt style={{ color: c.text2, textAlign: 'center', maxWidth: 420 }}>{t('account.offerText', { time: formatDuration(elapsed) })}</Txt>
-        </View>
-      </View>
-      <View style={{ gap: space[3] }}>
-        <Button label={t('account.offerYes')} onPress={onKeep} style={styles.wide} />
-        <Button ghost label={t('session.discard')} onPress={onDiscard} style={styles.wide} />
-      </View>
     </Animated.View>
   );
 }

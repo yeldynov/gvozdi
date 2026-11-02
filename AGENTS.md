@@ -5,7 +5,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 - GitHub `yeldynov/gvozdi`, EAS project `@shangnik/gvozdi`, web https://gvozdi.expo.app
 - Bundle id / package: `com.shangnik.gvozdi`
 - Two skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset) and `herbarium` (botanical: sage/green tokens, Golos Text, linden tree, meadow charts). Where they disagree on behaviour, the default wins (user decision).
-- Account required (user decision): `Stack.Protected` in root `_layout` gates tabs/history/achievement on Clerk `isSignedIn`. Guests get onboarding, `/account` and one demo session; finishing it offers "create an account to keep it" (kept locally, pushed by `useSync` after sign-in). Earthy brand. Languages EN / UK / RU.
+- Local-first (user decision): the whole app works without an account. `Stack.Protected` in root `_layout` gates the app on `settings.onboarded || isSignedIn`, so onboarding shows once. Signed out, sessions live on the device, and `SaveBanner` (Home top, Settings account card) stays until they sign up. It isn't dismissible. Sign-in pushes local sessions through `useSync`. Sign-out clears local sessions and stays in the app. Earthy brand. Languages EN / UK / RU.
 - MVP scope excludes: Library, Paywall, Board/Pure/Breath session variants, mood check-in, social sharing, web push.
 
 ## Stack
@@ -25,9 +25,10 @@ src/app/_layout.tsx          root: fonts, i18n, theme, Clerk (+ offline resource
 src/app/+html.tsx            web shell: manifest, icons, theme-color, SW registration, beforeinstallprompt capture
 public/sw.js                 network-first SW; on each load warms every route's HTML + JS chunks (add new routes to ROUTES)
 src/app/(tabs)/              Home (index: cards today / stats (streak tree + next milestone tiles, open Progress) / week, user-ordered via settings.home + Customize sheet; program invite), Practice (session setup), Progress, Settings
-src/app/onboarding.tsx       3 intro pages (signed-out only); last page: create account / have account / "try a session as a guest"
-src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; guests get GuestEnd (keep → /account, discard → /onboarding) instead of the save sheet; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
-src/app/account.tsx          email → code; signs in, or signs up if the email is new (open to guests). Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
+src/app/onboarding.tsx       3 intro pages (until `settings.onboarded`); last page: start practising / have an account
+src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
+src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
+src/components/account-card.tsx  AccountCard (signed in: email + sign out; signed out: SaveBanner), SaveBanner (Home + Settings)
 src/app/contact.tsx          contact form (open to guests) → EmailJS REST; EXPO_PUBLIC_EMAILJS_{SERVICE_ID,TEMPLATE_ID,PUBLIC_KEY}, template params site/email/message/app
 src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
 src/app/api/sync+api.ts      POST /api/sync {since, changes} → {cursor, changes}; Clerk JWT, LWW upsert, rows scoped to user_id
@@ -119,7 +120,7 @@ npx tsc --noEmit && npx expo lint && npm test
 5. Onboarding (3 screens) and settings (export/import JSON, clear data, contact) — done; import merges, clear tombstones, contact = /contact form (EmailJS)
 6. Reminders (native daily notification; disabled row on web) — done; native path untested until the first `eas build`
 7. 21-day program — done (levels removed: the tree covers progression); opt-in (Home invite card or `/read/program`, `settings.program` = join dayKey), advances per practice day since joining (gaps pause), then todayMinutes falls back to suggestedMinutes
-8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app is account-gated with a guest demo session (replaced the sign-up prompt rule)
+8. Accounts: Clerk, `POST /api/sync` (last-write-wins on `updatedAt`, tombstones, rows scoped to `userId`) — done; Clerk stays on the dev instance until there is a custom domain (user decision). Later: app was account-gated with a guest demo session; now local-first with a persistent sign-up banner
 9. Polish: a11y, PWA install hint + service worker, icons/splash, PostHog — done (native icons/splash unseen until `eas build`). Store submission (`eas submit`, listings, privacy policy) is postponed: more features first. Contact email for listings/policy: yeldynov@gmail.com
 
 Donor repos (copy from, never fork): `~/dev/gvozdi-app` (gvozdi-pwa: design tokens, `SessionActivePeak.jsx`, `SessionActiveNails.jsx`, copy), and `gh repo clone yeldynov/<name>` for `stepsure-ai` (translations, stats), `gvozdi-app`/`gvozdi-v6` (prepare/guide copy in UK/RU).

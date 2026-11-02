@@ -67,9 +67,11 @@ export default function RootLayout() {
   );
 }
 
-// The app is for signed-in users; guests get onboarding, the account screen and one demo session.
+// Local-first: onboarding once, then the whole app works without an account (signing in syncs what's on the device).
 function Routes() {
   const { isLoaded, isSignedIn } = useAuth();
+  const onboarded = useStore((s) => s.settings.onboarded);
+  const done = !!(onboarded || isSignedIn); // accounts from before the flag skip onboarding
   const c = useColors();
   const { i18n: active } = useTranslation();
   useEffect(() => {
@@ -81,7 +83,7 @@ function Routes() {
   if (!isLoaded) return null;
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.bg } }}>
-      <Stack.Protected guard={!!isSignedIn} redirectTo="/onboarding">
+      <Stack.Protected guard={done} redirectTo="/onboarding">
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="history/index" />
         <Stack.Screen name="history/[id]" />
@@ -89,7 +91,7 @@ function Routes() {
         <Stack.Screen name="journal" />
         <Stack.Screen name="read/[id]" />
       </Stack.Protected>
-      <Stack.Protected guard={!isSignedIn} redirectTo="/">
+      <Stack.Protected guard={!done} redirectTo="/">
         <Stack.Screen name="onboarding" />
       </Stack.Protected>
       <Stack.Screen name="account" />

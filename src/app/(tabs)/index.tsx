@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 
+import { SaveBanner } from '@/components/account-card';
 import { InstallHint } from '@/components/install-hint';
 import { TabHead } from '@/components/menu';
 import { Badge, DayBars, Tree, treeGround } from '@/components/progress-visuals';
@@ -50,6 +51,7 @@ export default function Home() {
   return (
     <Screen>
       <TabHead />
+      <SaveBanner />
       {cards === CARDS && (todaySec(sessions) > 0 ? <Art name="glow" size={200} /> : <Art name={streak ? 'streak' : 'step'} size={200} clouds />)}
       <TextLink label={t('home.customize')} onPress={() => setCustomize(true)} style={styles.customize} />
       {!program && !programAsked && live(sessions).length > 0 && (

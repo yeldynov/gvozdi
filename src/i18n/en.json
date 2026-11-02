@@ -272,9 +272,8 @@
       "text": "Keep it short at first and add a little as your feet adapt. A free account keeps your sessions and streak on every device.",
       "safety": "If you are pregnant, have diabetes, a heart condition or wounds on your feet, ask your doctor first."
     },
-    "createAccount": "Create free account",
     "haveAccount": "I already have an account",
-    "tryGuest": "Try a session as a guest"
+    "begin": "Start practising"
   },
   "reminder": {
     "title": "Time for the board",
@@ -307,11 +306,11 @@
     "failed": "Something went wrong. Check your connection and try again.",
     "syncedText": "Your sessions sync to this account automatically.",
     "signOut": "Sign out",
-    "offerTitle": "Keep this session?",
-    "offerText": "{{time}} on the board. Create a free account to save it and start your streak.",
-    "offerYes": "Create free account",
     "signOutFailed": "Couldn't sync your sessions, so you're still signed in. Check your connection and try again.",
-    "signingIn": "Signing you in…"
+    "signingIn": "Signing you in…",
+    "bannerTitle": "Your practice lives only on this device",
+    "bannerText": "Create a free account to keep your sessions safe and use them on any device.",
+    "bannerCta": "Create free account"
   },
   "menu": {
     "open": "Menu",

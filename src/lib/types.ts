@@ -32,5 +32,6 @@ export type Settings = {
   programAsked?: boolean; // the program invite was dismissed
   practice?: { mode: SessionMode; min: number }; // last setup on the Practice tab; unset = free
   home?: HomeCard[]; // visible Home cards in order; unset = DEFAULT_HOME
+  onboarded?: boolean; // finished the intro pages
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent
 };

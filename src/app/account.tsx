@@ -91,7 +91,7 @@ export default function Account() {
 
   return (
     <Screen>
-      {isSignedIn ? <BackHeader title={t('tabs.settings')} fallback="/settings" /> : <BackHeader title={t('common.back')} fallback="/onboarding" />}
+      {isSignedIn ? <BackHeader title={t('tabs.settings')} fallback="/settings" /> : <BackHeader title={t('common.back')} fallback="/" />}
       <Txt variant="display">{t('account.title')}</Txt>
 
       {isSignedIn ? (
