@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
 
-import { Art } from '@/components/ui';
 import { achievementStage, type Achievement } from '@/lib/practice';
 import { fonts, radius, space, useColors } from '@/theme';
 
@@ -81,24 +79,6 @@ export function Tree({ stage, size = 120, muted }: { stage: number; size?: numbe
       <Ellipse cx={50} cy={G + 3} rx={groundRx(stage)} ry={5} fill={muted ? c.text3 : c.illus} fillOpacity={0.45} />
       {plant}
     </Svg>
-  );
-}
-
-/** Loop: the Practice-screen figure stands on the nail board while the tree beside them grows from seed to bloom. Static full tree on reduced motion. */
-export function GrowingTree({ size = 140 }: { size?: number }) {
-  const reduced = useReducedMotion();
-  const [tick, setTick] = useState(0);
-  useEffect(() => {
-    if (reduced) return;
-    const id = setInterval(() => setTick((n) => (n + 1) % 14), 700); // ticks 10..13 hold the full tree
-    return () => clearInterval(id);
-  }, [reduced]);
-  const stage = reduced ? 10 : Math.min(tick, 10);
-  return (
-    <View aria-hidden style={{ flexDirection: 'row', justifyContent: 'center' }}>
-      <Art name="stand" size={size} />
-      <TreeGrow stage={stage} size={size} />
-    </View>
   );
 }
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { Badge, DayBars, GrowingTree, Tree } from '@/components/progress-visuals';
+import { Badge, DayBars, Tree } from '@/components/progress-visuals';
 import { TabHead } from '@/components/menu';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import {
@@ -75,6 +75,13 @@ function EarthyProgress() {
         <DayBars data={week} labels label={`${t('progress.week')}: ${minutes(week)}`} />
       </Card>
 
+      <Button
+        label={t('history.link')}
+        icon={<Feather name="list" size={18} color={c.onPrimary} />}
+        onPress={() => router.push('/history')}
+        style={styles.history}
+      />
+
       <View style={styles.grid}>
         {stats.map(([label, value]) => (
           <Card key={label} style={styles.tile}>
@@ -98,10 +105,7 @@ function EarthyProgress() {
         aria-expanded={stagesOpen}
         onPress={() => setStagesOpen((o) => !o)}
         style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}>
-        <Card style={{ alignItems: 'center', gap: space[2], overflow: 'hidden' }}>
-          <View style={[StyleSheet.absoluteFill, styles.backdrop]}>
-            <GrowingTree size={170} />
-          </View>
+        <Card style={{ alignItems: 'center', gap: space[2] }}>
           <Tree stage={stage} size={180} />
           <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
           {!top && <Txt variant="caption">{t('progress.treeEmpty')}</Txt>}
@@ -128,8 +132,6 @@ function EarthyProgress() {
           ))}
         </View>
       )}
-
-      <Button ghost label={t('history.link')} onPress={() => router.push('/history')} />
     </Screen>
   );
 }
@@ -138,8 +140,8 @@ const styles = StyleSheet.create({
   baseline: { flexDirection: 'row', alignItems: 'baseline', gap: space[2] },
   big: { fontFamily: fonts.display, fontSize: 56, lineHeight: 64, fontVariant: ['tabular-nums'] },
   value: { fontFamily: fonts.textMedium, fontSize: 22, fontVariant: ['tabular-nums'] },
+  history: { alignSelf: 'stretch', alignItems: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[3] },
   tile: { flexBasis: '45%', flexGrow: 1, padding: space[4], gap: space[1] },
-  backdrop: { justifyContent: 'center', opacity: 0.1, pointerEvents: 'none' },
   badge: { width: '30%', flexGrow: 1, alignItems: 'center', gap: space[2], paddingVertical: space[2] },
 });

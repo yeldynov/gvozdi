@@ -70,6 +70,13 @@ export default function Progress() {
         </View>
       </Card>
 
+      <Button
+        label={t('history.link')}
+        icon={<Feather name="list" size={18} color={c.onPrimary} />}
+        onPress={() => router.push('/history')}
+        style={styles.history}
+      />
+
       <View style={styles.grid}>
         {stats.map(([label, value]) => (
           <Card key={label} style={styles.tile}>
@@ -85,8 +92,6 @@ export default function Progress() {
       </Card>
 
       <Plate />
-
-      <Button ghost label={t('history.link')} onPress={() => router.push('/history')} />
     </Screen>
   );
 }
@@ -170,6 +175,7 @@ const styles = StyleSheet.create({
   heading: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: space[2] },
   headingText: { fontFamily: fonts.textMedium, flexShrink: 1 },
   value: { fontFamily: fonts.textMedium, fontSize: 22, fontVariant: ['tabular-nums'] },
+  history: { alignSelf: 'stretch', alignItems: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space[3] },
   tile: { flexBasis: '45%', flexGrow: 1, padding: space[4], gap: space[1] },
   bleed: { marginHorizontal: -space[5], marginTop: space[2] },
