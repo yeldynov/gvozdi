@@ -10,7 +10,7 @@ import { Button, Card, Choice, Screen, Sheet, Step, Txt } from '@/components/ui'
 import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
 import { dayKey, live, shiftTime } from '@/lib/practice';
-import { allowReminders, remindersSupported } from '@/lib/reminder';
+import { allowReminders, openNotificationSettings, remindersSupported } from '@/lib/reminder';
 import type { Language, Skin, ThemePref } from '@/lib/types';
 import { Tree as HerbTree } from '@/skins/herbarium/progress-visuals';
 import { useStore } from '@/store';
@@ -23,6 +23,7 @@ export default function Settings() {
   const setSettings = useStore((s) => s.setSettings);
   const [notice, setNotice] = useState<{ text: string; error?: boolean }>();
   const [confirming, setConfirming] = useState(false);
+  const [denied, setDenied] = useState(false);
 
   const onExport = () => {
     const { sessions } = useStore.getState();
@@ -46,8 +47,9 @@ export default function Settings() {
 
   const onReminder = async (on: 'on' | 'off') => {
     if (on === 'off') return setSettings({ reminder: undefined });
-    if (await allowReminders()) setSettings({ reminder: '20:00' });
-    else setNotice({ text: t('settings.reminderDenied'), error: true });
+    const ok = await allowReminders();
+    setDenied(!ok);
+    if (ok) setSettings({ reminder: '20:00' });
   };
   const shiftReminder = (delta: number) => settings.reminder && setSettings({ reminder: shiftTime(settings.reminder, delta) });
 
@@ -103,6 +105,14 @@ export default function Settings() {
               { value: 'on', label: t('settings.on') },
             ]}
           />
+        )}
+        {denied && (
+          <>
+            <Txt variant="caption" style={{ color: c.error }}>
+              {t('settings.reminderDenied')}
+            </Txt>
+            <Button ghost label={t('settings.openSettings')} onPress={openNotificationSettings} />
+          </>
         )}
         {remindersSupported && settings.reminder && (
           <View style={styles.time}>

@@ -26,6 +26,7 @@ export type Settings = {
   sound: boolean;
   haptics: boolean;
   reminder?: string; // 'HH:mm'
+  notifyAsked?: boolean; // native: notification permission asked once after onboarding
   installHintDismissed?: boolean; // web only
   skipPrepare?: boolean; // short countdown instead of the full Steady screen
   program?: string; // dayKey the user joined the 21-day program; unset = not in it

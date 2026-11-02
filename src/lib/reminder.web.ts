@@ -6,3 +6,5 @@ export async function allowReminders(): Promise<boolean> {
 }
 
 export async function syncReminder(_time: string | undefined, _practisedToday: boolean, _title: string, _body: string) {}
+
+export const openNotificationSettings = () => {};

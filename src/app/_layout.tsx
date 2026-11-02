@@ -17,7 +17,7 @@ import { Button, Screen, Txt } from '@/components/ui';
 import i18n, { resolveLanguage } from '@/i18n';
 import { capture, useAnalytics } from '@/lib/analytics';
 import { dayKey, live } from '@/lib/practice';
-import { syncReminder } from '@/lib/reminder';
+import { allowReminders, remindersSupported, syncReminder } from '@/lib/reminder';
 import { useSync } from '@/lib/sync';
 import { useStore } from '@/store';
 import { useColors } from '@/theme';
@@ -79,6 +79,17 @@ function Routes() {
     SplashScreen.hideAsync();
     capture('app_opened', { language: active.language });
   }, [isLoaded]); // eslint-disable-line react-hooks/exhaustive-deps -- once per launch
+
+  // Ask for notifications once, right after onboarding; a yes turns the daily reminder on. Later: Settings → Daily reminder.
+  const notifyAsked = useStore((s) => s.settings.notifyAsked);
+  useEffect(() => {
+    if (!done || notifyAsked || !remindersSupported) return;
+    const { setSettings } = useStore.getState();
+    setSettings({ notifyAsked: true });
+    allowReminders().then((ok) => {
+      if (ok && !useStore.getState().settings.reminder) setSettings({ reminder: '20:00' });
+    });
+  }, [done, notifyAsked]);
 
   if (!isLoaded) return null;
   return (
