@@ -7,7 +7,7 @@ import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import { SaveBanner } from '@/components/account-card';
 import { InstallHint } from '@/components/install-hint';
 import { TabHead } from '@/components/menu';
-import { Badge, DayBars, Tree, treeGround } from '@/components/progress-visuals';
+import { Badge, DayBars, look, Tree, treeGround } from '@/components/progress-visuals';
 import { Art, Button, Card, Screen, Sheet, Step, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { needsConsent } from '@/lib/consent';
@@ -180,7 +180,7 @@ function Stats() {
   const streak = currentStreak(sessions);
   const next = nextAchievement(sessions);
   const stage = treeStage(sessions);
-  const art = w * Math.max(0.68, 1.05 - stage * 0.05); // small plants larger; grown crowns smaller so they clear the text
+  const art = w * Math.max(0.68, 1.05 - look(stage) * 0.05); // small plants larger; grown crowns smaller so they clear the text
   const ground = treeGround(stage);
   const pad = space[5]; // ground edge sits as far from the right and bottom as the text from the top and left
   return (

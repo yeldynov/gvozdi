@@ -11,18 +11,21 @@ const CROWN = [
   [0, 0, 1], [-0.75, 0.25, 0.8], [0.75, 0.25, 0.8], [-0.4, -0.6, 0.8], [0.45, -0.55, 0.75],
   [-1.2, -0.15, 0.6], [1.2, -0.1, 0.6], [0, -1.05, 0.7], [-0.85, 0.8, 0.55], [0.85, 0.8, 0.55],
 ];
-// Stages 4..9 as [trunk height, crown radius, blobs]; 1 seed, 2 sprout, 3 seedling.
+// Drawings 4..10 as [trunk height, crown radius, blobs]; 1 seed, 2 sprout, 3 seedling.
 const TREES: Record<number, number[]> = {
-  4: [22, 9, 3], 5: [28, 11, 5], 6: [34, 13, 7], 7: [38, 15, 8], 8: [42, 17, 10], 9: [43, 18.5, 10], 10: [44, 19.5, 10],
+  4: [22, 9, 3], 5: [28, 11, 5], 6: [34, 13, 7], 6.5: [36, 14, 8], 7: [38, 15, 8], 8: [42, 17, 10], 9: [43, 18.5, 10], 10: [44, 19.5, 10],
 };
 const G = 82; // ground line in the 100×100 viewBox
-const groundRx = (stage: number) => 14 + stage * 2.5;
+const groundRx = (stage: number) => 14 + look(stage) * 2.5;
+/** Drawing for each tree stage: in-between ones (2.5, 3.5, 6.5) were added to the original 0..10 drawings. */
+export const look = (stage: number) => [0, 1, 2, 2.5, 3, 3.5, 4, 5, 6, 6.5, 7, 8, 9, 10][stage] ?? 10;
 
 /** Where the ground ellipse ends, as fractions of the Tree's size: its right edge and its bottom. */
 export const treeGround = (stage: number) => ({ right: (50 + groundRx(stage)) / 100, bottom: (G + 8) / 100 });
 
-/** A tree grown to `stage` (0 bare ground, 1 seed … 9 old tree, 10 in bloom); all grey when `muted`. */
-export function Tree({ stage, size = 120, muted }: { stage: number; size?: number; muted?: boolean }) {
+/** A tree grown to `stage` (0 bare ground, 1 seed … 12 old tree, 13 in bloom); all grey when `muted`. */
+export function Tree({ stage: n, size = 120, muted }: { stage: number; size?: number; muted?: boolean }) {
+  const stage = look(n);
   const c = useColors();
   const leafColor = muted ? c.text3 : c.success;
   const wood = muted ? c.text3 : c.text2;
@@ -32,14 +35,17 @@ export function Tree({ stage, size = 120, muted }: { stage: number; size?: numbe
   const tree = TREES[stage];
   let plant = null;
   if (stage === 1) plant = <Ellipse cx={50} cy={G - 1} rx={4} ry={3} fill={wood} />;
-  else if (stage === 2 || stage === 3) {
-    const h = stage === 2 ? 14 : 24;
+  else if (stage >= 2 && stage < 4) {
+    const h = 14 + (stage - 2) * 10;
+    const top = stage === 2 ? 9 : stage === 2.5 ? 10 : 11;
     plant = (
       <>
         <Path d={`M50 ${G} Q48 ${G - h / 2} 50 ${G - h}`} stroke={wood} strokeWidth={1.6} fill="none" />
-        {stage === 3 && [leaf(49.5, G - 11, 10, -20, 'a'), leaf(49.5, G - 11, 10, -160, 'b'), leaf(50, G - h, 7, -90, 'c')]}
-        {leaf(50, G - h, stage === 2 ? 9 : 11, -30, 'd')}
-        {leaf(50, G - h, stage === 2 ? 9 : 11, -150, 'e')}
+        {stage >= 2.5 && [leaf(49.5, G - h * 0.46, stage >= 3 ? 10 : 8, -20, 'a'), leaf(49.5, G - h * 0.46, stage >= 3 ? 10 : 8, -160, 'b')]}
+        {stage >= 3 && leaf(50, G - h, 7, -90, 'c')}
+        {stage === 3.5 && [leaf(49.5, G - h * 0.74, 9, -15, 'f'), leaf(49.5, G - h * 0.74, 9, -165, 'g')]}
+        {leaf(50, G - h, top, -30, 'd')}
+        {leaf(50, G - h, top, -150, 'e')}
       </>
     );
   } else if (tree) {

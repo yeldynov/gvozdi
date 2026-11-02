@@ -200,7 +200,7 @@ function SkinTile({ skin, on, onPress }: { skin: Skin; on: boolean; onPress: () 
         { backgroundColor: herb ? mix(k.bg3, k.primary, 0.18) : mix(k.bg3, k.illus, 0.25), borderColor: on ? k.primary : k.divider, borderWidth: on ? 2 : 1, opacity: pressed ? 0.85 : 1 },
       ]}>
       <View aria-hidden style={styles.skinTree}>
-        {herb ? <HerbTree stage={6} size={110} /> : <Tree stage={6} size={110} />}
+        {herb ? <HerbTree stage={8} size={110} /> : <Tree stage={8} size={110} />}
       </View>
       {herb && (
         <View style={[styles.eco, { backgroundColor: k.primary }]}>

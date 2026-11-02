@@ -4,16 +4,18 @@ import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
 
+import { look } from '@/components/progress-visuals';
 import { herbFonts as fonts, space, useColors } from '@/theme';
 
 // A linden drawn like a herbarium specimen, in a 100×100 viewBox with the soil line at y=82.
 // One deterministic branching skeleton: each stage reveals more of the same tree, so growth reads continuously.
 const SOIL = 82;
 const rad = (d: number) => (d * Math.PI) / 180;
-// Stages 4..10: trunk height and width, and how many times the crown forks.
-const TRUNK = [30, 20, 21, 22, 22, 22, 22];
-const WIDTH = [1.6, 2.2, 3, 3.8, 4.2, 4.2, 4.4];
-const DEPTH = [0, 2, 3, 4, 4, 4, 4];
+// Drawings 4..10 (with 6.5 in between): trunk height and width, and how many times the crown forks.
+const GROWN = [4, 5, 6, 6.5, 7, 8, 9, 10];
+const TRUNK = [30, 20, 21, 21.5, 22, 22, 22, 22];
+const WIDTH = [1.6, 2.2, 3, 3.4, 3.8, 4.2, 4.2, 4.4];
+const DEPTH = [0, 2, 3, 4, 4, 4, 4, 4];
 const SPREAD = 26; // degrees between sibling branches
 const RATIO = 0.74; // child branch length per level
 const LEAF = 7.5;
@@ -57,18 +59,21 @@ function plant(stage: number, ink: Ink, key: string): ReactElement[] {
     out.push(<Path key={k()} d={`M50.5 ${SOIL - 5.5}q1.5 -3 4 -3.6`} stroke={ink.leaf} strokeWidth={1.3} strokeLinecap="round" fill="none" />);
     return out;
   }
-  if (stage === 2 || stage === 3) {
-    const h = stage === 2 ? 18 : 32;
+  if (stage >= 2 && stage < 4) {
+    // 2.5 and 3.5 are the in-between stems of the first week.
+    const h = stage <= 3 ? 18 + (stage - 2) * 14 : 36;
     const L = stage === 2 ? 10 : 11;
     out.push(<Path key={k()} d={`M50 ${SOIL}Q46.5 ${SOIL - h * 0.55} 50 ${SOIL - h}`} stroke={ink.wood} strokeWidth={stage === 2 ? 1.6 : 2} strokeLinecap="round" fill="none" />);
-    if (stage === 3) out.push(leaf(48.6, SOIL - 12, L * 0.9, 200), leaf(49.4, SOIL - 21, L, -20));
+    if (stage >= 2.5) out.push(leaf(48.6, SOIL - h * 0.375, L * 0.9, 200));
+    if (stage >= 3) out.push(leaf(49.4, SOIL - h * 0.66, L, -20));
+    if (stage === 3.5) out.push(leaf(49.6, SOIL - h * 0.18, L * 0.8, -25));
     out.push(leaf(50, SOIL - h, L, -150), leaf(50, SOIL - h, L, -30));
-    if (stage === 3) out.push(leaf(50, SOIL - h, L * 0.8, -90));
+    if (stage >= 3) out.push(leaf(50, SOIL - h, L * 0.8, -90));
     return out;
   }
   if (stage < 4) return out;
 
-  const i = Math.min(stage, 10) - 4;
+  const i = GROWN.indexOf(Math.min(stage, 10));
   const T = TRUNK[i];
   const W = WIDTH[i];
   const depth = DEPTH[i];
@@ -124,7 +129,7 @@ function plant(stage: number, ink: Ink, key: string): ReactElement[] {
 }
 
 /** A square around the plant at `stage`, sitting a little below the soil line. */
-/** The linden grown to `stage` (0 bare soil, 1 seed … 9 with a young tree beside it, 10 in bloom); all grey when `muted`.
+/** The linden grown to `stage` (0 bare soil, 1 seed … 12 with a young tree beside it, 13 in bloom); all grey when `muted`.
  *  Every stage shares one scale, so growth is visible. */
 export function Tree({ stage, size = 120, muted, soil = true }: { stage: number; size?: number; muted?: boolean; soil?: boolean }) {
   const c = useColors();
@@ -134,7 +139,7 @@ export function Tree({ stage, size = 120, muted, soil = true }: { stage: number;
   if (!soil) ink.soil = 'none'; // drawn on a shared soil line instead
   return (
     <Svg width={size} height={size} viewBox="0 0 100 100">
-      {plant(stage, ink, 't')}
+      {plant(look(stage), ink, 't')}
     </Svg>
   );
 }

@@ -15,6 +15,7 @@ import {
   formatDuration,
   lastDays,
   totals,
+  treeNote,
   treeStage,
 } from '@/lib/practice';
 import HerbProgress from '@/skins/herbarium/progress';
@@ -30,8 +31,8 @@ function EarthyProgress() {
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
   const { saved } = useLocalSearchParams<{ saved?: string }>();
-  const [stagesOpen, setStagesOpen] = useState(false);
-  useFocusEffect(useCallback(() => () => setStagesOpen(false), [])); // collapse on leaving the screen
+  const [stagesOpen, setStagesOpen] = useState(true);
+  useFocusEffect(useCallback(() => () => setStagesOpen(true), [])); // open again on the next visit
   useEffect(() => {
     if (!saved) return;
     const id = setTimeout(() => router.setParams({ saved: undefined }), 4000);
@@ -108,9 +109,8 @@ function EarthyProgress() {
         <Card style={{ alignItems: 'center', gap: space[2] }}>
           <Tree stage={stage} size={180} />
           <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
-          {!top && <Txt variant="caption">{t('progress.treeEmpty')}</Txt>}
           <Txt variant="caption" style={{ textAlign: 'center' }}>
-            {t('progress.treeHint')}
+            {top ? t(`progress.treeNote.${treeNote(stage)}`) : t('progress.treeEmpty')}
           </Txt>
           <Feather name={stagesOpen ? 'chevron-up' : 'chevron-down'} size={20} color={c.text3} />
         </Card>
@@ -127,6 +127,9 @@ function EarthyProgress() {
               <Badge a={a} earned={earned.includes(a.id)} />
               <Txt variant="caption" numberOfLines={2} style={{ textAlign: 'center' }}>
                 {t(`achievements.${a.id}.title`)}
+              </Txt>
+              <Txt variant="caption" style={{ textAlign: 'center', color: c.text3 }}>
+                {t(a.kind === 'count' ? 'achievements.goalSessions' : 'achievements.goalDays', { count: a.target })}
               </Txt>
             </Pressable>
           ))}

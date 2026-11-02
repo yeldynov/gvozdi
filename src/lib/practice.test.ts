@@ -22,6 +22,7 @@ import {
   todayMinutes,
   todaySec,
   totals,
+  treeNote,
   treeStage,
 } from './practice.ts';
 import type { Session } from './types.ts';
@@ -48,12 +49,21 @@ test('achievements come from the best streak, so a broken streak keeps them', ()
   const brokenWeek = [10, 11, 12, 13, 14, 15, 16].map((d) => at(d));
   assert.equal(currentStreak(brokenWeek, now), 0);
   assert.equal(bestStreak(brokenWeek), 7);
-  assert.deepEqual(earnedAchievementIds(brokenWeek), ['first_session', 'streak_3', 'streak_7']);
+  assert.deepEqual(earnedAchievementIds(brokenWeek), ['first_session', 'streak_2', 'streak_3', 'streak_5', 'streak_7']);
   assert.equal(achievementEarnedAt('streak_3', brokenWeek), at(14).startedAt);
   const byId = (id: string) => ACHIEVEMENTS.find((a) => a.id === id)!;
   assert.equal(achievementProgress(byId('streak_14'), brokenWeek), 7);
   assert.equal(achievementProgress(byId('streak_3'), brokenWeek), 3); // capped at target
-  assert.equal(achievementProgress(byId('sessions_10'), brokenWeek), 7);
+  assert.equal(achievementProgress(byId('streak_10'), brokenWeek), 7);
+});
+
+test('Whispering Leaves takes ten days in a row', () => {
+  const twoRuns = [20, 19, 18, 17, 16, 15, 10, 9, 8, 7].map((d) => at(d)); // ten sessions, best streak 6
+  assert.deepEqual(earnedAchievementIds(twoRuns), ['first_session', 'streak_2', 'streak_3', 'streak_5']);
+  assert.equal(treeStage(twoRuns), 5);
+  const tenDays = [...twoRuns, at(14), at(13), at(12), at(11)]; // 20..7 unbroken, 14 days
+  assert.deepEqual(earnedAchievementIds(tenDays).slice(-3), ['streak_7', 'streak_10', 'streak_14']);
+  assert.equal(achievementEarnedAt('streak_10', tenDays), at(11).startedAt); // the tenth day of the run
 });
 
 test('durations of an hour or more keep their hours', () => {
@@ -111,7 +121,9 @@ test('todaySec sums only today; nextAchievement is the first unearned', () => {
   assert.equal(nextAchievement([at(1), at(0)])?.value, 2);
   assert.equal(treeStage([]), 1); // everyone starts with a seed
   assert.equal(treeStage([at(0)]), 2); // first session: sprout
-  assert.equal(treeStage([at(2), at(1), at(0)]), 3); // three days in a row: seedling
+  assert.equal(treeStage([at(1), at(0)]), 3); // two days in a row: first leaves
+  assert.equal(treeStage([at(2), at(1), at(0)]), 4); // three days in a row: slender shoot
+  assert.deepEqual([2, 5, 6, 9, 10, 13].map(treeNote), ['young', 'young', 'growing', 'growing', 'strong', 'strong']);
 });
 
 test('reminderDates skips today once practised or past, then one per day', () => {

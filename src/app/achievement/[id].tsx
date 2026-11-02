@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { Badge } from '@/components/progress-visuals';
 import { BackHeader, Card, Screen, Txt } from '@/components/ui';
-import { ACHIEVEMENTS, achievementEarnedAt, achievementProgress, achievementStage } from '@/lib/practice';
+import { ACHIEVEMENTS, achievementEarnedAt, achievementProgress, achievementStage, treeNote } from '@/lib/practice';
 import { Tree } from '@/skins/herbarium/progress-visuals';
 import { useStore } from '@/store';
 import { radius, space, useColors, useSkin } from '@/theme';
@@ -40,6 +40,9 @@ export default function AchievementDetail() {
             {t(`achievements.${a.id}.title`)}
           </Txt>
           <Txt style={{ color: c.text2, textAlign: 'center' }}>{t(`achievements.${a.id}.desc`)}</Txt>
+          <Txt variant="caption" style={{ textAlign: 'center' }}>
+            {t(`progress.treeNote.${treeNote(achievementStage(a))}`)}
+          </Txt>
           {earnedAt ? (
             <Txt variant="caption">
               {t('achievements.earnedOn', {

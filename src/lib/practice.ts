@@ -53,10 +53,13 @@ export type Achievement = { id: string; kind: 'streak' | 'count'; target: number
 // Labels live in i18n under achievements.<id>.
 export const ACHIEVEMENTS: Achievement[] = [
   { id: 'first_session', kind: 'count', target: 1 },
+  { id: 'streak_2', kind: 'streak', target: 2 },
   { id: 'streak_3', kind: 'streak', target: 3 },
+  { id: 'streak_5', kind: 'streak', target: 5 },
   { id: 'streak_7', kind: 'streak', target: 7 },
-  { id: 'sessions_10', kind: 'count', target: 10 },
+  { id: 'streak_10', kind: 'streak', target: 10 },
   { id: 'streak_14', kind: 'streak', target: 14 },
+  { id: 'streak_21', kind: 'streak', target: 21 },
   { id: 'streak_30', kind: 'streak', target: 30 },
   { id: 'streak_60', kind: 'streak', target: 60 },
   { id: 'streak_100', kind: 'streak', target: 100 },
@@ -68,9 +71,10 @@ export function achievementProgress(a: Achievement, sessions: Session[]): number
   return Math.min(a.target, a.kind === 'count' ? live(sessions).length : bestStreak(sessions));
 }
 
-/** Earned from the best streak ever, so achievements never disappear when a streak breaks. */
+/** Earned in order, one by one: each needs the one before. From the best streak ever, so achievements never disappear when a streak breaks. */
 export function earnedAchievementIds(sessions: Session[]): string[] {
-  return ACHIEVEMENTS.filter((a) => achievementProgress(a, sessions) >= a.target).map((a) => a.id);
+  const next = ACHIEVEMENTS.findIndex((a) => achievementProgress(a, sessions) < a.target);
+  return ACHIEVEMENTS.slice(0, next < 0 ? undefined : next).map((a) => a.id);
 }
 
 /** Tree stage an achievement grows: everyone starts with a seed (1), the first achievement makes it sprout (2). */
@@ -84,9 +88,20 @@ export function treeStage(sessions: Session[]): number {
   return ACHIEVEMENTS.findLastIndex((a) => earned.includes(a.id)) + 2;
 }
 
-/** ISO time of the session that unlocked the achievement, or null. */
+/** Which calm note goes with a tree stage: the first week, the growing habit, a grown tree. */
+export function treeNote(stage: number): 'young' | 'growing' | 'strong' {
+  return stage <= 5 ? 'young' : stage <= 9 ? 'growing' : 'strong';
+}
+
+/** ISO time of the session that unlocked the achievement, or null: its own target met and the one before earned. */
 export function achievementEarnedAt(id: string, sessions: Session[]): string | null {
-  const a = ACHIEVEMENTS.find((x) => x.id === id);
+  const i = ACHIEVEMENTS.findIndex((x) => x.id === id);
+  const own = targetMetAt(ACHIEVEMENTS[i], sessions);
+  const prev = i > 0 ? achievementEarnedAt(ACHIEVEMENTS[i - 1].id, sessions) : own;
+  return own && prev ? (own > prev ? own : prev) : null;
+}
+
+function targetMetAt(a: Achievement | undefined, sessions: Session[]): string | null {
   const sorted = live(sessions).sort((x, y) => x.startedAt.localeCompare(y.startedAt));
   if (!a) return null;
   if (a.kind === 'count') return sorted[a.target - 1]?.startedAt ?? null;

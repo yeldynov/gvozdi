@@ -79,7 +79,11 @@
     "achievements": "Your tree",
     "saved": "Session saved. Well done.",
     "treeEmpty": "Your seed is planted. The first practice makes it sprout.",
-    "treeHint": "Your tree grows with your streak and reaches a new stage at each milestone. A missed day never takes growth away."
+    "treeNote": {
+      "young": "Small roots are taking hold. Each day on the board sets them a little deeper.",
+      "growing": "The trunk is thickening. What began as effort is slowly becoming habit.",
+      "strong": "Deep roots, a steady crown. The practice is part of your days now, and it holds."
+    }
   },
   "settings": {
     "title": "Settings",
@@ -215,26 +219,42 @@
     "earned": "earned",
     "locked": "not yet earned",
     "progress": "{{value}} of {{target}}",
+    "goalDays_one": "{{count}} day",
+    "goalDays_other": "{{count}} days",
+    "goalSessions_one": "{{count}} practice",
+    "goalSessions_other": "{{count}} practices",
     "notFound": "No such achievement.",
     "first_session": {
       "title": "First Sprout",
       "desc": "Your first practice"
     },
+    "streak_2": {
+      "title": "First Leaves",
+      "desc": "Two days in a row"
+    },
     "streak_3": {
       "title": "Slender Shoot",
       "desc": "Three days in a row"
+    },
+    "streak_5": {
+      "title": "Sturdy Stem",
+      "desc": "Five days in a row"
     },
     "streak_7": {
       "title": "Green Sapling",
       "desc": "Seven days in a row"
     },
-    "sessions_10": {
+    "streak_10": {
       "title": "Whispering Leaves",
-      "desc": "Ten practices behind you"
+      "desc": "Ten days in a row"
     },
     "streak_14": {
       "title": "Shady Crown",
       "desc": "Fourteen days in a row"
+    },
+    "streak_21": {
+      "title": "Spreading Branches",
+      "desc": "Twenty-one days in a row"
     },
     "streak_30": {
       "title": "Steadfast Trunk",

@@ -16,6 +16,7 @@ import {
   lastDays,
   nextAchievement,
   totals,
+  treeNote,
   treeStage,
 } from '@/lib/practice';
 import { useStore } from '@/store';
@@ -129,7 +130,7 @@ function Plate() {
   return (
     <Card style={{ gap: space[2] }}>
       <Txt variant="title">{top ? t(`achievements.${top.id}.title`) : t('achievements.seed')}</Txt>
-      <Txt variant="caption">{top ? t('progress.treeHint') : t('progress.treeEmpty')}</Txt>
+      <Txt variant="caption">{top ? t(`progress.treeNote.${treeNote(stage)}`) : t('progress.treeEmpty')}</Txt>
       <ScrollView
         ref={scroll}
         horizontal
@@ -152,12 +153,14 @@ function Plate() {
                   accessibilityLabel={[title, got ? t('achievements.earned') : t('achievements.locked'), toward].filter(Boolean).join(', ')}
                   onPress={() => router.push({ pathname: '/achievement/[id]', params: { id: a.id } })}
                   style={({ pressed }) => [styles.figure, { opacity: pressed ? 0.7 : 1 }]}>
-                  {/* grown up to the tree's stage, like the soil: a count milestone can land before an earlier streak one */}
-                  <View style={{ opacity: i + 2 <= stage ? 1 : 0.55 }}>
-                    <Tree stage={i + 2} size={CELL} muted={i + 2 > stage} soil={false} />
+                  <View style={{ opacity: got ? 1 : 0.55 }}>
+                    <Tree stage={i + 2} size={CELL} muted={!got} soil={false} />
                   </View>
                   <Txt variant="caption" numberOfLines={2} style={[styles.name, got && { color: c.text }]}>
                     {title}
+                  </Txt>
+                  <Txt variant="caption" style={styles.toward}>
+                    {t(a.kind === 'count' ? 'achievements.goalSessions' : 'achievements.goalDays', { count: a.target })}
                   </Txt>
                   {toward && <Txt variant="caption" style={styles.toward}>{toward}</Txt>}
                 </Pressable>
