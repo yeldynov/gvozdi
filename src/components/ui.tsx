@@ -37,6 +37,22 @@ const HERB_ART: typeof ART = {
   rest: require('@/assets/art/herbarium/rest.svg'),
   together: require('@/assets/art/herbarium/together.svg'),
 };
+// Ink and Dusk: the earthy set recolored by scripts/recolor-art.mjs.
+const INK_ART: typeof ART = {
+  stand: require('@/assets/art/ink/stand.svg'),
+  reflect: require('@/assets/art/ink/reflect.svg'),
+  walk: require('@/assets/art/ink/walk.svg'),
+  rest: require('@/assets/art/ink/rest.svg'),
+  together: require('@/assets/art/ink/together.svg'),
+};
+const DUSK_ART: typeof ART = {
+  stand: require('@/assets/art/dusk/stand.svg'),
+  reflect: require('@/assets/art/dusk/reflect.svg'),
+  walk: require('@/assets/art/dusk/walk.svg'),
+  rest: require('@/assets/art/dusk/rest.svg'),
+  together: require('@/assets/art/dusk/together.svg'),
+};
+const ART_SETS: Record<Skin, typeof ART> = { earthy: ART, herbarium: HERB_ART, ink: INK_ART, dusk: DUSK_ART };
 export type ArtName = keyof typeof ART | SceneName;
 
 /** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
@@ -65,11 +81,11 @@ export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number
     ],
   }));
   return (
-    <Animated.View style={[{ alignSelf: 'center' }, skin === 'ink' && styles.inkWash, style]}>
+    <Animated.View style={[{ alignSelf: 'center' }, style]}>
       {name in SCENES ? (
         <SceneFor name={name as SceneName} size={size} clouds={clouds} />
       ) : (
-        <Image source={(herb ? HERB_ART : ART)[name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
+        <Image source={ART_SETS[skin][name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
       )}
     </Animated.View>
   );
@@ -285,8 +301,6 @@ const styles = StyleSheet.create({
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },
   stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   choiceText: { fontFamily: fonts.textMedium, fontSize: 14 },
-  // Ink: the colour scenes as an ink wash (web and Android; iOS ignores grayscale and keeps colour).
-  inkWash: { filter: 'grayscale(1)' },
 });
 
 // Herbarium skin: Golos Text, borderless sheets, squarer buttons with a 48pt target.

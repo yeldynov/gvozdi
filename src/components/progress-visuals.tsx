@@ -4,7 +4,10 @@ import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
 
 import { achievementStage, type Achievement } from '@/lib/practice';
-import { fonts, radius, space, useColors } from '@/theme';
+import type { Skin } from '@/lib/types';
+import { willow, duskColors } from '@/skins/dusk/tree';
+import { inkColors, pine } from '@/skins/ink/tree';
+import { fonts, palette, radius, space, useColors, useSkin } from '@/theme';
 
 // Crown blobs as [dx, dy, r] in crown-radius units; later stages use more of them.
 const CROWN = [
@@ -23,10 +26,19 @@ export const look = (stage: number) => [0, 1, 2, 2.5, 3, 3.5, 4, 5, 6, 6.5, 7, 8
 /** Where the ground ellipse ends, as fractions of the Tree's size: its right edge and its bottom. */
 export const treeGround = (stage: number) => ({ right: (50 + groundRx(stage)) / 100, bottom: (G + 8) / 100 });
 
-/** A tree grown to `stage` (0 bare ground, 1 seed … 12 old tree, 13 in bloom); all grey when `muted`. */
-export function Tree({ stage: n, size = 120, muted }: { stage: number; size?: number; muted?: boolean }) {
+/** A tree grown to `stage` (0 bare ground, 1 seed … 12 old tree, 13 in bloom); all grey when `muted`.
+ *  Ink draws a sumi-e pine and Dusk a willow; `skin` previews one in its own colours (the skin picker). */
+export function Tree({ stage: n, size = 120, muted, skin }: { stage: number; size?: number; muted?: boolean; skin?: Skin }) {
   const stage = look(n);
-  const c = useColors();
+  const active = useSkin();
+  const k = skin ?? active;
+  const c = palette(k, useColors().isDark);
+  if (k === 'ink' || k === 'dusk')
+    return (
+      <Svg width={size} height={size} viewBox="0 0 100 100">
+        {k === 'ink' ? pine(stage, inkColors(c, muted), 't', groundRx(stage)) : willow(stage, duskColors(c, muted), 't', groundRx(stage))}
+      </Svg>
+    );
   const leafColor = muted ? c.text3 : c.success;
   const wood = muted ? c.text3 : c.text2;
   const leaf = (x: number, y: number, len: number, deg: number, k: string) => (

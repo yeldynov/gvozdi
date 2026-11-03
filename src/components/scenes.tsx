@@ -15,21 +15,40 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
-export const GV = {
-  sage: '#2D5A4E', sageD: '#214339', sageL: '#3C6B5C',
-  terra: '#D97B4F', terraD: '#C2663B', terraL: '#E89A72',
-  taupe: '#8B7355', taupeL: '#A68B68', taupeD: '#6E5A41',
-  gold: '#F4A261',
-};
-export const SKIN = '#EAC59C';
-export const INK = '#33302B';
-export const HAIRS = { sage: '#33473F', taupe: '#5A4634', dark: '#3A332B' };
+import { ART, type ArtPalette } from '@/lib/art-palette';
+import { useSkin } from '@/theme';
+
+// Earthy constants for callers outside a render; components read the active skin's palette with useArt().
+export const { GV, SKIN, INK, HAIRS } = ART.earthy;
+/** The illustration palette for the active skin (herbarium draws its own scenes, so it gets earthy here). */
+export function useArt(): ArtPalette & { skin: 'earthy' | 'ink' | 'dusk' } {
+  const s = useSkin();
+  const skin = s === 'ink' || s === 'dusk' ? s : 'earthy';
+  return { ...ART[skin], skin };
+}
 
 type Pt = [number, number];
 
 // ── kit ────────────────────────────────────────────────────────────────
 export function Blob({ cx, cy, rx, ry, fill, opacity }: { cx: number; cy: number; rx: number; ry: number; fill: string; opacity: number }) {
-  return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity={opacity} />;
+  const { skin, INK } = useArt();
+  if (skin !== 'ink') return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity={opacity} />;
+  // Ink: an ensō, one open brush circle over a faint wash; the second, thinner pass makes the stroke taper.
+  return (
+    <G fill="none" strokeLinecap="round">
+      <Ellipse cx={cx} cy={cy} rx={rx * 0.94} ry={ry * 0.94} fill={fill} opacity={opacity * 0.8} />
+      <Path d={arc(cx, cy, rx, ry, -100, 220)} stroke={INK} strokeWidth={7} opacity={0.78} />
+      <Path d={arc(cx, cy, rx * 0.985, ry * 0.985, 200, 252)} stroke={INK} strokeWidth={3} opacity={0.6} />
+    </G>
+  );
+}
+/** Elliptical arc from `a0` to `a1` degrees (0 = right, clockwise), as straight-line segments. */
+function arc(cx: number, cy: number, rx: number, ry: number, a0: number, a1: number) {
+  const pts = Array.from({ length: 41 }, (_, i) => {
+    const t = ((a0 + ((a1 - a0) * i) / 40) * Math.PI) / 180;
+    return `${(cx + rx * Math.cos(t)).toFixed(1)} ${(cy + ry * Math.sin(t)).toFixed(1)}`;
+  });
+  return `M${pts.join('L')}`;
 }
 function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?: number; color: string; s?: number }) {
   return (
@@ -40,10 +59,15 @@ function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?:
   );
 }
 export function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
+  const { GV, skin, INK } = useArt();
+  // Ink: one dry brush stroke for the ground, thick at the start and trailing off.
+  if (skin === 'ink')
+    return <Path d={`M${cx - rx} ${cy}Q${cx - rx * 0.4} ${cy - 5} ${cx + rx} ${cy - 1}Q${cx} ${cy + 3} ${cx - rx} ${cy + 3}Z`} fill={INK} opacity={0.55} />;
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={GV.taupeD} opacity={0.14} />;
 }
 /** Sadhu board in profile: base on the ground, nails pointing up. */
 export function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
+  const { GV, INK } = useArt();
   const n = Math.max(5, Math.round(w / 13));
   return (
     <G>
@@ -59,10 +83,12 @@ export function BoardBar({ x, y, w }: { x: number; y: number; w: number }) {
   );
 }
 export function Hand({ p, r = 7 }: { p: Pt; r?: number }) {
+  const { SKIN } = useArt();
   return <Circle cx={p[0]} cy={p[1]} r={r} fill={SKIN} />;
 }
 /** Standing legs and bare feet on the board. */
 export function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; color: string }) {
+  const { SKIN } = useArt();
   return (
     <>
       <Limb a={hips[0]} b={feet[0]} w={17} color={color} />
@@ -74,6 +100,7 @@ export function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; co
 }
 /** Head with long hair, closed eyes (or `open`, glancing right) and blush. */
 export function Head({ cx, cy, r = 21, hair, tilt = 0, open }: { cx: number; cy: number; r?: number; hair: string; tilt?: number; open?: boolean }) {
+  const { GV, SKIN, INK } = useArt();
   return (
     <G transform={`rotate(${tilt} ${cx} ${cy})`}>
       <Path
@@ -155,6 +182,7 @@ function DriftLeaf({ size, ms, delay, ...leaf }: { size: number; ms: number; del
 
 /** One-shot burst of leaves flying out from the centre and fading; nothing on reduced motion. */
 export function LeafBurst({ size, delay = 0 }: { size: number; delay?: number }) {
+  const { GV } = useArt();
   const reduced = useReducedMotion();
   if (reduced) return null;
   const colors = [GV.sage, GV.gold, GV.terra, GV.sageL];
@@ -190,7 +218,17 @@ function BurstLeaf({ size, angle, color, delay }: { size: number; angle: number;
 
 /** Puffy cloud centred at (x, y), `w` wide. */
 function Cloud({ x, y, w, color, opacity }: { x: number; y: number; w: number; color: string; opacity: number }) {
+  const { skin } = useArt();
   const u = w / 60;
+  // Ink: mist as three long brush bands instead of puffs.
+  if (skin === 'ink')
+    return (
+      <G stroke={color} strokeLinecap="round" opacity={opacity * 0.8}>
+        <Line x1={x - 30 * u} y1={y} x2={x + 26 * u} y2={y} strokeWidth={6 * u} />
+        <Line x1={x - 14 * u} y1={y + 9 * u} x2={x + 34 * u} y2={y + 9 * u} strokeWidth={4 * u} />
+        <Line x1={x - 36 * u} y1={y + 17 * u} x2={x - 2 * u} y2={y + 17 * u} strokeWidth={3 * u} />
+      </G>
+    );
   return (
     <G fill={color} opacity={opacity}>
       <Rect x={x - 30 * u} y={y} width={60 * u} height={14 * u} rx={7 * u} />
@@ -213,11 +251,10 @@ function DriftCloud({ size, ms, dx, ...cloud }: { size: number; ms: number; dx: 
   );
 }
 
+const STARS = [[40, 40, 4], [118, 26, 3], [200, 46, 3.5], [292, 30, 4], [300, 110, 2.5]] as const;
 type CloudSpec = { ms: number; dx: number; x: number; y: number; w: number; color: string; opacity: number };
-const GREY = '#8C9AA6';
-const MIST = '#B9C4CC';
 /** Per-scene clouds, placed clear of raised hands and the flame. */
-const CLOUDS: Record<'step' | 'streak', CloudSpec[]> = {
+const clouds = ({ GV, GREY, MIST }: ArtPalette): Record<'step' | 'streak', CloudSpec[]> => ({
   step: [
     { ms: 14000, dx: 10, x: 232, y: 84, w: 70, color: GREY, opacity: 0.85 },
     { ms: 17000, dx: 14, x: 84, y: 66, w: 56, color: GV.taupeL, opacity: 0.7 },
@@ -230,16 +267,31 @@ const CLOUDS: Record<'step' | 'streak', CloudSpec[]> = {
     { ms: 12000, dx: 8, x: 270, y: 150, w: 40, color: MIST, opacity: 0.9 },
     { ms: 19000, dx: 12, x: 56, y: 128, w: 36, color: GV.sageL, opacity: 0.45 },
   ],
-};
+});
 
 /** Not practised yet today: a few mixed clouds over the sky. */
-function Clouds({ size, scene }: { size: number; scene: keyof typeof CLOUDS }) {
-  return CLOUDS[scene].map((c, i) => <DriftCloud key={i} size={size} {...c} />);
+function Clouds({ size, scene }: { size: number; scene: 'step' | 'streak' }) {
+  const art = useArt();
+  return (
+    <>
+      {/* Dusk: the first stars come out between the clouds. */}
+      {art.skin === 'dusk' &&
+        STARS.map(([x, y, r], i) => (
+          <Rise key={`s${i}`} size={size} ms={4200 + i * 700} delay={i * 900} dy={4} x={x} y={y}>
+            <Path d={sparkle(x, y, r)} fill={art.GV.gold} />
+          </Rise>
+        ))}
+      {clouds(art)[scene].map((c, i) => (
+        <DriftCloud key={i} size={size} {...c} />
+      ))}
+    </>
+  );
 }
 
 // ── scenes ─────────────────────────────────────────────────────────────
 /** Seated, hands at heart; breath arcs widen and the body rises on a 4 s inhale / 4 s exhale. */
 function SceneBreathe({ size }: { size: number }) {
+  const { GV, SKIN, HAIRS } = useArt();
   const { v, reduced } = useLoop(4000);
   const k = size / 320;
   const arcs = useAnimatedStyle(() =>
@@ -284,6 +336,7 @@ function SceneBreathe({ size }: { size: number }) {
 
 /** Stepping onto the board, arms out: the arms teeter for balance and the sun swells. */
 function SceneStep({ size, clouds }: { size: number; clouds?: boolean }) {
+  const { GV, SKIN, HAIRS } = useArt();
   const { v: tilt, reduced } = useLoop(3200);
   const { v: glow } = useLoop(5000);
   const arms = useAnimatedStyle(() => (reduced ? {} : { transform: [{ rotate: `${interpolate(tilt.value, [0, 1], [-9, 9])}deg` }] }));
@@ -328,6 +381,7 @@ function SceneStep({ size, clouds }: { size: number; clouds?: boolean }) {
 
 /** Composed under a sharp moment: focus marks pulse outward like waves of sensation. */
 function SceneFeel({ size }: { size: number }) {
+  const { GV, HAIRS } = useArt();
   const { v, reduced } = useLoop(1800);
   const k = size / 320;
   // Called from the style worklets below, so it must be a worklet too (native crashes otherwise; web doesn't care).
@@ -377,6 +431,7 @@ function SceneFeel({ size }: { size: number }) {
 
 /** Glancing at the phone timer: its hand turns slowly while the head drifts. */
 function SceneTime({ size }: { size: number }) {
+  const { GV, SKIN, HAIRS, PHONE, SCREEN } = useArt();
   const { v: turn, reduced } = useLoop(6000, { restart: true });
   const { v: drift } = useLoop(4200);
   // Timer centre (143, 184) after the phone's rotate(-8 142 178).
@@ -401,8 +456,8 @@ function SceneTime({ size }: { size: number }) {
         <Limb a={[180, 134]} b={[176, 168]} w={12} color={top} />
         <Limb a={[176, 168]} b={[150, 176]} w={11} color={SKIN} />
         <G transform="rotate(-8 142 178)">
-          <Rect x={126} y={160} width={34} height={48} rx={7} fill="#1A1A1A" />
-          <Rect x={130} y={166} width={26} height={36} rx={4} fill="#F1E8D5" />
+          <Rect x={126} y={160} width={34} height={48} rx={7} fill={PHONE} />
+          <Rect x={130} y={166} width={26} height={36} rx={4} fill={SCREEN} />
           <Circle cx={143} cy={184} r={9} fill="none" stroke={GV.terra} strokeWidth={3} />
         </G>
       </Layer>
@@ -420,6 +475,7 @@ function SceneTime({ size }: { size: number }) {
 
 /** One arm raised in quiet triumph: the flame flickers and the arm sways. */
 function SceneStreak({ size, clouds }: { size: number; clouds?: boolean }) {
+  const { GV, HAIRS } = useArt();
   const { v: flick, reduced } = useLoop(1100);
   const { v: sway } = useLoop(3000);
   const flame = useAnimatedStyle(() =>
@@ -486,6 +542,7 @@ const sparkle = (x: number, y: number, r: number) => `M${x} ${y - r} Q${x} ${y} 
 
 /** After practice: seated beside the board with tea, smiling; the glow breathes, steam and sparkles rise. */
 function SceneGlow({ size }: { size: number }) {
+  const { GV, INK, HAIRS } = useArt();
   const { v, reduced } = useLoop(6000);
   const k = size / 320;
   const glow = useAnimatedStyle(() => (reduced ? {} : { opacity: interpolate(v.value, [0, 1], [0.6, 1]), transform: [{ scale: 1 + 0.08 * v.value }] }));

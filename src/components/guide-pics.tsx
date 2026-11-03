@@ -2,10 +2,12 @@
 import type { ReactNode } from 'react';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
-import { BoardBar, Blob, GV, HAIRS, Hand, Head, INK, Legs, Limb, Shadow, SKIN } from '@/components/scenes';
+import type { ArtPalette } from '@/lib/art-palette';
+import { BoardBar, Blob, Hand, Head, Legs, Limb, Shadow, useArt } from '@/components/scenes';
 
 /** Sole of a right foot (big toe left), centred on 0,0, about 120×220. */
 function Sole({ children }: { children?: ReactNode }) {
+  const { SKIN } = useArt();
   return (
     <G>
       <Ellipse cx={-10} cy={76} rx={42} ry={50} fill={SKIN} />
@@ -33,10 +35,16 @@ const DOTS = [
   ...[-34, -10, 14].flatMap((x) => [62, 84, 106].map((y) => [x, y] as const)),
 ].filter(([x, y]) => (y < 0 ? ((x - 10) / 50) ** 2 + ((y + 32) / 40) ** 2 < 1 : ((x + 10) / 36) ** 2 + ((y - 80) / 44) ** 2 < 1));
 
-const Hem = ({ x }: { x: number }) => <Path d={`M${x} 10 h84 l4 46 q-46 14 -92 0 Z`} fill={GV.terra} />;
-const Floor = ({ y }: { y: number }) => <Line x1={30} y1={y} x2={290} y2={y} stroke={GV.taupeL} strokeWidth={3} strokeLinecap="round" opacity={0.5} />;
+function Hem({ x }: { x: number }) {
+  const { GV } = useArt();
+  return <Path d={`M${x} 10 h84 l4 46 q-46 14 -92 0 Z`} fill={GV.terra} />;
+}
+function Floor({ y }: { y: number }) {
+  const { GV } = useArt();
+  return <Line x1={30} y1={y} x2={290} y2={y} stroke={GV.taupeL} strokeWidth={3} strokeLinecap="round" opacity={0.5} />;
+}
 
-const PICS = {
+const pics = ({ GV, SKIN, INK, HAIRS, SCREEN }: ArtPalette) => ({
   /** Board on a mat, a level on top. */
   mat: (
     <>
@@ -45,7 +53,7 @@ const PICS = {
       <Rect x={40} y={224} width={240} height={7} rx={3.5} fill={GV.sageL} />
       <BoardBar x={68} y={200} w={184} />
       <Rect x={104} y={128} width={112} height={26} rx={13} fill={GV.gold} />
-      <Rect x={140} y={133} width={40} height={16} rx={8} fill="#F1E8D5" />
+      <Rect x={140} y={133} width={40} height={16} rx={8} fill={SCREEN} />
       <Circle cx={160} cy={141} r={5} fill={GV.sage} />
     </>
   ),
@@ -71,7 +79,7 @@ const PICS = {
       <G transform="translate(140 172) scale(0.95)">
         <Sole>
           <G transform="rotate(-28 6 -30)">
-            <Rect x={-34} y={-46} width={80} height={32} rx={14} fill="#F1E8D5" />
+            <Rect x={-34} y={-46} width={80} height={32} rx={14} fill={SCREEN} />
             <Rect x={-6} y={-42} width={24} height={24} rx={5} fill={GV.terraL} />
           </G>
         </Sole>
@@ -181,14 +189,16 @@ const PICS = {
       </Sole>
     </G>
   ),
-};
-export type GuidePicName = keyof typeof PICS;
+});
+export type GuidePicName = keyof ReturnType<typeof pics>;
 
 export function GuidePic({ name, size = 88 }: { name: GuidePicName; size?: number }) {
+  const art = useArt();
+  const { GV } = art;
   return (
     <Svg width={size} height={size} viewBox="0 0 320 320">
       <Blob cx={160} cy={160} rx={156} ry={156} fill={GV.sageL} opacity={0.14} />
-      {PICS[name]}
+      {pics(art)[name]}
     </Svg>
   );
 }
