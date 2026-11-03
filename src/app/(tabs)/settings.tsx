@@ -14,7 +14,7 @@ import { allowReminders, openNotificationSettings, remindersSupported } from '@/
 import type { Language, Skin, ThemePref } from '@/lib/types';
 import { Tree as HerbTree } from '@/skins/herbarium/progress-visuals';
 import { useStore } from '@/store';
-import { fonts, herbFonts, palette, radius, space, useColors } from '@/theme';
+import { fonts, herbFonts, inkFonts, palette, radius, space, useColors, type Colors } from '@/theme';
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -88,7 +88,7 @@ export default function Settings() {
           ]}
         />
         <View accessibilityRole="radiogroup" style={styles.skins}>
-          {(['earthy', 'herbarium'] as const).map((skin) => (
+          {(['earthy', 'herbarium', 'ink', 'dusk'] as const).map((skin) => (
             <SkinTile key={skin} skin={skin} on={(settings.skin ?? 'earthy') === skin} onPress={() => setSettings({ skin })} />
           ))}
         </View>
@@ -184,7 +184,7 @@ export default function Settings() {
 const mix = (a: string, b: string, t: number) =>
   `#${[1, 3, 5].map((i) => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, '0')).join('')}`;
 
-/** A skin previewed in its own colors (brown earth, leaf green), font and tree, whichever skin is active. */
+/** A skin previewed in its own colors, font and tree, whichever skin is active. */
 function SkinTile({ skin, on, onPress }: { skin: Skin; on: boolean; onPress: () => void }) {
   const { t } = useTranslation();
   const k = palette(skin, useColors().isDark);
@@ -197,7 +197,7 @@ function SkinTile({ skin, on, onPress }: { skin: Skin; on: boolean; onPress: () 
       onPress={onPress}
       style={({ pressed }) => [
         styles.skin,
-        { backgroundColor: herb ? mix(k.bg3, k.primary, 0.18) : mix(k.bg3, k.illus, 0.25), borderColor: on ? k.primary : k.divider, borderWidth: on ? 2 : 1, opacity: pressed ? 0.85 : 1 },
+        { backgroundColor: TILE_TINT[skin](k), borderColor: on ? k.primary : k.divider, borderWidth: on ? 2 : 1, opacity: pressed ? 0.85 : 1 },
       ]}>
       <View aria-hidden style={styles.skinTree}>
         {herb ? <HerbTree stage={8} size={110} /> : <Tree stage={8} size={110} />}
@@ -207,14 +207,21 @@ function SkinTile({ skin, on, onPress }: { skin: Skin; on: boolean; onPress: () 
           <Text style={[styles.ecoText, { color: k.onPrimary }]}>{t('settings.eco')}</Text>
         </View>
       )}
-      <Text style={[styles.skinName, { color: k.text, fontFamily: herb ? herbFonts.textMedium : fonts.display }]}>{t(`settings.${skin}`)}</Text>
+      <Text style={[styles.skinName, { color: k.text, fontFamily: skin === 'herbarium' ? herbFonts.textMedium : skin === 'ink' ? inkFonts.display : fonts.display }]}>{t(`settings.${skin}`)}</Text>
     </Pressable>
   );
 }
 
+const TILE_TINT: Record<Skin, (k: Colors) => string> = {
+  earthy: (k) => mix(k.bg3, k.illus, 0.25),
+  herbarium: (k) => mix(k.bg3, k.primary, 0.18),
+  ink: (k) => k.bg,
+  dusk: (k) => mix(k.bg3, k.accent, 0.12),
+};
+
 const styles = StyleSheet.create({
-  skins: { flexDirection: 'row', gap: space[3], marginTop: space[2] },
-  skin: { flex: 1, height: 140, borderRadius: radius.md, padding: space[3], justifyContent: 'flex-end', overflow: 'hidden' },
+  skins: { flexDirection: 'row', flexWrap: 'wrap', gap: space[3], marginTop: space[2] },
+  skin: { flexGrow: 1, flexBasis: '40%', height: 140, borderRadius: radius.md, padding: space[3], justifyContent: 'flex-end', overflow: 'hidden' },
   skinTree: { position: 'absolute', right: -14, bottom: -8 },
   skinName: { fontSize: 18 },
   eco: { position: 'absolute', top: space[3], left: space[3], borderRadius: radius.pill, paddingHorizontal: space[2], paddingVertical: 2 },

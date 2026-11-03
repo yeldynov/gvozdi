@@ -4,7 +4,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 
 - GitHub `yeldynov/gvozdi`, EAS project `@shangnik/gvozdi`, web https://gvozdi.expo.app
 - Bundle id / package: `com.shangnik.gvozdi`
-- Two skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset) and `herbarium` (botanical: sage/green tokens, Golos Text, linden tree, meadow charts). Where they disagree on behaviour, the default wins (user decision).
+- Four skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset), `herbarium` (botanical: sage/green tokens, Golos Text, linden tree, meadow charts; its own components in `src/skins/herbarium/`), and two token-only skins that reuse the earthy components: `ink` (sumi ink on washi paper, one vermilion accent, Literata throughout, hairline square cards, scenes as ink wash) and `dusk` (dawn mist / evening indigo with candlelight, soft borderless cards). Per-skin primitive styles live in `skinStyles` in `ui.tsx`. Where they disagree on behaviour, the default wins (user decision).
 - Local-first (user decision): the whole app works without an account. `Stack.Protected` in root `_layout` gates the app on `settings.onboarded || isSignedIn`, so onboarding shows once. Signed out, sessions live on the device, and `SaveBanner` (Home top, Settings account card) stays until they sign up. It isn't dismissible. Sign-in pushes local sessions through `useSync`. Sign-out clears local sessions and stays in the app. Earthy brand. Languages EN / UK / RU.
 - MVP scope excludes: Library, Paywall, Board/Pure/Breath session variants, mood check-in, social sharing, web push.
 

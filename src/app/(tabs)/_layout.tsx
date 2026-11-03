@@ -7,14 +7,15 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, w
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { radius, space, useColors, useSkin } from '@/theme';
+import { radius, space, useColors } from '@/theme';
 
 const icons = { index: 'home', practice: 'circle', progress: 'bar-chart-2', settings: 'settings' } as const;
 const HEIGHT = 56;
 const PAD = space[1];
 
 // No backdrop blur on Android without expo-blur, so the card is nearly opaque there.
-const ALPHA = Platform.OS === 'web' ? 0.6 : 0.94;
+// Hex alpha appended to the skin's surface: 0.6 on web (blurred behind), 0.94 native.
+const ALPHA = Platform.OS === 'web' ? '99' : 'f0';
 
 // react-native-web passes these through to CSS; RN's types don't know them.
 const css = (style: Record<string, string>) => style as object;
@@ -22,7 +23,6 @@ const css = (style: Record<string, string>) => style as object;
 /** Frosted glass card floating over the content (Android + web; iOS uses _layout.ios.tsx), with a lens that slides (and stretches) to the active tab. */
 function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const c = useColors();
-  const herb = useSkin() === 'herbarium';
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const onHeight = useContext(BottomTabBarHeightCallbackContext);
@@ -49,9 +49,7 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
         {
           bottom: insets.bottom + space[4],
           width: barWidth,
-          backgroundColor: herb
-            ? c.isDark ? `rgba(25, 33, 26, ${ALPHA})` : `rgba(244, 245, 240, ${ALPHA})`
-            : c.isDark ? `rgba(42, 34, 25, ${ALPHA})` : `rgba(251, 246, 238, ${ALPHA})`,
+          backgroundColor: c.surface + ALPHA,
           borderColor: c.divider,
         },
         css({ backdropFilter: 'blur(20px) saturate(1.6)', boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)' }),
@@ -64,7 +62,7 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
           css({
             boxShadow: c.isDark
               ? 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 10px rgba(0, 0, 0, 0.25)'
-              : `inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 10px ${herb ? 'rgba(34, 38, 31, 0.1)' : 'rgba(45, 36, 25, 0.1)'}`,
+              : `inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 10px ${c.text}1a`,
           }),
           lens,
         ]}

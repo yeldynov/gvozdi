@@ -19,7 +19,8 @@ import Svg, { Circle } from 'react-native-svg';
 
 import { Scene, SCENES, type SceneName } from '@/components/scenes';
 import { Scene as HerbScene } from '@/skins/herbarium/scenes';
-import { fonts, herbFonts, radius, space, useColors, useSkin } from '@/theme';
+import type { Skin } from '@/lib/types';
+import { fonts, herbFonts, inkFonts, radius, space, useColors, useSkin } from '@/theme';
 
 // Character scenes exported as static SVGs from the gvozdi-pwa design set (onboarding scenes).
 const ART = {
@@ -41,7 +42,8 @@ export type ArtName = keyof typeof ART | SceneName;
 /** Decorative square illustration that breathes (rises and swells) and sways on a slower beat; still on reduced motion. */
 export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number; clouds?: boolean }) {
   const reduced = useReducedMotion();
-  const herb = useSkin() === 'herbarium';
+  const skin = useSkin();
+  const herb = skin === 'herbarium';
   const SceneFor = herb ? HerbScene : Scene;
   const breath = useSharedValue(0);
   const sway = useSharedValue(-1);
@@ -63,7 +65,7 @@ export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number
     ],
   }));
   return (
-    <Animated.View style={[{ alignSelf: 'center' }, style]}>
+    <Animated.View style={[{ alignSelf: 'center' }, skin === 'ink' && styles.inkWash, style]}>
       {name in SCENES ? (
         <SceneFor name={name as SceneName} size={size} clouds={clouds} />
       ) : (
@@ -126,22 +128,23 @@ type Variant = 'display' | 'title' | 'body' | 'label' | 'caption';
 export function Txt({ variant = 'body', style, ...props }: TextProps & { variant?: Variant }) {
   const c = useColors();
   const { i18n } = useTranslation();
-  const herb = useSkin() === 'herbarium';
+  const skin = useSkin();
   const color = variant === 'label' || variant === 'caption' ? c.text2 : c.text;
-  const cyrillic = !herb && (variant === 'display' || variant === 'title') && i18n.language !== 'en';
+  // Only the Fraunces skins need the Literata fallback.
+  const cyrillic = (skin === 'earthy' || skin === 'dusk') && (variant === 'display' || variant === 'title') && i18n.language !== 'en';
   return (
     <Text
       accessibilityRole={variant === 'display' ? 'header' : undefined}
       {...props}
-      style={[styles[variant], herb && herbStyles[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]}
+      style={[styles[variant], skinStyles[skin]?.[variant], { color }, cyrillic && { fontFamily: fonts.displayCyrillic }, style]}
     />
   );
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
   const c = useColors();
-  const herb = useSkin() === 'herbarium';
-  return <View style={[styles.card, herb && herbStyles.card, { backgroundColor: c.surface, borderColor: c.divider }, style]}>{children}</View>;
+  const skin = useSkin();
+  return <View style={[styles.card, skinStyles[skin]?.card, { backgroundColor: c.surface, borderColor: c.divider }, style]}>{children}</View>;
 }
 
 export function Button({
@@ -163,7 +166,7 @@ export function Button({
   color?: string;
 }) {
   const c = useColors();
-  const herb = useSkin() === 'herbarium';
+  const skin = useSkin();
   return (
     <Pressable
       accessibilityRole="button"
@@ -172,13 +175,13 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        herb && herbStyles.button,
+        skinStyles[skin]?.button,
         { backgroundColor: ghost ? (color ? `${color}1f` : c.bg2) : c.primary, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
       <View style={styles.buttonRow}>
         {icon}
-        <Text style={[styles.buttonText, herb && { fontFamily: herbFonts.textBold }, { color: ghost ? (color ?? c.text) : c.onPrimary }]}>{label}</Text>
+        <Text style={[styles.buttonText, skinStyles[skin]?.buttonText, { color: ghost ? (color ?? c.text) : c.onPrimary }]}>{label}</Text>
       </View>
     </Pressable>
   );
@@ -282,6 +285,8 @@ const styles = StyleSheet.create({
   choiceItem: { flex: 1, alignItems: 'center', paddingVertical: space[2], borderRadius: radius.pill },
   stepBtn: { width: 36, height: 36, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   choiceText: { fontFamily: fonts.textMedium, fontSize: 14 },
+  // Ink: the colour scenes as an ink wash (web and Android; iOS ignores grayscale and keeps colour).
+  inkWash: { filter: 'grayscale(1)' },
 });
 
 // Herbarium skin: Golos Text, borderless sheets, squarer buttons with a 48pt target.
@@ -293,4 +298,29 @@ const herbStyles = StyleSheet.create({
   caption: { fontFamily: herbFonts.text, fontSize: 14, lineHeight: 20 },
   card: { borderRadius: radius.md, borderWidth: 0 },
   button: { borderRadius: radius.sm, minHeight: 48, justifyContent: 'center' },
+  buttonText: { fontFamily: herbFonts.textBold },
 });
+
+// Ink skin: Literata throughout, hairline-ruled paper cards, near-square buttons, labels as quiet sentence case.
+const inkStyles = StyleSheet.create({
+  display: { fontFamily: inkFonts.display, letterSpacing: -0.3 },
+  title: { fontFamily: inkFonts.display },
+  body: { fontFamily: inkFonts.text, lineHeight: 24 },
+  label: { fontFamily: inkFonts.textMedium, fontSize: 14, letterSpacing: 0, textTransform: 'none' },
+  caption: { fontFamily: inkFonts.text, fontSize: 14, lineHeight: 20 },
+  card: { borderRadius: radius.xs - 4, borderWidth: 1 },
+  button: { borderRadius: radius.xs - 4, minHeight: 48, justifyContent: 'center' },
+  buttonText: { fontFamily: inkFonts.textBold },
+});
+
+// Dusk skin: earthy type, soft borderless cards, rounder corners.
+const duskStyles = StyleSheet.create({
+  card: { borderRadius: radius.xl, borderWidth: 0 },
+  button: { minHeight: 48, justifyContent: 'center' },
+});
+
+const skinStyles: Partial<Record<Skin, Partial<Record<Variant | 'card' | 'button' | 'buttonText', object>>>> = {
+  herbarium: herbStyles,
+  ink: inkStyles,
+  dusk: duskStyles,
+};

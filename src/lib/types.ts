@@ -15,7 +15,7 @@ export type Session = {
 
 export type Language = 'system' | 'en' | 'uk' | 'ru';
 export type ThemePref = 'system' | 'light' | 'dark';
-export type Skin = 'earthy' | 'herbarium';
+export type Skin = 'earthy' | 'herbarium' | 'ink' | 'dusk';
 
 export type HomeCard = 'today' | 'stats' | 'week';
 
