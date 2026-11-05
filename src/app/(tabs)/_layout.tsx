@@ -48,6 +48,7 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
         styles.bar,
         {
           bottom: insets.bottom + space[4],
+          left: (width - barWidth) / 2,
           width: barWidth,
           backgroundColor: c.surface + ALPHA,
           borderColor: c.divider,
@@ -104,10 +105,7 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   bar: {
     position: 'absolute',
-    left: 0,
-    right: 0,
     height: HEIGHT,
-    marginHorizontal: 'auto',
     padding: PAD,
     flexDirection: 'row',
     borderWidth: StyleSheet.hairlineWidth,
