@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -27,11 +27,20 @@ export default function Progress() {
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
   const { saved } = useLocalSearchParams<{ saved?: string }>();
-  useEffect(() => {
-    if (!saved) return;
-    const id = setTimeout(() => router.setParams({ saved: undefined }), 4000);
-    return () => clearTimeout(id);
-  }, [saved]);
+  const navigation = useNavigation<{ setParams(p: { saved?: string }): void }>();
+  // Shown once: cleared after 4s or on leaving the tab. navigation.setParams targets this
+  // screen; router.setParams would hit whichever route is focused when the timer fires.
+  useFocusEffect(
+    useCallback(() => {
+      if (!saved) return;
+      const clear = () => navigation.setParams({ saved: undefined });
+      const id = setTimeout(clear, 4000);
+      return () => {
+        clearTimeout(id);
+        clear();
+      };
+    }, [saved, navigation]),
+  );
   const sum = totals(sessions);
   const streak = currentStreak(sessions);
   const week = lastDays(sessions);
