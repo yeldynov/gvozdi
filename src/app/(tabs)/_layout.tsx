@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { Tabs } from 'expo-router';
 import { BottomTabBarHeightCallbackContext, type BottomTabBarProps } from 'expo-router/tabs';
 import { useContext, useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +13,9 @@ const icons = { index: 'home', practice: 'circle', progress: 'bar-chart-2', sett
 const HEIGHT = 56;
 const PAD = space[1];
 
-// Hex alpha appended to the skin's surface: 0.6, blurred behind.
-const ALPHA = '99';
+// No backdrop blur on Android without expo-blur, so the card is nearly opaque there.
+// Hex alpha appended to the skin's surface: 0.6 on web (blurred behind), 0.94 native.
+const ALPHA = Platform.OS === 'web' ? '99' : 'f0';
 
 // react-native-web passes these through to CSS; RN's types don't know them.
 const css = (style: Record<string, string>) => style as object;
@@ -24,14 +25,14 @@ function glide(x: SharedValue<number>, stretch: SharedValue<number>, to: number)
   stretch.set(withSequence(withTiming(1, { duration: 140 }), withSpring(0, { damping: 9, stiffness: 180 })));
 }
 
-/** Frosted glass card floating over the content (web; iOS and Android use NativeTabs in _layout.native.tsx), with a lens that slides (and stretches) to the active tab. */
+/** Frosted glass card floating over the content (Android + web; iOS uses _layout.ios.tsx), with a lens that slides (and stretches) to the active tab. */
 function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const c = useColors();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const onHeight = useContext(BottomTabBarHeightCallbackContext);
-  // As wide as Screen's cards (560 column minus its space[5] padding).
-  const barWidth = Math.min(width, 560) - 2 * space[5];
+  // A little wider than Screen's cards (560 column minus its space[5] padding).
+  const barWidth = Math.min(width, 560) - 2 * space[3];
   const item = (barWidth - 2 * PAD) / state.routes.length;
 
   const x = useSharedValue(state.index * item);
