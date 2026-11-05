@@ -104,10 +104,11 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
   );
 }
 
+// lazy: false builds all four tabs at launch, so the first tap on each one doesn't wait for it to render.
 export default function TabLayout() {
   const { t } = useTranslation();
   return (
-    <Tabs tabBar={(props) => <GlassTabBar {...props} />} screenOptions={{ headerShown: false }}>
+    <Tabs tabBar={(props) => <GlassTabBar {...props} />} screenOptions={{ headerShown: false, lazy: false }}>
       <Tabs.Screen name="index" options={{ title: t('tabs.home') }} />
       <Tabs.Screen name="practice" options={{ title: t('tabs.practice') }} />
       <Tabs.Screen name="progress" options={{ title: t('tabs.progress') }} />
