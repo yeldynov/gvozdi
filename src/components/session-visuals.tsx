@@ -11,10 +11,15 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Line, LinearGradient, Path, RadialGradient, Stop, Text as SvgText } from 'react-native-svg';
+import { useTranslation } from 'react-i18next';
+import Svg, { Circle, Defs, Line, RadialGradient, Stop } from 'react-native-svg';
 
-import { intensityAt, MILD_SEC, PEAK_SEC } from '@/lib/session';
-import { fonts, useColors } from '@/theme';
+import { Txt } from '@/components/ui';
+
+
+import { formatDuration } from '@/lib/practice';
+import { MILD_SEC, PEAK_SEC } from '@/lib/session';
+import { fonts, space, useColors } from '@/theme';
 
 /** Soft disc that swells and settles on a 4s in / 4s out rhythm. */
 export function BreathDot({
@@ -146,53 +151,37 @@ const styles = StyleSheet.create({
   ripple: { position: 'absolute', width: R * 2, height: R * 2, borderRadius: R, borderWidth: 1.5, left: 140 - R, top: 140 - R },
 });
 
-const W = 296;
-const H = 200;
-const PAD = 8;
-const N = 60;
+const STAGES = [
+  { key: 'sharp', from: 0, to: PEAK_SEC, bar: 8 },
+  { key: 'stings', from: PEAK_SEC, to: MILD_SEC, bar: 5 },
+  { key: 'easier', from: MILD_SEC, to: Infinity, bar: 3 },
+] as const;
 
-/** Expected intensity over the session, with the travelled part highlighted. */
-export function PeakCurve({ elapsed, total }: { elapsed: number; total: number }) {
+/** Peak guidance as three named stages with their times; the bar under each fills as you pass through it. */
+export function PeakStages({ elapsed, goalSec }: { elapsed: number; goalSec: number }) {
   const c = useColors();
-  const x = (t: number) => PAD + (t / total) * (W - PAD * 2);
-  const pts = Array.from({ length: N + 1 }, (_, i) => {
-    const t = (i / N) * total;
-    return [x(t), H - PAD - intensityAt(t) * (H - PAD * 2)] as const;
-  });
-  const line = (p: readonly (readonly [number, number])[]) =>
-    p.map(([px, py], i) => `${i ? 'L' : 'M'}${px.toFixed(1)} ${py.toFixed(1)}`).join(' ');
-  const idx = Math.min(N, Math.round((Math.min(elapsed, total) / total) * N));
-  const travelled = pts.slice(0, idx + 1);
-  const [mx, my] = pts[idx];
-  const fill = `M${PAD} ${H - PAD} ${line(travelled).replace('M', 'L')} L${mx.toFixed(1)} ${H - PAD} Z`;
-  const marker = (t: number, color: string, label: string) =>
-    t < total && (
-      <>
-        <Line x1={x(t)} y1={PAD + 8} x2={x(t)} y2={H - PAD} stroke={color} strokeWidth={1} strokeDasharray="3 4" opacity={0.5} />
-        <SvgText x={x(t)} y={PAD + 2} fill={color} fontSize={9} fontFamily={fonts.textBold} textAnchor="middle">
-          {label}
-        </SvgText>
-      </>
-    );
-
+  const { t } = useTranslation();
+  // A short goal never reaches the later stages, so they are left out.
+  const shown = STAGES.filter((s) => !goalSec || s.from < goalSec);
   return (
-    <View style={{ width: '100%', aspectRatio: W / H }}>
-      <Svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`}>
-        <Defs>
-          <LinearGradient id="peakfill" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={c.accent} stopOpacity={0.3} />
-            <Stop offset="1" stopColor={c.accent} stopOpacity={0.02} />
-          </LinearGradient>
-        </Defs>
-        <Line x1={PAD} y1={H - PAD} x2={W - PAD} y2={H - PAD} stroke={c.divider} strokeWidth={1} />
-        {marker(PEAK_SEC, c.error, '1:30')}
-        {marker(MILD_SEC, c.success, '7:00')}
-        <Path d={fill} fill="url(#peakfill)" />
-        <Path d={line(pts)} fill="none" stroke={c.accent} strokeWidth={2.5} strokeLinecap="round" opacity={0.45} />
-        <Path d={line(travelled)} fill="none" stroke={c.accent} strokeWidth={3} strokeLinecap="round" />
-        <Circle cx={mx} cy={my} r={9} fill={c.accent} opacity={0.18} />
-        <Circle cx={mx} cy={my} r={4.5} fill={c.accent} stroke={c.surface} strokeWidth={2} />
-      </Svg>
+    <View style={{ flexDirection: 'row', gap: space[3], alignSelf: 'stretch' }}>
+      {shown.map((s) => {
+        const current = elapsed >= s.from && elapsed < s.to;
+        const fill = s.to === Infinity ? (current ? 1 : 0) : Math.min(1, Math.max(0, (elapsed - s.from) / (s.to - s.from)));
+        return (
+          <View key={s.key} style={{ flex: 1, gap: space[1] }}>
+            <Txt variant="body" style={{ color: current ? c.text : c.text3, fontFamily: current ? fonts.textBold : fonts.text }}>
+              {t(`session.stages.${s.key}`)}
+            </Txt>
+            <Txt variant="caption" style={{ color: c.text3 }}>
+              {s.to === Infinity ? `${formatDuration(s.from)}+` : `${formatDuration(s.from)}–${formatDuration(s.to)}`}
+            </Txt>
+            <View style={{ height: s.bar, borderRadius: s.bar, backgroundColor: c.bg3, overflow: 'hidden', marginTop: space[1] }}>
+              <View style={{ height: '100%', width: `${fill * 100}%`, backgroundColor: c.accent }} />
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 }

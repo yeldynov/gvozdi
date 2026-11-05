@@ -14,7 +14,7 @@ Expo SDK 58, Expo Router, react-native-web, TypeScript strict, React Compiler, t
 
 - State: Zustand `persist` + AsyncStorage (localStorage on web), key `gvozdi`.
 - i18n: i18next + expo-localization.
-- Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring, Peak curve; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
+- Session: expo-keep-awake, expo-haptics, expo-audio (gong; mic and background playback disabled in `app.json`), react-native-svg (ring; also for charts — no chart library), expo-notifications (native only), Reanimated (breathing disc).
 - Accounts + sync: Clerk (`@clerk/expo`, passwordless email code), Expo Router API routes (static output + `apiRoutes`), Drizzle + Neon (`@neondatabase/serverless` HTTP).
 - Analytics: PostHog EU, `posthog-react-native` (native) / `posthog-js` (web, `analytics.web.ts`), opted out by default; `useAnalytics()` in root `_layout` mirrors `settings.analytics` into optIn/optOut and identifies signed-in users by Clerk id. `capture()` sends only when `settings.analytics === true`. While undecided, Home calls `GET /api/region` (EAS `eas-ip-country` header): EU/EEA/UK/CH (`needsConsent` in `src/lib/consent.ts`) get the consent card, everyone else and unknown/offline are auto-approved (user decision). Settings toggles; opt-out resets the SDK id; `EXPO_PUBLIC_POSTHOG_KEY` exists only in EAS `production`, so dev sends nothing.
 
@@ -42,7 +42,7 @@ src/app/read/[id].tsx        reading page (guide/faq/about/articles); text in i1
 src/components/guide-pics.tsx  still vignettes per guide paragraph (PAGES.guide.pics), drawn with the kit exported from scenes.tsx
 src/app/journal.tsx          article list (PAGES with article: true), read time derived from word count
 src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achievement icon)
-src/components/session-visuals.tsx  TimerRing, PeakCurve, BreathDot
+src/components/session-visuals.tsx  TimerRing, PeakStages, BreathDot
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
 src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)

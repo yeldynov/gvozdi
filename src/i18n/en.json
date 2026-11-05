@@ -173,13 +173,17 @@
     "standing": "Standing · breathe steady",
     "paused": "Paused",
     "goalReached": "Goal reached · keep going",
-    "curve": "Intensity · climbs to 1:30, eases by 7:00",
+    "stages": {
+      "sharp": "Sharpest",
+      "stings": "Still stings",
+      "easier": "Easier"
+    },
     "captions": {
       "sharp": "Sharp now. That's your nerves, not an injury. Breathe out slowly.",
-      "climbing": "Climbing to the peak. Keep your weight still and let it come.",
-      "top": "This is the top. It only eases from here.",
-      "past": "The worst is over. Feel the sting loosen.",
-      "adapting": "Your body is adjusting. It's getting easier.",
+      "climbing": "The hardest stretch. Keep your weight still and breathe through it.",
+      "top": "Almost through the sharpest part. Stay with it.",
+      "past": "The sharpest part is behind you. It still stings; it eases by 7:00.",
+      "adapting": "Your body has adjusted. It's getting easier.",
       "goal": "Goal reached. Keep going or finish."
     },
     "pause": "Pause",

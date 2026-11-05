@@ -27,15 +27,14 @@ export function elapsedSec(c: Clock, now: number): number {
   return Math.max(0, Math.floor((end - c.startedAt - c.pausedMs) / 1000));
 }
 
-// Peak mode: sensation climbs from the first step, tops out at 1:30, eases by 7:00.
+// Peak mode: sharpest from the first step to 1:30, still stings until 7:00, then eases.
 export const PEAK_SEC = 90;
 export const MILD_SEC = 420;
-export const PEAK_FREE_SPAN = 600; // peak curve width with no goal: both markers fit, then it rests at the end
 
-/** Felt intensity 0..1 at second t: ease-out climb to 1 at PEAK_SEC, then decays toward a mild floor. */
-export function intensityAt(t: number): number {
-  if (t < PEAK_SEC) return 1 - (1 - t / PEAK_SEC) ** 2;
-  return 0.15 + 0.85 * Math.exp(-(t - PEAK_SEC) / 90);
+export type PeakStage = 'sharp' | 'stings' | 'easier';
+
+export function peakStage(elapsed: number): PeakStage {
+  return elapsed < PEAK_SEC ? 'sharp' : elapsed < MILD_SEC ? 'stings' : 'easier';
 }
 
 export type PeakCaption = 'sharp' | 'climbing' | 'top' | 'past' | 'adapting' | 'goal';
@@ -45,6 +44,6 @@ export function peakCaption(elapsed: number, goalSec: number): PeakCaption {
   if (elapsed < 15) return 'sharp';
   if (elapsed < 60) return 'climbing';
   if (elapsed < PEAK_SEC + 15) return 'top';
-  if (elapsed < 180) return 'past';
+  if (elapsed < MILD_SEC) return 'past';
   return 'adapting';
 }

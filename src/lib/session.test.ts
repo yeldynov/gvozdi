@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { clampMinutes, elapsedSec, stepMinutes, intensityAt, pauseClock, peakCaption, resumeClock, startClock } from './session.ts';
+import { clampMinutes, elapsedSec, stepMinutes, pauseClock, peakCaption, peakStage, resumeClock, startClock } from './session.ts';
 
 test('elapsed comes from the clock and excludes paused time', () => {
   let c = startClock(0);
@@ -15,15 +15,12 @@ test('elapsed comes from the clock and excludes paused time', () => {
   assert.equal(resumeClock(c, 120_000), c);
 });
 
-test('peak curve tops out at 1:30, then eases by 7:00', () => {
-  assert.equal(intensityAt(0), 0);
-  assert.equal(intensityAt(90), 1);
-  assert.ok(intensityAt(30) < intensityAt(60) && intensityAt(60) < intensityAt(89));
-  assert.ok(intensityAt(91) < 1 && intensityAt(150) < intensityAt(91));
-  assert.ok(intensityAt(420) < 0.2);
+test('peak: sharpest to 1:30, still stings to 7:00, then easier', () => {
+  assert.deepEqual([0, 89, 90, 419, 420].map(peakStage), ['sharp', 'sharp', 'stings', 'stings', 'easier']);
   assert.equal(peakCaption(5, 300), 'sharp');
   assert.equal(peakCaption(80, 300), 'top');
-  assert.equal(peakCaption(200, 300), 'adapting');
+  assert.equal(peakCaption(200, 300), 'past');
+  assert.equal(peakCaption(450, 600), 'adapting');
   assert.equal(peakCaption(300, 300), 'goal');
   assert.equal(peakCaption(100, 120), 'top'); // a 2-min session is still at its peak at 1:40
 });

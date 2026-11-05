@@ -16,6 +16,7 @@ import Animated, {
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import { ART, type ArtPalette } from '@/lib/art-palette';
+import type { PeakStage } from '@/lib/session';
 import type { Skin } from '@/lib/types';
 import { useSkin } from '@/theme';
 
@@ -383,7 +384,7 @@ function SceneStep({ size, clouds }: { size: number; clouds?: boolean }) {
 
 /** Composed under a sharp moment: focus marks pulse outward like waves of sensation. */
 function SceneFeel({ size }: { size: number }) {
-  const { GV, HAIRS } = useArt();
+  const { GV } = useArt();
   const { v, reduced } = useLoop(1800);
   const k = size / 320;
   // Called from the style worklets below, so it must be a worklet too (native crashes otherwise; web doesn't care).
@@ -393,7 +394,6 @@ function SceneFeel({ size }: { size: number }) {
   };
   const left = useAnimatedStyle(() => wave(-1));
   const right = useAnimatedStyle(() => wave(1));
-  const top = GV.terra;
   return (
     <>
       <Layer size={size}>
@@ -416,18 +416,79 @@ function SceneFeel({ size }: { size: number }) {
       <DriftLeaf size={size} ms={9000} delay={0} x={70} y={210} rot={50} color={GV.gold} s={0.85} />
       <DriftLeaf size={size} ms={10000} delay={4000} x={236} y={210} rot={-50} color={GV.sage} s={0.85} />
       <Layer size={size}>
-        <Shadow cx={160} cy={298} rx={70} />
-        <BoardBar x={104} y={274} w={112} />
-        <Legs hips={[[151, 196], [169, 196]]} feet={[[150, 272], [170, 272]]} color={GV.sage} />
-        <Path d="M135 122 q25 -13 50 0 l-4 82 q-21 9 -42 0 Z" fill={top} />
-        <Path d="M177 124 l4 80 q-9 4 -16 3 l3 -84 Z" fill={GV.terraD} opacity={0.5} />
-        <Limb a={[139, 132]} b={[134, 188]} w={12} color={top} />
-        <Limb a={[181, 132]} b={[186, 188]} w={12} color={top} />
-        <Hand p={[133, 192]} r={8} />
-        <Hand p={[187, 192]} r={8} />
-        <Head cx={160} cy={94} hair={HAIRS.taupe} />
+        <Stander />
       </Layer>
     </>
+  );
+}
+
+/** Standing still on the board, arms down, eyes closed. */
+function Stander() {
+  const { GV, HAIRS } = useArt();
+  return (
+    <>
+      <Shadow cx={160} cy={298} rx={70} />
+      <BoardBar x={104} y={274} w={112} />
+      <Legs hips={[[151, 196], [169, 196]]} feet={[[150, 272], [170, 272]]} color={GV.sage} />
+      <Path d="M135 122 q25 -13 50 0 l-4 82 q-21 9 -42 0 Z" fill={GV.terra} />
+      <Path d="M177 124 l4 80 q-9 4 -16 3 l3 -84 Z" fill={GV.terraD} opacity={0.5} />
+      <Limb a={[139, 132]} b={[134, 188]} w={12} color={GV.terra} />
+      <Limb a={[181, 132]} b={[186, 188]} w={12} color={GV.terra} />
+      <Hand p={[133, 192]} r={8} />
+      <Hand p={[187, 192]} r={8} />
+      <Head cx={160} cy={94} hair={HAIRS.taupe} />
+    </>
+  );
+}
+
+const STING_LINES = {
+  sharp: [[86, 106, 70, 96], [84, 140, 66, 140], [86, 174, 70, 184]],
+  stings: [[86, 122, 74, 116], [86, 160, 74, 166]],
+} as const;
+
+/**
+ * Standing through Peak guidance: sting lines pulse fast and wide while it is sharpest, fewer and slower while it
+ * still stings, and give way to a soft glow and drifting leaves once it eases. Still lines on reduced motion.
+ */
+export function SceneSting({ size, stage }: { size: number; stage: PeakStage }) {
+  const { GV } = useArt();
+  const sharp = stage === 'sharp';
+  const { v, reduced } = useLoop(sharp ? 1100 : 2600);
+  const k = size / 320;
+  const wave = (dir: number) => {
+    'worklet';
+    return reduced
+      ? {}
+      : { opacity: interpolate(v.value, [0, 1], [0.2, 1]), transform: [{ translateX: dir * (sharp ? 14 : 8) * k * v.value }] };
+  };
+  const left = useAnimatedStyle(() => wave(-1));
+  const right = useAnimatedStyle(() => wave(1));
+  const lines = stage === 'easier' ? null : STING_LINES[stage];
+  return (
+    <View style={{ width: size, height: size, alignSelf: 'center' }}>
+      <Layer size={size}>
+        <Blob cx={160} cy={150} rx={112} ry={116} fill={lines ? GV.terra : GV.gold} opacity={sharp ? 0.16 : lines ? 0.09 : 0.2} />
+      </Layer>
+      {lines &&
+        ([[left, 1], [right, -1]] as const).map(([style, flip], i) => (
+          <Layer key={i} size={size} style={style}>
+            <G stroke={GV.terra} strokeWidth={3} strokeLinecap="round" opacity={sharp ? 0.7 : 0.4}>
+              {lines.map(([x1, y1, x2, y2]) => (
+                <Line key={y1} x1={flip > 0 ? x1 : 320 - x1} y1={y1} x2={flip > 0 ? x2 : 320 - x2} y2={y2} />
+              ))}
+            </G>
+          </Layer>
+        ))}
+      {!lines && (
+        <>
+          <DriftLeaf size={size} ms={9000} delay={0} x={70} y={190} rot={50} color={GV.gold} s={0.85} />
+          <DriftLeaf size={size} ms={10000} delay={4000} x={236} y={190} rot={-50} color={GV.sage} s={0.85} />
+        </>
+      )}
+      <Layer size={size}>
+        <Stander />
+      </Layer>
+    </View>
   );
 }
 

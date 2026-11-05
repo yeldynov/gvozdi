@@ -10,20 +10,20 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TreeGrow } from '@/components/progress-visuals';
-import { LeafBurst } from '@/components/scenes';
+import { LeafBurst, SceneSting } from '@/components/scenes';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
-import { PeakCurve, TimerRing } from '@/components/session-visuals';
-import { Art, Button, Card, Sheet, TextLink, Txt } from '@/components/ui';
+import { PeakStages, TimerRing } from '@/components/session-visuals';
+import { Art, Button, Sheet, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
 import { ACHIEVEMENTS, achievementStage, earnedAchievementIds, formatDuration, type Achievement } from '@/lib/practice';
 import {
   clampMinutes,
   elapsedSec,
-  PEAK_FREE_SPAN,
   PEAK_SEC,
   pauseClock,
   peakCaption,
+  peakStage,
   resumeClock,
   startClock,
   type Clock,
@@ -268,13 +268,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
               )
             )}
           </View>
-          <Card style={{ alignSelf: 'stretch', padding: space[3] }}>
-            <Txt variant="caption">
-              {t('session.curve')}
-            </Txt>
-            {/* No goal: the curve spans until the sting has settled (past the 7:00 mark). */}
-            <PeakCurve elapsed={elapsed} total={goalSec || PEAK_FREE_SPAN} />
-          </Card>
+          <PeakStages elapsed={elapsed} goalSec={goalSec} />
+          <SceneSting size={220} stage={peakStage(elapsed)} />
           <Txt variant="body" style={styles.caption}>
             {running ? t(`session.captions.${peakCaption(elapsed, goalSec)}`) : t('session.paused')}
           </Txt>
