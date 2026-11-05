@@ -148,9 +148,12 @@
     "more": "More minutes",
     "begin": "Begin",
     "beginFor": "Begin · {{min}} min",
-    "zen": "Back to simple",
     "setup": "Set up practice",
-    "zenTitle": "Just stand."
+    "zenTitle": "Just stand.",
+    "peakOption": "Peak guidance",
+    "peakInfo": "The first 90 seconds sting the most. A curve shows the sting rising and fading and tells you when the peak has passed.",
+    "freeOption": "No limit",
+    "freeInfo": "A stopwatch instead of a countdown. Step off whenever you feel ready."
   },
   "session": {
     "prepareTitle": "Steady!",

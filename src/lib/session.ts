@@ -26,6 +26,7 @@ export function elapsedSec(c: Clock, now: number): number {
 // Peak mode: sensation climbs from the first step, tops out at 1:30, eases by 7:00.
 export const PEAK_SEC = 90;
 export const MILD_SEC = 420;
+export const PEAK_FREE_SPAN = 600; // peak curve width with no goal: both markers fit, then it rests at the end
 
 /** Felt intensity 0..1 at second t: ease-out climb to 1 at PEAK_SEC, then decays toward a mild floor. */
 export function intensityAt(t: number): number {

@@ -31,7 +31,7 @@ export type Settings = {
   skipPrepare?: boolean; // short countdown instead of the full Steady screen
   program?: string; // dayKey the user joined the 21-day program; unset = not in it
   programAsked?: boolean; // the program invite was dismissed
-  practice?: { mode: SessionMode; min: number }; // last setup on the Practice tab; unset = free
+  practice?: { free: boolean; peak: boolean; min: number }; // last setup on the Practice tab; unset = free, no peak guidance
   home?: HomeCard[]; // visible Home cards in order; unset = DEFAULT_HOME
   onboarded?: boolean; // finished the intro pages
   analytics?: boolean; // usage-stats consent; undefined = not asked yet, nothing is sent

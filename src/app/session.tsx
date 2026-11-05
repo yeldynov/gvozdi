@@ -20,6 +20,7 @@ import { ACHIEVEMENTS, achievementStage, earnedAchievementIds, formatDuration, t
 import {
   clampMinutes,
   elapsedSec,
+  PEAK_FREE_SPAN,
   PEAK_SEC,
   pauseClock,
   peakCaption,
@@ -44,7 +45,8 @@ export default function SessionScreen() {
   const params = useLocalSearchParams<{ mode?: string; min?: string }>();
   const [resume] = useState(() => useStore.getState().running);
   const mode: SessionMode = resume?.mode ?? (params.mode === 'free' || params.mode === 'timed' ? params.mode : 'peak');
-  const goalSec = resume ? resume.goalSec : mode === 'free' ? 0 : clampMinutes(Number(params.min) || 5) * 60;
+  // min=0 is no limit; peak guidance can run without a goal.
+  const goalSec = resume ? resume.goalSec : mode === 'free' || params.min === '0' ? 0 : clampMinutes(Number(params.min) || 5) * 60;
   const [started, setStarted] = useState(() => !!resume);
   const skipPrepare = useStore((s) => s.settings.skipPrepare);
   const c = useColors();
@@ -256,8 +258,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       {mode === 'peak' ? (
         <View style={styles.center}>
           <View style={{ alignItems: 'center', gap: space[1] }}>
-            <Txt variant="label">{reached ? t('session.achieved') : t('session.remaining')}</Txt>
-            {big(formatDuration(reached ? elapsed : goalSec - elapsed))}
+            <Txt variant="label">{!goalSec ? t('session.onBoard') : reached ? t('session.achieved') : t('session.remaining')}</Txt>
+            {big(formatDuration(reached || !goalSec ? elapsed : goalSec - elapsed))}
             {reached ? (
               <Txt variant="body" style={{ color: c.text2 }}>
                 {t('session.overGoal', { time: formatDuration(elapsed - goalSec) })}
@@ -275,7 +277,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
             <Txt variant="caption">
               {t('session.curve')}
             </Txt>
-            <PeakCurve elapsed={elapsed} total={goalSec} />
+            {/* No goal: the curve spans until the sting has settled (past the 7:00 mark). */}
+            <PeakCurve elapsed={elapsed} total={goalSec || PEAK_FREE_SPAN} />
           </Card>
           <Txt variant="body" style={styles.caption}>
             {running ? t(`session.captions.${peakCaption(elapsed, goalSec)}`) : t('session.paused')}
