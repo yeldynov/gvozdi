@@ -143,7 +143,6 @@
       "free": "A stopwatch. Step off when you are ready."
     },
     "min": "min",
-    "custom": "Custom",
     "fewer": "Fewer minutes",
     "more": "More minutes",
     "begin": "Begin",
@@ -151,9 +150,10 @@
     "setup": "Set up practice",
     "zenTitle": "Just stand.",
     "peakOption": "Peak guidance",
-    "peakInfo": "The first 90 seconds sting the most. A curve shows the sting rising and fading and tells you when the peak has passed.",
+    "peakInfo": "Walks you through the first 90 seconds, when it stings most.",
     "freeOption": "No limit",
-    "freeInfo": "A stopwatch instead of a countdown. Step off whenever you feel ready."
+    "freeInfo": "A stopwatch with no goal. Step off when you're ready.",
+    "length": "Length"
   },
   "session": {
     "prepareTitle": "Steady!",

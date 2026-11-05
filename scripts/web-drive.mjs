@@ -1,6 +1,6 @@
 // Drive the web app in headless Chrome and screenshot it (dev server must be running).
 // Usage: node scripts/web-drive.mjs <url> <outPrefix> [steps...]
-//   steps: click:<text or aria-label> | wait:<ms> | shot:<name> (writes <outPrefix>-<name>.png) | eval:<js>
+//   steps: click:<text or aria-label> | wait:<ms> | shot:<name> (writes <outPrefix>-<name>.png) | eval:<js> | key:Tab|Enter (a real key press) | drag:x1,y,x2 (a real mouse drag)
 //   LIGHT=1 for light mode.
 import { spawn } from 'node:child_process';
 import { mkdtempSync, writeFileSync } from 'node:fs';
@@ -22,6 +22,8 @@ for (const s of steps) {
   if (k === 'wait') await sleep(+v);
   if (k === 'eval') console.log(await ev(v));
   if (k === 'click') console.log('click', v, await ev(`(() => { const els=[...document.querySelectorAll('[role=button],[role=radio],[role=tab],a,button,div')].filter(e=>e.innerText?.trim()===${JSON.stringify(v)} || e.getAttribute('aria-label')===${JSON.stringify(v)}); const el=els[els.length-1]; if(!el) return false; el.click(); return true; })()`));
+  if (k === 'key') for (const type of ['keyDown', 'keyUp']) await send('Input.dispatchKeyEvent', { type, key: v, code: v, windowsVirtualKeyCode: v === 'Tab' ? 9 : 13 });
+  if (k === 'drag') { const [x1, y, x2] = v.split(',').map(Number); const m = (type, x) => send('Input.dispatchMouseEvent', { type, x, y, button: 'left', buttons: type === 'mouseReleased' ? 0 : 1, clickCount: 1 }); await m('mousePressed', x1); for (let i = 1; i <= 10; i++) await m('mouseMoved', x1 + ((x2 - x1) * i) / 10); await m('mouseReleased', x2); }
   if (k === 'shot') { const r = await send('Page.captureScreenshot', { format: 'png' }); writeFileSync(`${out}-${v}.png`, Buffer.from(r.result.data, 'base64')); }
 }
 ws.close(); chrome.kill();

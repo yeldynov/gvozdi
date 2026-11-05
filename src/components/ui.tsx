@@ -248,15 +248,16 @@ export function Choice<T extends string>({
   );
 }
 
-export function Step({ icon, label, onPress }: { icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void }) {
+export function Step({ icon, label, onPress, disabled }: { icon: keyof typeof Feather.glyphMap; label: string; onPress: () => void; disabled?: boolean }) {
   const c = useColors();
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
+      disabled={disabled}
       hitSlop={8}
-      style={[styles.stepBtn, { backgroundColor: c.bg2 }]}>
+      style={({ pressed }) => [styles.stepBtn, { backgroundColor: c.bg2, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 }]}>
       <Feather name={icon} size={18} color={c.text} />
     </Pressable>
   );

@@ -260,10 +260,16 @@ Soft rectangles. Sheets use an 18px radius, buttons a tighter 12px so they read 
 - Peak: the expected-intensity curve in muted ink on the ochre soil line, the travelled part in Specimen Green. The sharp phase (the PEAK chip, the "eases in" time, the 1:30 marker) is Rust; Steady is Leaf Green.
 
 ### Practice sheet
-- One sheet holds the figure, the practice title and hint, the setup controls when open (mode segments, minute tiles on `mount-ground-2`, the custom stepper as a plain row), and the full-width Begin. The setup toggle sits under the sheet as a ghost pill (44px) in ink.
+- One sheet, no setup toggle. On top, a segmented choice: **Free** and **Timed**. Below it the figure, the practice title, then Begin.
+- **Free** has nothing to set: the figure at 260px, "Just stand." in display, one hint line in caption, Begin. It is the default.
+- **Timed** shrinks the figure to 150px, so Begin sits at the same height in both views, titles the sheet with the mode (Timed, or Peak when guidance is on) and shows its length directly, as plain rows on the sheet (never boxes on the sheet): "Length" in body on the left; on the right a minus icon step, the minutes field and a plus icon step; then the presets.
+- **Minutes field:** one box holding the number and its unit (18px tabular numerals at 500, then "min" in caption), hairline `divider` border, 12px radius; the border turns Specimen Green at 1.5px while typing. Number pad, 1 to 90, saved as you type. The steps move a minute at a time up to 30, then fives, and dim to 0.5 at the ends.
+- **Presets:** a segmented choice of 3, 5, 10, 15, 20 and 30 min; the one matching the length is Specimen Green, none when the field holds another length.
+- **Begin** is the one action: Specimen Green, full width, 60px tall, "Begin" under Free and "Begin · N min" under Timed.
+- Peak guidance is not on this sheet; it is a Settings row and guides Free and Timed alike.
 
 ### Settings
-- Three sheets by topic (practice: steady screen, reminder; app: language, appearance, usage stats; data and contact), then the account sheet last. Each setting is a row: name in body 500, optional caption, then its control; 24px between rows. No uppercase labels.
+- Three sheets by topic (practice: steady screen, peak guidance, reminder; app: language, appearance, usage stats; data and contact), then the account sheet last. Each setting is a row: name in body 500, optional caption, then its control; 24px between rows. No uppercase labels.
 
 ### Illustrations
 - The character scenes (onboarding, Practice, prepare, reading pages, guide vignettes) are drawn in the herbarium palette: tops in Leaf Green, legs in deep moss (#34452f), the board in cool bark (#8d8670), petals and sparkles in blossom ochre (#c9a24a), skin and a warm blush unchanged. Every figure stands on a 3px Soil Ochre line instead of a floor shadow. No backdrop discs and no sun; the sheet is the background. Warning marks in the guide stay Rust.

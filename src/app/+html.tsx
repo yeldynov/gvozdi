@@ -37,7 +37,8 @@ export default function Root({ children }: PropsWithChildren) {
   );
 }
 
-const css = `body{background-color:#f5efe6}@media (prefers-color-scheme: dark){body{background-color:#1b1611}}`;
+// Keyboard focus is visible on every pressable (react-native-web renders them as [tabindex] divs); the ring colour is set from the theme in _layout.
+const css = `body{background-color:#f5efe6}@media (prefers-color-scheme: dark){body{background-color:#1b1611}}[tabindex]:focus-visible,a:focus-visible{outline:2px solid var(--focus,currentColor) !important;outline-offset:2px}`;
 
 const sw = `// Chromium fires this once, often before React mounts; InstallHint shows the button instead of the browser's own bar.
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.installPrompt = e; });

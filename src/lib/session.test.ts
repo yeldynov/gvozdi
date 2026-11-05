@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { clampMinutes, elapsedSec, intensityAt, pauseClock, peakCaption, resumeClock, startClock } from './session.ts';
+import { clampMinutes, elapsedSec, stepMinutes, intensityAt, pauseClock, peakCaption, resumeClock, startClock } from './session.ts';
 
 test('elapsed comes from the clock and excludes paused time', () => {
   let c = startClock(0);
@@ -32,4 +32,15 @@ test('custom minutes stay within 1..90', () => {
   assert.equal(clampMinutes(0), 1);
   assert.equal(clampMinutes(200), 90);
   assert.equal(clampMinutes(7.4), 7);
+});
+
+test('steps: ones up to 30, then fives, within 1..90', () => {
+  assert.equal(stepMinutes(29, 1), 30);
+  assert.equal(stepMinutes(30, 1), 35);
+  assert.equal(stepMinutes(35, -1), 30);
+  assert.equal(stepMinutes(30, -1), 29);
+  assert.equal(stepMinutes(32, 1), 35);
+  assert.equal(stepMinutes(32, -1), 30);
+  assert.equal(stepMinutes(1, -1), 1);
+  assert.equal(stepMinutes(90, 1), 90);
 });

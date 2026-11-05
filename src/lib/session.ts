@@ -5,6 +5,10 @@ export const MAX_MINUTES = 90;
 
 export const clampMinutes = (m: number) => Math.min(MAX_MINUTES, Math.max(1, Math.round(m)));
 
+// The −/+ steps: single minutes up to 30, then the next five (a typed 32 steps to 35 or 30).
+export const stepMinutes = (m: number, d: 1 | -1) =>
+  clampMinutes(m + d > 30 || m > 30 ? (d > 0 ? Math.floor(m / 5) * 5 + 5 : Math.ceil(m / 5) * 5 - 5) : m + d);
+
 export type Clock = { startedAt: number; pausedMs: number; pausedAt: number | null };
 
 export const startClock = (now: number): Clock => ({ startedAt: now, pausedMs: 0, pausedAt: null });

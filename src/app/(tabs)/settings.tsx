@@ -9,7 +9,8 @@ import { Tree } from '@/components/progress-visuals';
 import { Button, Card, Choice, Screen, Sheet, Step, Txt } from '@/components/ui';
 import { mergeSessions, parseBackup, serializeBackup } from '@/lib/backup';
 import { exportBackup, pickBackup } from '@/lib/backup-io';
-import { dayKey, live, shiftTime } from '@/lib/practice';
+import { dayKey, live, shiftTime, todayMinutes } from '@/lib/practice';
+import { clampMinutes } from '@/lib/session';
 import { allowReminders, openNotificationSettings, remindersSupported } from '@/lib/reminder';
 import type { Language, Skin, ThemePref } from '@/lib/types';
 import { Tree as HerbTree } from '@/skins/herbarium/progress-visuals';
@@ -63,6 +64,10 @@ export default function Settings() {
     if (ok) setSettings({ reminder: '20:00' });
   };
   const shiftReminder = (delta: number) => settings.reminder && setSettings({ reminder: shiftTime(settings.reminder, delta) });
+
+  // Peak guidance is part of the saved practice; an unset practice starts as Free at today's suggested length.
+  const onPeak = (peak: boolean) =>
+    setSettings({ practice: { free: true, min: clampMinutes(todayMinutes(useStore.getState().sessions, settings.program)), ...settings.practice, peak } });
 
   const onClear = () => {
     setConfirming(false);
@@ -132,6 +137,11 @@ export default function Settings() {
         <Txt variant="label">{t('settings.prepare')}</Txt>
         <Txt variant="caption">{t('settings.prepareText')}</Txt>
         <OnOff value={!settings.skipPrepare} onChange={(on) => setSettings({ skipPrepare: !on })} />
+      </Card>
+      <Card>
+        <Txt variant="label">{t('practice.peakOption')}</Txt>
+        <Txt variant="caption">{t('practice.peakInfo')}</Txt>
+        <OnOff value={!!settings.practice?.peak} onChange={onPeak} />
       </Card>
       <Card>
         <Txt variant="label">{t('settings.privacy')}</Txt>

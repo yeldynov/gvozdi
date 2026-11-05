@@ -40,6 +40,11 @@ export default function RootLayout() {
     i18n.changeLanguage(resolveLanguage(language));
   }, [language]);
 
+  // Web focus rings (+html.tsx) take the theme's text colour, so they show on every skin, light and dark.
+  useEffect(() => {
+    if (typeof document !== 'undefined') document.documentElement.style.setProperty('--focus', c.text);
+  }, [c.text]);
+
   // Reschedule on launch, on foreground (the 14-day window moves on), and when the time, today's practice or the language changes.
   useEffect(() => {
     if (!hydrated) return;
