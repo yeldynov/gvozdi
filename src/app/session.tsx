@@ -9,10 +9,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import * as visuals from '@/components/progress-visuals';
-import * as scenes from '@/components/scenes';
+import { TreeGrow } from '@/components/progress-visuals';
+import { LeafBurst } from '@/components/scenes';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
-import * as ring from '@/components/session-visuals';
+import { PeakCurve, TimerRing } from '@/components/session-visuals';
 import { Art, Button, Card, Sheet, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
@@ -29,9 +29,6 @@ import {
   type Clock,
 } from '@/lib/session';
 import type { SessionMode, Tension } from '@/lib/types';
-import * as herbVisuals from '@/skins/herbarium/progress-visuals';
-import * as herbScenes from '@/skins/herbarium/scenes';
-import * as herbRing from '@/skins/herbarium/session-visuals';
 import { useStore } from '@/store';
 import { fonts, herbFonts, radius, space, useColors, useSkin } from '@/theme';
 
@@ -136,8 +133,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
   const { t } = useTranslation();
   const c = useColors();
   const herb = useSkin() === 'herbarium';
-  const { PeakCurve, TimerRing } = herb ? herbRing : ring;
-  const peakColor = herb ? c.error : c.accent; // herbarium keeps green for growth, so the hard first minutes go rust
   const { sound, haptics } = useStore((s) => s.settings);
   const addSession = useStore((s) => s.addSession);
   const player = useAudioPlayer(gong);
@@ -252,7 +247,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     <View style={styles.page}>
       <TopBar
         onClose={() => (elapsed ? setSheet('discard') : exit())}
-        chip={mode === 'peak' ? (elapsed < PEAK_SEC ? { text: t('session.peak'), color: peakColor } : { text: t('session.steady'), color: c.success }) : undefined}
+        chip={mode === 'peak' ? (elapsed < PEAK_SEC ? { text: t('session.peak'), color: c.accent } : { text: t('session.steady'), color: c.success }) : undefined}
       />
 
       {mode === 'peak' ? (
@@ -268,7 +263,7 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
               elapsed < PEAK_SEC && (
                 <View style={[styles.row, { gap: space[2] }]}>
                   <Txt variant="label">{t('session.peakEases')}</Txt>
-                  <Text style={[styles.mid, { color: peakColor }]}>{formatDuration(PEAK_SEC - elapsed)}</Text>
+                  <Text style={[styles.mid, { color: c.accent }]}>{formatDuration(PEAK_SEC - elapsed)}</Text>
                 </View>
               )
             )}
@@ -359,8 +354,6 @@ function Unlocked({ a, onContinue }: { a: Achievement; onContinue: () => void })
   const { t } = useTranslation();
   const c = useColors();
   const herb = useSkin() === 'herbarium';
-  const { TreeGrow } = herb ? herbVisuals : visuals;
-  const { LeafBurst } = herb ? herbScenes : scenes;
   return (
     <Animated.View entering={FadeIn.duration(400)} style={styles.page}>
       <View style={styles.center}>

@@ -16,14 +16,14 @@ import Animated, {
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import { ART, type ArtPalette } from '@/lib/art-palette';
+import type { Skin } from '@/lib/types';
 import { useSkin } from '@/theme';
 
 // Earthy constants for callers outside a render; components read the active skin's palette with useArt().
 export const { GV, SKIN, INK, HAIRS } = ART.earthy;
-/** The illustration palette for the active skin (herbarium draws its own scenes, so it gets earthy here). */
-export function useArt(): ArtPalette & { skin: 'earthy' | 'ink' | 'dusk' } {
-  const s = useSkin();
-  const skin = s === 'ink' || s === 'dusk' ? s : 'earthy';
+/** The illustration palette for the active skin. */
+export function useArt(): ArtPalette & { skin: Skin } {
+  const skin = useSkin();
   return { ...ART[skin], skin };
 }
 
@@ -31,7 +31,8 @@ type Pt = [number, number];
 
 // ── kit ────────────────────────────────────────────────────────────────
 export function Blob({ cx, cy, rx, ry, fill, opacity }: { cx: number; cy: number; rx: number; ry: number; fill: string; opacity: number }) {
-  const { skin, INK } = useArt();
+  const { skin, INK, SOIL } = useArt();
+  if (SOIL) return null; // herbarium: the sheet is the background
   if (skin !== 'ink') return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={fill} opacity={opacity} />;
   // Ink: an ensō, one open brush circle over a faint wash; the second, thinner pass makes the stroke taper.
   return (
@@ -59,7 +60,8 @@ function FallLeaf({ x, y, rot = 0, color, s = 1 }: { x: number; y: number; rot?:
   );
 }
 export function Shadow({ cx, cy, rx = 60, ry = 9 }: { cx: number; cy: number; rx?: number; ry?: number }) {
-  const { GV, skin, INK } = useArt();
+  const { GV, skin, INK, SOIL } = useArt();
+  if (SOIL) return <Rect x={cx - rx} y={cy - 1.5} width={rx * 2} height={3} rx={1.5} fill={SOIL} />;
   // Ink: one dry brush stroke for the ground, thick at the start and trailing off.
   if (skin === 'ink')
     return <Path d={`M${cx - rx} ${cy}Q${cx - rx * 0.4} ${cy - 5} ${cx + rx} ${cy - 1}Q${cx} ${cy + 3} ${cx - rx} ${cy + 3}Z`} fill={INK} opacity={0.55} />;
@@ -100,7 +102,7 @@ export function Legs({ hips, feet, color }: { hips: [Pt, Pt]; feet: [Pt, Pt]; co
 }
 /** Head with long hair, closed eyes (or `open`, glancing right) and blush. */
 export function Head({ cx, cy, r = 21, hair, tilt = 0, open }: { cx: number; cy: number; r?: number; hair: string; tilt?: number; open?: boolean }) {
-  const { GV, SKIN, INK } = useArt();
+  const { GV, SKIN, INK, BLUSH } = useArt();
   return (
     <G transform={`rotate(${tilt} ${cx} ${cy})`}>
       <Path
@@ -123,8 +125,8 @@ export function Head({ cx, cy, r = 21, hair, tilt = 0, open }: { cx: number; cy:
           <Path d={`M${cx + 2} ${cy + 1} q 3.4 4 7 0`} stroke={INK} strokeWidth={2} fill="none" strokeLinecap="round" />
         </>
       )}
-      <Circle cx={cx - 12} cy={cy + 8} r={3.4} fill={GV.terra} opacity={0.32} />
-      <Circle cx={cx + 12} cy={cy + 8} r={3.4} fill={GV.terra} opacity={0.32} />
+      <Circle cx={cx - 12} cy={cy + 8} r={3.4} fill={BLUSH ?? GV.terra} opacity={0.32} />
+      <Circle cx={cx + 12} cy={cy + 8} r={3.4} fill={BLUSH ?? GV.terra} opacity={0.32} />
     </G>
   );
 }

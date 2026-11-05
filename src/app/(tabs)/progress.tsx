@@ -18,15 +18,10 @@ import {
   treeNote,
   treeStage,
 } from '@/lib/practice';
-import HerbProgress from '@/skins/herbarium/progress';
 import { useStore } from '@/store';
-import { fonts, space, useColors, useSkin } from '@/theme';
+import { fonts, space, useColors } from '@/theme';
 
 export default function Progress() {
-  return useSkin() === 'herbarium' ? <HerbProgress /> : <EarthyProgress />;
-}
-
-function EarthyProgress() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);

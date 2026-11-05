@@ -15,13 +15,11 @@ import { todayMinutes } from '@/lib/practice';
 import { clampMinutes, MAX_MINUTES, PRESET_MINUTES, stepMinutes } from '@/lib/session';
 import type { SessionMode } from '@/lib/types';
 import { useStore } from '@/store';
-import { fonts, radius, space, useColors, useSkin } from '@/theme';
+import { fonts, radius, space, useColors } from '@/theme';
 
 // Two kinds of practice, chosen on top: Free has nothing to set; Timed shows its length. Peak guidance lives in Settings.
 export default function Practice() {
   const { t } = useTranslation();
-  const herb = useSkin() === 'herbarium';
-  const Group = herb ? View : Card;
   const sessions = useStore((s) => s.sessions);
   const { program, practice } = useStore((s) => s.settings);
   const setSettings = useStore((s) => s.setSettings);
@@ -44,9 +42,10 @@ export default function Practice() {
     router.push({ pathname: '/session', params: { mode, min: free ? '0' : String(min) } });
   };
 
-  // Herbarium puts all of this on one sheet.
-  const body = (
-    <>
+  return (
+    <Screen>
+      <TabHead />
+
       <Choice
         value={free ? 'free' : 'timed'}
         options={[
@@ -56,7 +55,7 @@ export default function Practice() {
         onChange={(v) => save({ free: v === 'free' })}
       />
 
-      <View style={[styles.zen, herb && { paddingVertical: 0 }]}>
+      <View style={styles.zen}>
         <Art name="stand" size={free ? 260 : 150} />
         <Txt variant="display" style={{ textAlign: 'center' }}>
           {mode === 'free' ? t('practice.zenTitle') : t(`practice.modes.${mode}`)}
@@ -69,8 +68,8 @@ export default function Practice() {
       </View>
 
       {!free && (
-        // One grouped list on the sheet (herbarium) or one card (other skins): the length, as a preset or typed.
-        <Group style={herb ? styles.groupFlat : styles.group}>
+        // One card: the length, as a preset or typed.
+        <Card style={styles.group}>
           <View style={styles.row}>
             <Txt variant="body" style={styles.rowLabel}>
               {t('practice.length')}
@@ -82,18 +81,10 @@ export default function Practice() {
             options={PRESET_MINUTES.map((m) => ({ value: String(m), label: String(m) }))}
             onChange={(v) => save({ min: Number(v) })}
           />
-        </Group>
+        </Card>
       )}
 
       <Button label={free ? t('practice.begin') : t('practice.beginFor', { min })} onPress={begin} style={styles.begin} />
-    </>
-  );
-
-  return (
-    <Screen>
-      <TabHead />
-
-      {herb ? <Card style={styles.sheet}>{body}</Card> : body}
     </Screen>
   );
 }
@@ -136,10 +127,8 @@ function MinutesField({ value, onChange }: { value: number; onChange: (m: number
 
 const styles = StyleSheet.create({
   group: { gap: space[3], paddingTop: space[2], paddingBottom: space[4] },
-  groupFlat: { gap: space[3] },
   row: { flexDirection: 'row', alignItems: 'center', gap: space[3], minHeight: 44 },
   rowLabel: { flex: 1, gap: 2 },
-  sheet: { gap: space[4], paddingVertical: space[6] },
   zen: { alignItems: 'center', gap: space[3], paddingVertical: space[4] },
   field: { flexDirection: 'row', alignItems: 'center', gap: space[2] },
   box: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center', gap: space[1], minWidth: 84, paddingVertical: space[2], paddingHorizontal: space[3], borderWidth: StyleSheet.hairlineWidth, borderRadius: radius.sm },

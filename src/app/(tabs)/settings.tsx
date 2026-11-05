@@ -13,7 +13,6 @@ import { dayKey, live, shiftTime, todayMinutes } from '@/lib/practice';
 import { clampMinutes } from '@/lib/session';
 import { allowReminders, openNotificationSettings, remindersSupported } from '@/lib/reminder';
 import type { Language, Skin, ThemePref } from '@/lib/types';
-import { Tree as HerbTree } from '@/skins/herbarium/progress-visuals';
 import { useStore } from '@/store';
 import { fonts, herbFonts, inkFonts, palette, radius, space, useColors, type Colors } from '@/theme';
 
@@ -214,7 +213,7 @@ function SkinTile({ skin, on, onPress }: { skin: Skin; on: boolean; onPress: () 
         { backgroundColor: TILE_TINT[skin](k), borderColor: on ? k.primary : k.divider, borderWidth: on ? 2 : 1, opacity: pressed ? 0.85 : 1 },
       ]}>
       <View aria-hidden style={styles.skinTree}>
-        {herb ? <HerbTree stage={8} size={110} /> : <Tree stage={8} size={110} skin={skin} />}
+        <Tree stage={8} size={110} skin={skin} />
       </View>
       {herb && (
         <View style={[styles.eco, { backgroundColor: k.primary }]}>

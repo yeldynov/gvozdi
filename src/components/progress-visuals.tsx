@@ -9,6 +9,7 @@ import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
 import { achievementStage, type Achievement } from '@/lib/practice';
 import type { Skin } from '@/lib/types';
 import { willow, duskColors } from '@/skins/dusk/tree';
+import { herbColors, linden } from '@/skins/herbarium/tree';
 import { inkColors, pine } from '@/skins/ink/tree';
 import { Card, Txt } from '@/components/ui';
 import { fonts, palette, radius, space, useColors, useSkin } from '@/theme';
@@ -31,16 +32,20 @@ export const look = (stage: number) => [0, 1, 2, 2.5, 3, 3.5, 4, 5, 6, 6.5, 7, 8
 export const treeGround = (stage: number) => ({ right: (50 + groundRx(stage)) / 100, bottom: (G + 8) / 100 });
 
 /** A tree grown to `stage` (0 bare ground, 1 seed … 12 old tree, 13 in bloom); all grey when `muted`.
- *  Ink draws a sumi-e pine and Dusk a willow; `skin` previews one in its own colours (the skin picker). */
+ *  Herbarium draws a linden, Ink a sumi-e pine and Dusk a willow; `skin` previews one in its own colours (the skin picker). */
 export function Tree({ stage: n, size = 120, muted, skin }: { stage: number; size?: number; muted?: boolean; skin?: Skin }) {
   const stage = look(n);
   const active = useSkin();
   const k = skin ?? active;
   const c = palette(k, useColors().isDark);
-  if (k === 'ink' || k === 'dusk')
+  if (k !== 'earthy')
     return (
       <Svg width={size} height={size} viewBox="0 0 100 100">
-        {k === 'ink' ? pine(stage, inkColors(c, muted), 't', groundRx(stage)) : willow(stage, duskColors(c, muted), 't', groundRx(stage))}
+        {k === 'herbarium'
+          ? linden(stage, herbColors(c, muted), 't', groundRx(stage))
+          : k === 'ink'
+            ? pine(stage, inkColors(c, muted), 't', groundRx(stage))
+            : willow(stage, duskColors(c, muted), 't', groundRx(stage))}
       </Svg>
     );
   const leafColor = muted ? c.text3 : c.success;

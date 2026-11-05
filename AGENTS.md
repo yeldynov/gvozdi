@@ -4,7 +4,7 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 
 - GitHub `yeldynov/gvozdi`, EAS project `@shangnik/gvozdi`, web https://gvozdi.expo.app
 - Bundle id / package: `com.shangnik.gvozdi`
-- Four skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset), `herbarium` (botanical: sage/green tokens, Golos Text, linden tree, meadow charts; its own components in `src/skins/herbarium/`), and two skins that reuse the earthy screens and scenes with their own palette, tree and art: `ink` (sumi ink on washi paper, one vermilion accent, Literata throughout, hairline square cards, sumi-e pine in `src/skins/ink/tree.tsx`, ensō auras and mist clouds) and `dusk` (dawn mist / evening indigo with candlelight, soft borderless cards, willow with fireflies in `src/skins/dusk/tree.tsx`, stars). Per-skin primitive styles live in `skinStyles` in `ui.tsx`; illustration colours in `src/lib/art-palette.ts` (scenes read it via `useArt()`); `node scripts/recolor-art.mjs` regenerates `assets/art/{ink,dusk}/` from it. Where they disagree on behaviour, the default wins (user decision).
+- Four skins (`settings.skin`, Settings → Appearance): `earthy` (default, unset), and three that reuse the earthy screens and scenes with their own palette, tree and art: `herbarium` (botanical: sage/green tokens, Golos Text, linden in `src/skins/herbarium/tree.tsx`, figures on an ochre soil line with no aura discs), `ink` (sumi ink on washi paper, one vermilion accent, Literata throughout, hairline square cards, sumi-e pine in `src/skins/ink/tree.tsx`, ensō auras and mist clouds) and `dusk` (dawn mist / evening indigo with candlelight, soft borderless cards, willow with fireflies in `src/skins/dusk/tree.tsx`, stars). Per-skin primitive styles live in `skinStyles` in `ui.tsx`; illustration colours in `src/lib/art-palette.ts` (scenes read it via `useArt()`); `node scripts/recolor-art.mjs` regenerates `assets/art/{ink,dusk}/` from it (`assets/art/herbarium/` is hand-exported, not recolored). Where they disagree on behaviour, the default wins (user decision).
 - Local-first (user decision): the whole app works without an account. `Stack.Protected` in root `_layout` gates the app on `settings.onboarded || isSignedIn`, so onboarding shows once. Signed out, sessions live on the device, and `SaveBanner` (Home top, Settings account card) stays until they sign up. It isn't dismissible. Sign-in pushes local sessions through `useSync`. Sign-out clears local sessions and stays in the app. Earthy brand. Languages EN / UK / RU.
 - MVP scope excludes: Library, Paywall, Board/Pure/Breath session variants, mood check-in, social sharing, web push.
 
@@ -53,7 +53,7 @@ src/components/install-hint.tsx  web-only Home card (.web twin); native no-op
 src/lib/reminder.ts          native one-shot reminders for 14 days (`reminderDates`, skips a practised today), rescheduled from root _layout on launch/foreground/save/time/language; reminder.web.ts no-op
 assets/sounds/gong.m4a       synthesized bowl tone
 src/theme.ts                 useColors() light/dark per skin (settings.theme + settings.skin), useSkin(), radius, space, fonts / herbFonts
-src/skins/herbarium/         herbarium-only pieces: Home cards, Progress screen, Tree/Meadow, TimerRing/PeakCurve, scenes; SVG art in assets/art/herbarium/; spec in DESIGN.md
+src/skins/<skin>/tree.tsx    each non-default skin's tree (herbarium linden, ink pine, dusk willow), dispatched from Tree in progress-visuals.tsx
 src/components/ui.tsx        Screen, Txt (variants), Card, Button (ghost), Choice, Sheet (bottom modal), BackHeader (pushed screens) — reuse before adding new primitives
 src/store.ts                 sessions + settings + running session; addSession returns the session; delete writes a tombstone
 src/lib/types.ts             Session, Settings
@@ -70,7 +70,7 @@ src/i18n/{en,uk,ru}.json     translations
 - **Sessions are never removed.** `deleteSession` sets `deletedAt` (tombstone for sync). Use `live()` from `practice.ts` for anything shown to the user. Every mutation bumps `updatedAt`.
 - Pure logic goes in `src/lib/` with a `*.test.ts` next to it.
 - Colors only via `useColors()`; spacing/radius/fonts from `src/theme.ts`. Check both light and dark, in both skins.
-- Skins: small differences are `useSkin() === 'herbarium'` conditionals in place; whole redesigned pieces live in `src/skins/herbarium/` and the shared screen picks them. Behaviour (card order, settings layout, copy) stays shared.
+- Skins: every skin shares the screens, scenes and visuals; a skin is a palette (`theme.ts`), `skinStyles` (`ui.tsx`), an `ART` palette, its art set and `src/skins/<skin>/tree.tsx`. Small differences are `useSkin()` conditionals in place. Don't fork whole screens per skin.
 - All user-facing text goes through i18n, in all three files. UK and RU plurals need `_one/_few/_many/_other`; EN needs `_one/_other`.
 - No `Alert` (does nothing on web). Confirmations are in-app modals.
 - Save/side effects in event handlers, never inside a state updater.

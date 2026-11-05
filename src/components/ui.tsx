@@ -18,7 +18,6 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Svg, { Circle } from 'react-native-svg';
 
 import { Scene, SCENES, type SceneName } from '@/components/scenes';
-import { Scene as HerbScene } from '@/skins/herbarium/scenes';
 import type { Skin } from '@/lib/types';
 import { fonts, herbFonts, inkFonts, radius, space, useColors, useSkin } from '@/theme';
 
@@ -30,6 +29,7 @@ const ART = {
   rest: require('@/assets/art/rest.svg'),
   together: require('@/assets/art/together.svg'),
 };
+// Herbarium: drawn from its own scenes (soil line, no aura discs), not recolored.
 const HERB_ART: typeof ART = {
   stand: require('@/assets/art/herbarium/stand.svg'),
   reflect: require('@/assets/art/herbarium/reflect.svg'),
@@ -59,8 +59,6 @@ export type ArtName = keyof typeof ART | SceneName;
 export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number; clouds?: boolean }) {
   const reduced = useReducedMotion();
   const skin = useSkin();
-  const herb = skin === 'herbarium';
-  const SceneFor = herb ? HerbScene : Scene;
   const breath = useSharedValue(0);
   const sway = useSharedValue(-1);
   useEffect(() => {
@@ -83,7 +81,7 @@ export function Art({ name, size = 220, clouds }: { name: ArtName; size?: number
   return (
     <Animated.View style={[{ alignSelf: 'center' }, style]}>
       {name in SCENES ? (
-        <SceneFor name={name as SceneName} size={size} clouds={clouds} />
+        <Scene name={name as SceneName} size={size} clouds={clouds} />
       ) : (
         <Image source={ART_SETS[skin][name as keyof typeof ART]} contentFit="contain" accessible={false} style={{ width: size, height: size }} />
       )}

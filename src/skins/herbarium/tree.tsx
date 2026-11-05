@@ -1,11 +1,7 @@
-import { useState, type ReactElement } from 'react';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
-import Svg, { Ellipse, G, Path } from 'react-native-svg';
+import type { ReactElement } from 'react';
+import { G, Path } from 'react-native-svg';
 
-import { look } from '@/components/progress-visuals';
-import { herbFonts as fonts, space, useColors } from '@/theme';
+import type { Colors } from '@/theme';
 
 // A linden drawn like a herbarium specimen, in a 100×100 viewBox with the soil line at y=82.
 // One deterministic branching skeleton: each stage reveals more of the same tree, so growth reads continuously.
@@ -26,16 +22,13 @@ function rng(seed: number) {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
-/** Heart-shaped linden leaf with its tip at (len, 0). */
-const leafPath = (l: number) => `M0 0C${l * 0.1} ${-l * 0.62} ${l * 0.78} ${-l * 0.55} ${l} 0C${l * 0.78} ${l * 0.55} ${l * 0.1} ${l * 0.62} 0 0Z`;
-
 type Ink = { leaf: string; wood: string; soil: string; vein: string; bloom: string };
 
 const n = (v: number) => Math.round(v * 100) / 100;
 
 /** The linden at `stage`. Geometry is merged into one path per colour and stroke width: a grown tree is
  *  ~10 SVG elements instead of ~1700, which Android (one native view per element) needs to repaint smoothly. */
-function plant(stage: number, ink: Ink, key: string): ReactElement[] {
+export function linden(stage: number, ink: Ink, key: string, groundRx: number): ReactElement[] {
   let leaves = '';
   let veins = '';
   let wood = ''; // filled shapes in the wood colour (trunk, seed)
@@ -68,7 +61,7 @@ function plant(stage: number, ink: Ink, key: string): ReactElement[] {
   };
 
   // Soil line; roots show below it from Deep Roots (stage 8) on.
-  const rx = 13 + Math.min(stage, 8) * 2.3;
+  const rx = groundRx;
   const soil = <Path key={`${key}g0`} d={`M${n(50 - rx)} ${SOIL}L${n(50 + rx)} ${SOIL}`} stroke={ink.soil} strokeWidth={1.8} strokeLinecap="round" />;
   if (stage >= 8) {
     for (const [a, l, w] of [[-62, 13, 1.3], [-30, 11, 1.1], [0, 10, 1.2], [28, 12, 1.1], [58, 14, 1.3]]) {
@@ -142,118 +135,15 @@ function plant(stage: number, ink: Ink, key: string): ReactElement[] {
     const s = 0.5;
     front.push(
       <G key={`${key}y`} transform={`translate(${84 - 50 * s} ${SOIL - SOIL * s}) scale(${s})`}>
-        {plant(4, ink, `${key}g`)}
+        {linden(4, ink, `${key}g`, 22)}
       </G>,
     );
   }
   return [soil, ...draw()];
 }
 
-/** A square around the plant at `stage`, sitting a little below the soil line. */
-/** The linden grown to `stage` (0 bare soil, 1 seed … 12 with a young tree beside it, 13 in bloom); all grey when `muted`.
- *  Every stage shares one scale, so growth is visible. */
-export function Tree({ stage, size = 120, muted, soil = true }: { stage: number; size?: number; muted?: boolean; soil?: boolean }) {
-  const c = useColors();
-  const ink: Ink = muted
+export function herbColors(c: Colors, muted?: boolean): Ink {
+  return muted
     ? { leaf: c.text3, wood: c.text3, soil: c.text3, vein: c.surface, bloom: c.surface }
     : { leaf: c.success, wood: c.text2, soil: c.illus, vein: c.surface, bloom: c.accent };
-  if (!soil) ink.soil = 'none'; // drawn on a shared soil line instead
-  return (
-    <Svg width={size} height={size} viewBox="0 0 100 100">
-      {plant(look(stage), ink, 't')}
-    </Svg>
-  );
 }
-
-/** The tree at `stage`, fading in over the stage before it; replays whenever `stage` changes. */
-export function TreeGrow({ stage, size, ms = 500, delay = 0 }: { stage: number; size: number; ms?: number; delay?: number }) {
-  const reduced = useReducedMotion();
-  return (
-    <View style={{ width: size, height: size }}>
-      {stage > 0 && !reduced && (
-        <View style={StyleSheet.absoluteFill}>
-          <Tree stage={stage - 1} size={size} />
-        </View>
-      )}
-      <Animated.View key={stage} entering={reduced ? undefined : FadeIn.duration(ms).delay(delay)} style={StyleSheet.absoluteFill}>
-        <Tree stage={stage} size={size} />
-      </Animated.View>
-    </View>
-  );
-}
-
-/** Minutes per day as stems on the soil line, oldest first: a leaf at the tip on practised days, a seed on rest days.
- *  Weekday letters under each stem when `labels`; more than 10 days draws a fine meadow. */
-export function Meadow({
-  data,
-  label,
-  height = 104,
-  labels,
-}: {
-  data: { day: string; minutes: number }[];
-  label: string;
-  height?: number;
-  labels?: boolean;
-}) {
-  const c = useColors();
-  const { i18n } = useTranslation();
-  const [w, setW] = useState(0);
-  const fine = data.length > 10;
-  const L = fine ? 9 : 16; // tip leaf length
-  const soil = height - 2;
-  const max = Math.max(10, ...data.map((d) => d.minutes));
-  const step = w / data.length;
-  const today = data.length - 1;
-  return (
-    <View accessible accessibilityLabel={label} style={{ gap: space[1] }}>
-      <View style={{ height }} onLayout={(e) => setW(e.nativeEvent.layout.width)}>
-        {w > 0 && (
-          <Svg width={w} height={height}>
-            <Path d={`M1 ${soil}H${w - 1}`} stroke={c.illus} strokeWidth={1.5} strokeLinecap="round" />
-            {data.map((d, i) => {
-              const x = (i + 0.5) * step;
-              if (!d.minutes) return <Ellipse key={d.day} cx={x} cy={soil - 2.5} rx={fine ? 1.4 : 2.4} ry={fine ? 1.2 : 2} fill={c.text3} opacity={0.6} />;
-              const h = Math.max(L * 0.6, (d.minutes / max) * (soil - L - 2));
-              const side = i % 2 ? 1 : -1; // stems lean alternately, like grass
-              const tx = x + side * (fine ? 1 : 2.5);
-              const ty = soil - h;
-              const cx = x - side * (fine ? 1 : 2);
-              const mx = (x + 2 * cx + tx) / 4;
-              const my = (soil + 2 * (soil - h / 2) + ty) / 4;
-              return (
-                <G key={d.day}>
-                  <Path d={`M${x} ${soil}Q${cx} ${soil - h / 2} ${tx} ${ty}`} stroke={c.success} strokeWidth={fine ? 2.5 : 3.5} strokeLinecap="round" fill="none" />
-                  {!fine && h > 40 && (
-                    <G transform={`translate(${mx} ${my}) rotate(${-90 - side * 55})`}>
-                      <Path d={leafPath(L * 0.7)} fill={c.success} />
-                    </G>
-                  )}
-                  <G transform={`translate(${tx} ${ty}) rotate(${-90 + side * 25})`}>
-                    <Path d={leafPath(L)} fill={c.primary} />
-                  </G>
-                </G>
-              );
-            })}
-          </Svg>
-        )}
-      </View>
-      {labels && (
-        <View style={styles.row}>
-          {data.map((d, i) => {
-            const [y, m, day] = d.day.split('-').map(Number);
-            return (
-              <Text key={d.day} style={[styles.day, { color: i === today ? c.text : c.text2 }, i === today && { fontFamily: fonts.textBold }]}>
-                {new Date(y, m - 1, day).toLocaleDateString(i18n.language, { weekday: 'narrow' })}
-              </Text>
-            );
-          })}
-        </View>
-      )}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row' },
-  day: { flex: 1, textAlign: 'center', fontFamily: fonts.textMedium, fontSize: 12 },
-});

@@ -1,4 +1,4 @@
-> This is the **herbarium skin** (`settings.skin = 'herbarium'`), one of two; the default earthy skin is the app as before. Herbarium-only code lives in `src/skins/herbarium/`.
+> This is the **herbarium skin** (`settings.skin = 'herbarium'`), one of four. Since 2026-11-05 it shares the earthy screens like Ink and Dusk: its palette, fonts, linden (`src/skins/herbarium/tree.tsx`), art palette and soil-line scenes remain; the forked Home cards, Progress plate, Meadow charts and leaf timer ring described below were removed.
 
 ---
 name: Gvozdi

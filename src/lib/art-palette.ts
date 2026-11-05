@@ -1,6 +1,6 @@
 // Illustration palettes per skin, under the earthy role names (sage = legs and some tops, terra = tops, taupe = board and
 // cushion, gold = sun, aura and sparkles). Pure data: scenes.tsx reads it at render, scripts/recolor-art.mjs maps the
-// earthy hexes of assets/art/*.svg onto it. Herbarium keeps its own scenes in src/skins/herbarium/.
+// earthy hexes of assets/art/*.svg onto ink and dusk (assets/art/herbarium/ is drawn from the herbarium scenes, not recolored).
 export type ArtPalette = {
   GV: { sage: string; sageD: string; sageL: string; terra: string; terraD: string; terraL: string; taupe: string; taupeL: string; taupeD: string; gold: string };
   SKIN: string;
@@ -11,9 +11,11 @@ export type ArtPalette = {
   PHONE: string;
   SCREEN: string;
   SAND: string;
+  BLUSH?: string; // cheeks; GV.terra when unset
+  SOIL?: string; // herbarium: the line figures stand on, instead of a floor shadow and aura discs
 };
 
-export const ART: Record<'earthy' | 'ink' | 'dusk', ArtPalette> = {
+export const ART: Record<'earthy' | 'herbarium' | 'ink' | 'dusk', ArtPalette> = {
   earthy: {
     GV: {
       sage: '#2D5A4E', sageD: '#214339', sageL: '#3C6B5C',
@@ -29,6 +31,25 @@ export const ART: Record<'earthy' | 'ink' | 'dusk', ArtPalette> = {
     PHONE: '#1A1A1A',
     SCREEN: '#F1E8D5',
     SAND: '#DBCAA8',
+  },
+  // Herbarium: terra = leaf green (tops), sage = deep moss (legs), taupe = bark (board), gold = linden blossom ochre.
+  herbarium: {
+    GV: {
+      sage: '#34452F', sageD: '#253322', sageL: '#6F8F62',
+      terra: '#4F7F45', terraD: '#3F6A3A', terraL: '#8FB57F',
+      taupe: '#8D8670', taupeL: '#AEA78F', taupeD: '#6B6552',
+      gold: '#C9A24A',
+    },
+    SKIN: '#EAC59C',
+    INK: '#22261F',
+    HAIRS: { sage: '#33473F', taupe: '#4A4232', dark: '#2E2C25' },
+    GREY: '#8C9AA6',
+    MIST: '#B9C4CC',
+    PHONE: '#1A1A1A',
+    SCREEN: '#F1E8D5',
+    SAND: '#DBCAA8',
+    BLUSH: '#D98C6A',
+    SOIL: '#B8892B',
   },
   // Sumi ink on washi: clothes in ink greys, one vermilion (the seal) for tops and the sun, a pale vermilion wash for auras.
   ink: {
