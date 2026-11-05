@@ -24,6 +24,17 @@ export default function Settings() {
   const [notice, setNotice] = useState<{ text: string; error?: boolean }>();
   const [confirming, setConfirming] = useState(false);
   const [denied, setDenied] = useState(false);
+  // Theme and skin repaint every mounted screen, which takes a moment on Android: mark the choice first, apply it a frame later.
+  const [pending, setPending] = useState<{ theme?: ThemePref; skin?: Skin }>({});
+  const choose = (patch: { theme?: ThemePref; skin?: Skin }) => {
+    setPending(patch);
+    requestAnimationFrame(() =>
+      setTimeout(() => {
+        setSettings(patch);
+        setPending({});
+      }),
+    );
+  };
 
   const onExport = () => {
     const { sessions } = useStore.getState();
@@ -79,8 +90,8 @@ export default function Settings() {
       <Card>
         <Txt variant="label">{t('settings.theme')}</Txt>
         <Choice<ThemePref>
-          value={settings.theme}
-          onChange={(theme) => setSettings({ theme })}
+          value={pending.theme ?? settings.theme}
+          onChange={(theme) => choose({ theme })}
           options={[
             { value: 'system', label: t('settings.auto') },
             { value: 'light', label: t('settings.light') },
@@ -89,7 +100,7 @@ export default function Settings() {
         />
         <View accessibilityRole="radiogroup" style={styles.skins}>
           {(['earthy', 'herbarium', 'ink', 'dusk'] as const).map((skin) => (
-            <SkinTile key={skin} skin={skin} on={(settings.skin ?? 'earthy') === skin} onPress={() => setSettings({ skin })} />
+            <SkinTile key={skin} skin={skin} on={(pending.skin ?? settings.skin ?? 'earthy') === skin} onPress={() => choose({ skin })} />
           ))}
         </View>
       </Card>

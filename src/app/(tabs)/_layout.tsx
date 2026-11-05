@@ -1,9 +1,9 @@
 import Feather from '@expo/vector-icons/Feather';
 import { Tabs } from 'expo-router';
 import { BottomTabBarHeightCallbackContext, type BottomTabBarProps } from 'expo-router/tabs';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { type SharedValue, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +20,11 @@ const ALPHA = Platform.OS === 'web' ? '99' : 'f0';
 // react-native-web passes these through to CSS; RN's types don't know them.
 const css = (style: Record<string, string>) => style as object;
 
+function glide(x: SharedValue<number>, stretch: SharedValue<number>, to: number) {
+  x.set(withSpring(to, { damping: 18, stiffness: 220, mass: 0.9 }));
+  stretch.set(withSequence(withTiming(1, { duration: 140 }), withSpring(0, { damping: 9, stiffness: 180 })));
+}
+
 /** Frosted glass card floating over the content (Android + web; iOS uses _layout.ios.tsx), with a lens that slides (and stretches) to the active tab. */
 function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
   const c = useColors();
@@ -32,10 +37,16 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
 
   const x = useSharedValue(state.index * item);
   const stretch = useSharedValue(0);
+  // Slides on press, before the next screen renders; the effects cover other navigation (back, links) and resizes.
+  const heading = useRef(state.index);
   useEffect(() => {
-    x.value = withSpring(state.index * item, { damping: 18, stiffness: 220, mass: 0.9 });
-    stretch.value = withSequence(withTiming(1, { duration: 140 }), withSpring(0, { damping: 9, stiffness: 180 }));
+    if (heading.current === state.index) return;
+    heading.current = state.index;
+    glide(x, stretch, state.index * item);
   }, [state.index, item, x, stretch]);
+  useEffect(() => {
+    x.set(heading.current * item);
+  }, [item, x]);
   const lens = useAnimatedStyle(() => ({
     transform: [{ translateX: x.value }, { scaleX: 1 + 0.3 * stretch.value }, { scaleY: 1 - 0.12 * stretch.value }],
   }));
@@ -72,7 +83,10 @@ function GlassTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBa
         const focused = state.index === i;
         const press = () => {
           const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) navigateToTab(route.key);
+          if (focused || event.defaultPrevented) return;
+          heading.current = i;
+          glide(x, stretch, i * item);
+          navigateToTab(route.key);
         };
         return (
           <Pressable
