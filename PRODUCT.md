@@ -49,7 +49,7 @@ Board-specific craft. Gvozdi is built for nails, not generic mindfulness: a prep
 - Copy in `src/i18n/{en,uk,ru}.json`, including long-form reading pages under `read.*`.
 - Illustrations and kit in `src/components/scenes.tsx`, `src/components/guide-pics.tsx`; art in `assets/art`.
 - Gong sound `assets/sounds/gong.m4a`; app mark/icons in `public/` and `assets/images`.
-- Screenshots of the current look in `docs/screenshots/` (evidence of the old world, not a reference).
+- Screenshots of the current look, all four skins, in `docs/screenshots/`.
 - No testimonials, user counts, reviews or press exist; do not fabricate any.
 
 ## Product Principles

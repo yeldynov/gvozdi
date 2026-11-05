@@ -6,10 +6,15 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 - Live iOS simulator: https://appetize.io/app/b_lyoma6htlukdtl3kzqkvycxcte
 - Every push to `main` deploys the PWA and publishes an OTA update to native builds (`.github/workflows/ship.yml`).
 
-| | | |
+Four skins, each in light and dark. Earthy, Herbarium, Ink and Dusk each draw their own tree.
+
+| Earthy | Herbarium | Ink |
 |:-:|:-:|:-:|
-| <img src="docs/screenshots/onboarding.png" width="240" alt="Onboarding"> | <img src="docs/screenshots/home.png" width="240" alt="Home: streak and today's practice"> | <img src="docs/screenshots/practice.png" width="240" alt="Practice"> |
-| <img src="docs/screenshots/session.png" width="240" alt="Peak session with the intensity curve"> | <img src="docs/screenshots/progress.png" width="240" alt="Progress: streak, level and totals"> | <img src="docs/screenshots/history.png" width="240" alt="History grouped by day"> |
+| <img src="docs/screenshots/home-earthy.png" width="240" alt="Home in Earthy: 21-day program, streak tree, next milestone, this week"> | <img src="docs/screenshots/home-herbarium.png" width="240" alt="Home in Herbarium: the linden tree grows with your streak"> | <img src="docs/screenshots/home-ink.png" width="240" alt="Home in Ink: sumi-e pine on washi paper"> |
+| **Dusk** | **Peak session** | **Progress** |
+| <img src="docs/screenshots/home-dusk.png" width="240" alt="Home in Dusk, dark: willow under evening indigo"> | <img src="docs/screenshots/session-ink.png" width="240" alt="Peak session with the intensity curve, Ink dark"> | <img src="docs/screenshots/progress-herbarium.png" width="240" alt="Progress in Herbarium dark: streak, meadow chart, totals"> |
+| **Practice setup** | **Skin picker** | **History** |
+| <img src="docs/screenshots/practice-dusk.png" width="240" alt="Practice setup in Dusk: modes and minutes"> | <img src="docs/screenshots/settings-earthy.png" width="240" alt="Settings: the four skins previewed in their own colours"> | <img src="docs/screenshots/history-earthy.png" width="240" alt="History grouped by day, with notes"> |
 
 ## Features
 
