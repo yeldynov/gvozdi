@@ -109,6 +109,7 @@ npx tsc --noEmit && npx expo lint && npm test
 
 - Pushing to `main` runs `.github/workflows/ship.yml` in GitHub Actions: deploys the PWA and publishes an OTA update to the `production` channel (the EAS workflow of the same name is manual-only; free-plan EAS CI minutes run out). Manual ship from this machine: `npx eas-cli@latest env:exec production "npx expo export -p web" && npx eas-cli@latest deploy --prod --environment production && npx eas-cli@latest update --channel production --environment production`. Commit and push at the end of each roadmap step.
 - **No `eas build` until the MVP is done.** Native rebuilds are only needed when native dependencies change (runtime version uses the `fingerprint` policy).
+- Next rebuild: first add `"infoPlist": { "ITSAppUsesNonExemptEncryption": false }` to `ios` in `app.json` (needed for TestFlight/App Store). Any `app.json` change alters the fingerprint on both platforms, so it ships only with a build, never on its own.
 
 ## Roadmap
 
