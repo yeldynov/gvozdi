@@ -1,3 +1,6 @@
+import Feather from '@expo/vector-icons/Feather';
+import { useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
@@ -7,6 +10,7 @@ import { achievementStage, type Achievement } from '@/lib/practice';
 import type { Skin } from '@/lib/types';
 import { willow, duskColors } from '@/skins/dusk/tree';
 import { inkColors, pine } from '@/skins/ink/tree';
+import { Card, Txt } from '@/components/ui';
 import { fonts, palette, radius, space, useColors, useSkin } from '@/theme';
 
 // Crown blobs as [dx, dy, r] in crown-radius units; later stages use more of them.
@@ -179,6 +183,35 @@ export function DayBars({
         );
       })}
     </View>
+  );
+}
+
+/** "Saved" after a session (Progress with `?saved=1`); shown once, cleared after 4s or on leaving the tab. */
+export function SavedNotice() {
+  const { t } = useTranslation();
+  const c = useColors();
+  const { saved } = useLocalSearchParams<{ saved?: string }>();
+  const navigation = useNavigation<{ setParams(p: { saved?: string }): void }>();
+  // navigation.setParams targets this screen; router.setParams would hit whichever route is focused when the timer fires.
+  useFocusEffect(
+    useCallback(() => {
+      if (!saved) return;
+      const clear = () => navigation.setParams({ saved: undefined });
+      const id = setTimeout(clear, 4000);
+      return () => {
+        clearTimeout(id);
+        clear();
+      };
+    }, [saved, navigation]),
+  );
+  if (!saved) return null;
+  return (
+    <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
+      <Feather name="check-circle" size={20} color={c.success} />
+      <Txt accessibilityLiveRegion="polite" role="status">
+        {t('progress.saved')}
+      </Txt>
+    </Card>
   );
 }
 

@@ -45,8 +45,8 @@ export default function Settings() {
     }
   };
 
-  const onReminder = async (on: 'on' | 'off') => {
-    if (on === 'off') return setSettings({ reminder: undefined });
+  const onReminder = async (on: boolean) => {
+    if (!on) return setSettings({ reminder: undefined });
     const ok = await allowReminders();
     setDenied(!ok);
     if (ok) setSettings({ reminder: '20:00' });
@@ -97,14 +97,7 @@ export default function Settings() {
         <Txt variant="label">{t('settings.reminder')}</Txt>
         <Txt variant="caption">{t(remindersSupported ? 'settings.reminderText' : 'settings.reminderWeb')}</Txt>
         {remindersSupported && (
-          <Choice<'on' | 'off'>
-            value={settings.reminder ? 'on' : 'off'}
-            onChange={onReminder}
-            options={[
-              { value: 'off', label: t('settings.off') },
-              { value: 'on', label: t('settings.on') },
-            ]}
-          />
+          <OnOff value={!!settings.reminder} onChange={onReminder} />
         )}
         {denied && (
           <>
@@ -127,26 +120,12 @@ export default function Settings() {
       <Card>
         <Txt variant="label">{t('settings.prepare')}</Txt>
         <Txt variant="caption">{t('settings.prepareText')}</Txt>
-        <Choice<'on' | 'off'>
-          value={settings.skipPrepare ? 'off' : 'on'}
-          onChange={(v) => setSettings({ skipPrepare: v === 'off' })}
-          options={[
-            { value: 'off', label: t('settings.off') },
-            { value: 'on', label: t('settings.on') },
-          ]}
-        />
+        <OnOff value={!settings.skipPrepare} onChange={(on) => setSettings({ skipPrepare: !on })} />
       </Card>
       <Card>
         <Txt variant="label">{t('settings.privacy')}</Txt>
         <Txt variant="caption">{t('settings.privacyText')}</Txt>
-        <Choice<'on' | 'off'>
-          value={settings.analytics ? 'on' : 'off'}
-          onChange={(v) => setSettings(v === 'on' ? { analytics: true } : { analytics: false })}
-          options={[
-            { value: 'off', label: t('settings.off') },
-            { value: 'on', label: t('settings.on') },
-          ]}
-        />
+        <OnOff value={!!settings.analytics} onChange={(analytics) => setSettings({ analytics })} />
       </Card>
       <Card>
         <Txt variant="label">{t('settings.data')}</Txt>
@@ -177,6 +156,20 @@ export default function Settings() {
         </View>
       </Sheet>
     </Screen>
+  );
+}
+
+function OnOff({ value, onChange }: { value: boolean; onChange: (on: boolean) => void }) {
+  const { t } = useTranslation();
+  return (
+    <Choice
+      value={value ? 'on' : 'off'}
+      onChange={(v) => onChange(v === 'on')}
+      options={[
+        { value: 'off', label: t('settings.off') },
+        { value: 'on', label: t('settings.on') },
+      ]}
+    />
   );
 }
 

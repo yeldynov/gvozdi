@@ -114,8 +114,7 @@ export default function Practice() {
 
   return (
     <Screen>
-      <TabHead>
-      </TabHead>
+      <TabHead />
 
       {herb ? <Card style={styles.sheet}>{body}</Card> : body}
       <Pressable

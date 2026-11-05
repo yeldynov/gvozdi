@@ -215,7 +215,8 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     setSheet('save');
   };
 
-  const record = (tension?: Tension, note = '') =>
+  const save = (tension: Tension | undefined, note: string) => {
+    const before = earnedAchievementIds(useStore.getState().sessions);
     addSession({
       startedAt: new Date(clock.startedAt).toISOString(),
       durationSec: elapsed,
@@ -224,10 +225,6 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
       tension,
       note: note.trim() || undefined,
     });
-
-  const save = (tension: Tension | undefined, note: string) => {
-    const before = earnedAchievementIds(useStore.getState().sessions);
-    record(tension, note);
     useStore.getState().setRunning(undefined);
     const { sessions } = useStore.getState();
     const fresh = earnedAchievementIds(sessions).filter((id) => !before.includes(id));

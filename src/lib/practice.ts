@@ -1,8 +1,6 @@
 // Pure practice logic: no React, no storage. Every function takes sessions (and `now`) so it is testable.
 import type { Session } from './types';
 
-const DAY_MS = 86_400_000;
-
 /** Local calendar day, 'YYYY-MM-DD'. */
 export function dayKey(d: Date): string {
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -221,14 +219,4 @@ export function todaySec(sessions: Session[], now = new Date()): number {
 export function nextAchievement(sessions: Session[]) {
   const a = ACHIEVEMENTS.find((x) => achievementProgress(x, sessions) < x.target);
   return a ? { a, value: achievementProgress(a, sessions) } : null;
-}
-
-/** Dev-only: one session a day for `days` days, ending today. */
-export function seedSessions(now = new Date(), days = 180): Session[] {
-  return Array.from({ length: days }, (_, i) => {
-    const start = new Date(now.getTime() - (days - 1 - i) * DAY_MS);
-    start.setHours(7 + (i % 12), (i * 17) % 60, 0, 0);
-    const iso = start.toISOString();
-    return { id: `seed-${i}`, startedAt: iso, updatedAt: iso, durationSec: 300 + ((i * 137) % 2100), mode: 'timed' };
-  });
 }

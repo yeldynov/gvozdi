@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Screen, Txt } from '@/components/ui';
 import i18n, { resolveLanguage } from '@/i18n';
 import { capture, useAnalytics } from '@/lib/analytics';
-import { dayKey, live } from '@/lib/practice';
+import { todaySec } from '@/lib/practice';
 import { allowReminders, remindersSupported, syncReminder } from '@/lib/reminder';
 import { useSync } from '@/lib/sync';
 import { useStore } from '@/store';
@@ -43,11 +43,8 @@ export default function RootLayout() {
   // Reschedule on launch, on foreground (the 14-day window moves on), and when the time, today's practice or the language changes.
   useEffect(() => {
     if (!hydrated) return;
-    const sync = () => {
-      const today = dayKey(new Date()); // read at call time: a foreground may be the next day
-      const practised = live(sessions).some((x) => dayKey(new Date(x.startedAt)) === today);
-      syncReminder(reminder, practised, t('reminder.title'), t('reminder.body'));
-    };
+    // todaySec reads the date at call time: a foreground may be the next day.
+    const sync = () => syncReminder(reminder, todaySec(sessions) > 0, t('reminder.title'), t('reminder.body'));
     sync();
     const sub = AppState.addEventListener('change', (s) => s === 'active' && sync());
     return () => sub.remove();

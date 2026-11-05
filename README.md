@@ -22,15 +22,15 @@ A calm companion for nail-board (Sadhu board) practice. One Expo codebase ships 
 - After a session, rate how intense it felt and leave a note, or discard it.
 
 **Progress**
-- Streak, totals and minutes-per-day charts.
-- Achievements with an unlock screen after the session that earns one, plus levels.
+- Streak, totals and minutes-per-day charts; Home cards you can reorder or hide.
+- A tree that grows with 12 milestones, earned in order, with an unlock screen after the session that earns one.
 - History grouped by day, with edit and delete.
 
 **Everything else**
-- Email-code account that syncs sessions across devices; guests can try one demo session first.
+- Works fully without an account; an email-code or Google account syncs sessions across devices.
 - Daily reminders (native) that skip days you've already practised.
 - Export and import a JSON backup; clear all data.
-- Light and dark themes, illustrated onboarding, installable PWA with offline support.
+- Four skins (Earthy, Herbarium, Ink, Dusk), each in light and dark; illustrated onboarding; installable PWA with offline support.
 - Anonymous, opt-in usage stats (PostHog EU); consent is asked in the EU/EEA/UK/CH.
 
 ## Stack

@@ -6,13 +6,13 @@ import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { SaveBanner } from '@/components/account-card';
 import { InstallHint } from '@/components/install-hint';
+import { BeginButton, ChangeButton, LeaveProgram, ProgramFinished, useToday } from '@/components/today';
 import { TabHead } from '@/components/menu';
 import { Badge, DayBars, look, Tree, treeGround } from '@/components/progress-visuals';
 import { Art, Button, Card, Screen, Sheet, Step, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { needsConsent } from '@/lib/consent';
-import { currentStreak, dayKey, lastDays, live, nextAchievement, PROGRAM, programDay, todayMinutes, todaySec, treeStage } from '@/lib/practice';
-import { clampMinutes } from '@/lib/session';
+import { currentStreak, dayKey, lastDays, live, nextAchievement, PROGRAM, todaySec, treeStage } from '@/lib/practice';
 import type { HomeCard } from '@/lib/types';
 import * as herb from '@/skins/herbarium/home';
 import { useStore } from '@/store';
@@ -103,29 +103,11 @@ function joinProgram() {
 function Today() {
   const { t } = useTranslation();
   const c = useColors();
-  const sessions = useStore((s) => s.sessions);
-  const joined = useStore((s) => s.settings.program);
-  const setSettings = useStore((s) => s.setSettings);
-  const [leaving, setLeaving] = useState(false);
-  const program = programDay(sessions, joined);
-  const done = Math.round(todaySec(sessions) / 60);
-  const practised = todaySec(sessions) > 0;
-  const min = clampMinutes(todayMinutes(sessions, joined));
-
-  const begin = () => {
-    capture('session_started', { mode: 'timed', goal_min: min, customized: false, from: 'home' });
-    router.push({ pathname: '/session', params: { mode: 'timed', min: String(min) } });
-  };
-  const leave = () => {
-    setSettings({ program: undefined });
-    capture('program_left', { day: program?.day });
-    setLeaving(false);
-  };
-
+  const { program, practised, done, min } = useToday();
   return (
     <Card>
       <View style={styles.corner}>
-        <Step icon="sliders" label={t('home.change')} onPress={() => router.navigate({ pathname: '/practice', params: { setup: String(Date.now()) } })} />
+        <ChangeButton />
       </View>
       <Txt variant="label" style={styles.cornerPad}>
         {program && !program.finished ? t('home.programDay', { day: program.day, total: PROGRAM.length }) : t('home.today')}
@@ -135,10 +117,7 @@ function Today() {
         <Txt variant="title">{practised ? t('home.doneToday', { count: done }) : t('home.suggested', { count: min })}</Txt>
       </View>
       {program?.finished ? (
-        <>
-          <Txt variant="caption">{t('home.programFinished')}</Txt>
-          <Button ghost label={t('common.close')} onPress={() => setSettings({ program: undefined })} />
-        </>
+        <ProgramFinished />
       ) : (
         program && (
           <>
@@ -151,20 +130,8 @@ function Today() {
           </>
         )
       )}
-      <Button
-        label={practised ? t('home.again') : t('practice.beginFor', { min })}
-        onPress={practised ? () => router.navigate('/practice') : begin} // again: confirm the saved practice first
-        style={styles.wide}
-      />
-      {program && !program.finished && <TextLink label={t('home.leave')} onPress={() => setLeaving(true)} />}
-      <Sheet visible={leaving} onClose={() => setLeaving(false)}>
-        <Txt variant="title">{t('home.leaveTitle')}</Txt>
-        <Txt variant="caption">{t('home.leaveText')}</Txt>
-        <View style={styles.row}>
-          <Button ghost label={t('common.cancel')} onPress={() => setLeaving(false)} style={styles.half} />
-          <Button ghost label={t('home.leave')} onPress={leave} style={styles.half} />
-        </View>
-      </Sheet>
+      <BeginButton />
+      <LeaveProgram />
     </Card>
   );
 }

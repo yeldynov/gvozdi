@@ -1,11 +1,12 @@
 import Feather from '@expo/vector-icons/Feather';
-import { router, useFocusEffect, useLocalSearchParams, useNavigation } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { router } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Meadow, Tree } from '@/skins/herbarium/progress-visuals';
 import { TabHead } from '@/components/menu';
+import { SavedNotice } from '@/components/progress-visuals';
 import { Button, Card, Screen, Txt } from '@/components/ui';
 import {
   ACHIEVEMENTS,
@@ -26,21 +27,6 @@ export default function Progress() {
   const { t } = useTranslation();
   const c = useColors();
   const sessions = useStore((s) => s.sessions);
-  const { saved } = useLocalSearchParams<{ saved?: string }>();
-  const navigation = useNavigation<{ setParams(p: { saved?: string }): void }>();
-  // Shown once: cleared after 4s or on leaving the tab. navigation.setParams targets this
-  // screen; router.setParams would hit whichever route is focused when the timer fires.
-  useFocusEffect(
-    useCallback(() => {
-      if (!saved) return;
-      const clear = () => navigation.setParams({ saved: undefined });
-      const id = setTimeout(clear, 4000);
-      return () => {
-        clearTimeout(id);
-        clear();
-      };
-    }, [saved, navigation]),
-  );
   const sum = totals(sessions);
   const streak = currentStreak(sessions);
   const week = lastDays(sessions);
@@ -57,12 +43,7 @@ export default function Progress() {
   return (
     <Screen>
       <TabHead />
-      {saved && (
-        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space[3] }}>
-          <Feather name="check-circle" size={20} color={c.success} />
-          <Txt accessibilityLiveRegion="polite" role="status">{t('progress.saved')}</Txt>
-        </Card>
-      )}
+      <SavedNotice />
 
       <Card style={{ gap: space[5] }}>
         <View>

@@ -28,6 +28,7 @@ src/app/(tabs)/              Home (index: cards today / stats (streak tree + nex
 src/app/onboarding.tsx       3 intro pages (until `settings.onboarded`); last page: start practising / have an account
 src/app/session.tsx          full-screen session: prepare gate → active (peak/timed/free) → save sheet / discard confirm → unlock screen; `store.running` persists the clock (resumed from Home on launch), `usePreventRemove` sends any back to the discard sheet
 src/app/account.tsx          email → code; signs in, or signs up if the email is new. Signed in: email + sign out (syncs, then clears local sessions so the next account starts clean)
+src/components/today.tsx     Home Today card behaviour (useToday, Begin/Change buttons, leave-program sheet) shared by every skin's card
 src/components/account-card.tsx  AccountCard (signed in: email + sign out; signed out: SaveBanner), SaveBanner (Home + Settings)
 src/app/contact.tsx          contact form (open to guests) → EmailJS REST; EXPO_PUBLIC_EMAILJS_{SERVICE_ID,TEMPLATE_ID,PUBLIC_KEY}, template params site/email/message/app
 src/app/api/region+api.ts    GET → { country } from EAS Hosting IP geolocation (null in dev)
