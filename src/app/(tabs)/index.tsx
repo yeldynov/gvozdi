@@ -112,10 +112,12 @@ function Today() {
       <Txt variant="label" style={styles.cornerPad}>
         {program && !program.finished ? t('home.programDay', { day: program.day, total: PROGRAM.length }) : t('home.today')}
       </Txt>
-      <View style={[styles.titleRow, styles.cornerPad]}>
-        {practised && <Feather name="check-circle" size={22} color={c.accent} />}
-        <Txt variant="title">{practised ? t('home.doneToday', { count: done }) : t('home.suggested', { count: min })}</Txt>
-      </View>
+      {(practised || min !== undefined) && (
+        <View style={[styles.titleRow, styles.cornerPad]}>
+          {practised && <Feather name="check-circle" size={22} color={c.accent} />}
+          <Txt variant="title">{practised ? t('home.doneToday', { count: done }) : t('home.suggested', { count: min })}</Txt>
+        </View>
+      )}
       {program?.finished ? (
         <ProgramFinished />
       ) : (

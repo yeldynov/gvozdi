@@ -25,7 +25,7 @@ export function Today() {
       <View style={[styles.titleRow, styles.cornerPad]}>
         {practised && <Feather name="check-circle" size={24} color={c.primary} />}
         <Txt variant="display" style={styles.todayTitle}>
-          {practised ? t('home.doneToday', { count: done }) : t('home.suggested', { count: min })}
+          {practised ? t('home.doneToday', { count: done }) : min !== undefined ? t('home.suggested', { count: min }) : t('home.today')}
         </Txt>
       </View>
       {program?.finished ? (

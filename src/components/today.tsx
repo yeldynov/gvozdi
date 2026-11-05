@@ -16,7 +16,9 @@ export function useToday() {
   const joined = useStore((s) => s.settings.program);
   const program = programDay(sessions, joined);
   const sec = todaySec(sessions);
-  return { program, practised: sec > 0, done: Math.round(sec / 60), min: clampMinutes(todayMinutes(sessions, joined)) };
+  // Only a running program recommends minutes; otherwise Home just offers Start.
+  const min = program && !program.finished ? clampMinutes(todayMinutes(sessions, joined)) : undefined;
+  return { program, practised: sec > 0, done: Math.round(sec / 60), min };
 }
 
 const closeProgram = () => useStore.getState().setSettings({ program: undefined });
@@ -27,18 +29,18 @@ export function ChangeButton() {
   return <Step icon="sliders" label={t('home.change')} onPress={() => router.navigate({ pathname: '/practice', params: { setup: String(Date.now()) } })} />;
 }
 
-/** Begin today's minutes, or (after practising) the Practice tab to confirm the saved setup first. */
+/** In a running program, begin today's minutes; otherwise (or after practising) Start opens the Practice tab. */
 export function BeginButton() {
   const { t } = useTranslation();
   const { practised, min } = useToday();
-  const begin = () => {
+  const begin = (min: number) => {
     capture('session_started', { mode: 'timed', goal_min: min, customized: false, from: 'home' });
     router.push({ pathname: '/session', params: { mode: 'timed', min: String(min) } });
   };
   return (
     <Button
-      label={practised ? t('home.again') : t('practice.beginFor', { min })}
-      onPress={practised ? () => router.navigate('/practice') : begin}
+      label={practised || min === undefined ? t('home.again') : t('practice.beginFor', { min })}
+      onPress={practised || min === undefined ? () => router.navigate('/practice') : () => begin(min)}
       style={styles.wide}
     />
   );
