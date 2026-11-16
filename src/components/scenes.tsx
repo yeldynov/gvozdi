@@ -1,12 +1,15 @@
 // Character scenes from the gvozdi-pwa design set (designs/.../scenes.jsx), ported so their parts can move.
 // Each scene is a stack of 320×320 SVG layers; moving parts sit on their own Animated.View layer.
-import { useEffect, type ComponentProps, type ReactNode } from 'react';
+import { useEffect, useRef, type ComponentProps, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
   interpolate,
+  interpolateColor,
+  type SharedValue,
   useAnimatedStyle,
+  useFrameCallback,
   useReducedMotion,
   useSharedValue,
   withDelay,
@@ -15,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
+import { BreathDot } from '@/components/session-visuals';
 import { ART, type ArtPalette } from '@/lib/art-palette';
 import type { PeakStage } from '@/lib/session';
 import type { Skin } from '@/lib/types';
@@ -441,50 +445,113 @@ function Stander() {
   );
 }
 
-const STING_LINES = {
-  sharp: [[86, 106, 70, 96], [84, 140, 66, 140], [86, 174, 70, 184]],
-  stings: [[86, 122, 74, 116], [86, 160, 74, 166]],
-} as const;
+const SPARKS = 26;
+// Deterministic 0..1 noise per spark, so the field looks scattered but renders the same every time.
+const noise = (i: number, seed: number) => {
+  const x = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+const SPARK_SEEDS = Array.from({ length: SPARKS }, (_, i) => ({
+  x: 112 + noise(i, 1) * 96, // along the board
+  rank: noise(i, 2), // density threshold: low ranks show first
+  phase: noise(i, 3),
+  speed: 0.75 + noise(i, 4) * 0.5,
+  reach: 0.6 + noise(i, 5) * 0.4,
+}));
+
+type StormClock = { t: SharedValue<number>; heat: SharedValue<number> };
+
+/** One streak rising off the nails; how many show, how far they fly and their colour all follow `heat`. */
+function Spark({ seed, size, clock, colors }: { seed: (typeof SPARK_SEEDS)[number]; size: number; clock: StormClock; colors: [string, string, string] }) {
+  const k = size / 320;
+  const lean = (seed.x - 160) / 48; // outer sparks fan outwards
+  const style = useAnimatedStyle(() => {
+    const heat = clock.heat.value;
+    const p = (clock.t.value * seed.speed + seed.phase) % 1;
+    const on = Math.min(1, Math.max(0, (Math.max(heat, 0.3) - seed.rank) * 6)); // calm keeps a few motes
+    const travel = (80 + 170 * heat) * seed.reach * k;
+    return {
+      backgroundColor: interpolateColor(heat, [0, 0.3, 1], colors),
+      opacity: on * (p < 0.12 ? p / 0.12 : 1 - (p - 0.12) / 0.88),
+      transform: [
+        { translateX: lean * travel * 0.35 * p },
+        { translateY: -travel * p },
+        { rotate: `${lean * 14}deg` },
+        { scaleY: (1 - 0.6 * p) * (0.3 + 0.7 * heat) }, // calm motes shrink to dots
+      ],
+    };
+  });
+  return (
+    <Animated.View
+      pointerEvents="none"
+      style={[{ position: 'absolute', left: seed.x * k, top: 262 * k, width: 5 * k, height: 22 * k, borderRadius: 2.5 * k }, style]}
+    />
+  );
+}
 
 /**
- * Standing through Peak guidance: sting lines pulse fast and wide while it is sharpest, fewer and slower while it
- * still stings, and give way to a soft glow and drifting leaves once it eases. Still lines on reduced motion.
+ * Peak guidance as weather. Sparks fly off the nails, sped up, thickened and warmed by `intensity`: they climb in the
+ * first 90 s, thin out by 7:00 and then drift up slowly in sage while a halo breathes. `stage` changes send one ring
+ * out from the figure. Freezes while paused; on reduced motion each moment is a still frame of the same density.
  */
-export function SceneSting({ size, stage }: { size: number; stage: PeakStage }) {
-  const { GV } = useArt();
-  const sharp = stage === 'sharp';
-  const { v, reduced } = useLoop(sharp ? 1100 : 2600);
+export function SceneStorm({ size, intensity, stage, running }: { size: number; intensity: number; stage: PeakStage; running: boolean }) {
+  const { GV, SOIL, skin } = useArt();
+  const reduced = useReducedMotion();
+  const calm = stage === 'easier';
   const k = size / 320;
-  const wave = (dir: number) => {
-    'worklet';
-    return reduced
-      ? {}
-      : { opacity: interpolate(v.value, [0, 1], [0.2, 1]), transform: [{ translateX: dir * (sharp ? 14 : 8) * k * v.value }] };
-  };
-  const left = useAnimatedStyle(() => wave(-1));
-  const right = useAnimatedStyle(() => wave(1));
-  const lines = stage === 'easier' ? null : STING_LINES[stage];
+  const target = calm ? 0 : 0.3 + 0.7 * intensity;
+  const t = useSharedValue(0);
+  const heat = useSharedValue(target);
+  const rate = useSharedValue(calm ? 0.12 : 0.4 + 2.4 * intensity);
+  const ring = useSharedValue(1);
+
+  // Speed and density ease toward the target, so the opening seconds accelerate rather than jump.
+  const level = Math.round(target * 100);
+  useEffect(() => {
+    heat.value = withTiming(level / 100, { duration: 1200 });
+    rate.value = withTiming(calm ? 0.12 : 0.4 + 2.4 * intensity, { duration: 1200 });
+  }, [level]); // eslint-disable-line react-hooks/exhaustive-deps -- intensity is read only when the level moves
+
+  const frame = useFrameCallback((f) => {
+    t.value += ((f.timeSincePreviousFrame ?? 16) / 1000) * rate.value;
+  }, false);
+  useEffect(() => {
+    frame.setActive(running && !reduced);
+    return () => frame.setActive(false);
+  }, [frame, running, reduced]);
+
+  const first = useRef(stage);
+  useEffect(() => {
+    if (stage === first.current || reduced) return;
+    first.current = stage;
+    ring.value = 0;
+    ring.value = withTiming(1, { duration: 1800, easing: Easing.out(Easing.quad) });
+  }, [stage, reduced, ring]);
+  const ringStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(ring.value, [0, 0.1, 1], [0, 0.6, 0]),
+    transform: [{ scale: interpolate(ring.value, [0, 1], [0.5, 1.6]) }],
+  }));
+
+  const colors: [string, string, string] = [GV.sage, GV.gold, GV.terra];
   return (
     <View style={{ width: size, height: size, alignSelf: 'center' }}>
-      <Layer size={size}>
-        <Blob cx={160} cy={150} rx={112} ry={116} fill={lines ? GV.terra : GV.gold} opacity={sharp ? 0.16 : lines ? 0.09 : 0.2} />
-      </Layer>
-      {lines &&
-        ([[left, 1], [right, -1]] as const).map(([style, flip], i) => (
-          <Layer key={i} size={size} style={style}>
-            <G stroke={GV.terra} strokeWidth={3} strokeLinecap="round" opacity={sharp ? 0.7 : 0.4}>
-              {lines.map(([x1, y1, x2, y2]) => (
-                <Line key={y1} x1={flip > 0 ? x1 : 320 - x1} y1={y1} x2={flip > 0 ? x2 : 320 - x2} y2={y2} />
-              ))}
-            </G>
-          </Layer>
-        ))}
-      {!lines && (
-        <>
-          <DriftLeaf size={size} ms={9000} delay={0} x={70} y={190} rot={50} color={GV.gold} s={0.85} />
-          <DriftLeaf size={size} ms={10000} delay={4000} x={236} y={190} rot={-50} color={GV.sage} s={0.85} />
-        </>
+      {(!calm || skin === 'ink') && (
+        <Layer size={size}>
+          <Blob cx={160} cy={160} rx={118} ry={118} fill={calm ? GV.sage : GV.terra} opacity={calm ? 0.1 : 0.06 + 0.12 * intensity} />
+        </Layer>
       )}
+      {calm && !SOIL && (
+        <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
+          <BreathDot size={size * 0.9} active={running && !reduced} color={GV.sage} opacity={0.16} />
+        </View>
+      )}
+      <Animated.View
+        pointerEvents="none"
+        style={[{ position: 'absolute', left: 40 * k, top: 40 * k, width: 240 * k, height: 240 * k, borderRadius: 120 * k, borderWidth: 2, borderColor: calm ? GV.sage : GV.gold }, ringStyle]}
+      />
+      {SPARK_SEEDS.map((seed, i) => (
+        <Spark key={i} seed={seed} size={size} clock={{ t, heat }} colors={colors} />
+      ))}
       <Layer size={size}>
         <Stander />
       </Layer>

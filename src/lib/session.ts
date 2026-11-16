@@ -37,12 +37,23 @@ export function peakStage(elapsed: number): PeakStage {
   return elapsed < PEAK_SEC ? 'sharp' : elapsed < MILD_SEC ? 'stings' : 'easier';
 }
 
-export type PeakCaption = 'sharp' | 'climbing' | 'top' | 'past' | 'adapting' | 'goal';
+/** Felt intensity 0..1: a steep climb to 1 at 1:30, decay to about 0.2 by 7:00, then 0 (calm). */
+export function peakIntensity(elapsed: number): number {
+  if (elapsed < PEAK_SEC) return 1 - (1 - elapsed / PEAK_SEC) ** 2;
+  if (elapsed < MILD_SEC) return 0.2 + 0.8 * Math.exp(-(elapsed - PEAK_SEC) / 90);
+  return 0;
+}
 
+export type PeakCaption = 'sharp' | 'exhale' | 'climbing' | 'soften' | 'hold' | 'top' | 'past' | 'adapting' | 'goal';
+
+// The sharp stretch talks more often: a new line every 12-20 s until it turns.
 export function peakCaption(elapsed: number, goalSec: number): PeakCaption {
   if (goalSec && elapsed >= goalSec) return 'goal';
-  if (elapsed < 15) return 'sharp';
-  if (elapsed < 60) return 'climbing';
+  if (elapsed < 12) return 'sharp';
+  if (elapsed < 25) return 'exhale';
+  if (elapsed < 45) return 'climbing';
+  if (elapsed < 60) return 'soften';
+  if (elapsed < 80) return 'hold';
   if (elapsed < PEAK_SEC + 15) return 'top';
   if (elapsed < MILD_SEC) return 'past';
   return 'adapting';

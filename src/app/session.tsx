@@ -10,9 +10,9 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { TreeGrow } from '@/components/progress-visuals';
-import { LeafBurst, SceneSting } from '@/components/scenes';
+import { LeafBurst, SceneStorm } from '@/components/scenes';
 import { NoteInput, TensionPicker } from '@/components/session-fields';
-import { PeakStages, TimerRing } from '@/components/session-visuals';
+import { PeakLine, TimerRing } from '@/components/session-visuals';
 import { Art, Button, Sheet, TextLink, Txt } from '@/components/ui';
 import { capture } from '@/lib/analytics';
 import { cancelGoalAlert, scheduleGoalAlert } from '@/lib/goal-alert';
@@ -20,9 +20,11 @@ import { ACHIEVEMENTS, achievementStage, earnedAchievementIds, formatDuration, t
 import {
   clampMinutes,
   elapsedSec,
+  MILD_SEC,
   PEAK_SEC,
   pauseClock,
   peakCaption,
+  peakIntensity,
   peakStage,
   resumeClock,
   startClock,
@@ -200,6 +202,15 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
     if (haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
   }, [reached, sound, haptics, player]);
 
+  // Peak boundaries (1:30, 7:00) are felt, not just drawn: one soft tick; SceneStorm sends the ring.
+  const stage = peakStage(elapsed);
+  const lastStage = useRef(stage); // a resumed session doesn't tick for a boundary it already passed
+  useEffect(() => {
+    if (mode !== 'peak' || stage === lastStage.current) return;
+    lastStage.current = stage;
+    if (haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+  }, [mode, stage, haptics]);
+
   const toggle = () => {
     const at = Date.now();
     updateClock(running ? pauseClock(clock, at) : resumeClock(clock, at));
@@ -260,19 +271,24 @@ function Active({ mode, goalSec }: { mode: SessionMode; goalSec: number }) {
                 {t('session.overGoal', { time: formatDuration(elapsed - goalSec) })}
               </Txt>
             ) : (
-              elapsed < PEAK_SEC && (
+              // Goal reached wins (above); until then, always a countdown to calm.
+              elapsed < MILD_SEC && (
                 <View style={[styles.row, { gap: space[2] }]}>
-                  <Txt variant="label">{t('session.peakEases')}</Txt>
-                  <Text style={[styles.mid, { color: c.accent }]}>{formatDuration(PEAK_SEC - elapsed)}</Text>
+                  <Txt variant="body" style={{ color: c.text2 }}>
+                    {t(elapsed < PEAK_SEC ? 'session.sharpFor' : 'session.calmIn')}
+                  </Txt>
+                  <Text style={[styles.mid, { color: c.accent }]}>{formatDuration((elapsed < PEAK_SEC ? PEAK_SEC : MILD_SEC) - elapsed)}</Text>
                 </View>
               )
             )}
           </View>
-          <PeakStages elapsed={elapsed} goalSec={goalSec} />
-          <SceneSting size={220} stage={peakStage(elapsed)} />
-          <Txt variant="body" style={styles.caption}>
-            {running ? t(`session.captions.${peakCaption(elapsed, goalSec)}`) : t('session.paused')}
-          </Txt>
+          <PeakLine elapsed={elapsed} running={running} />
+          <SceneStorm size={220} intensity={peakIntensity(elapsed)} stage={peakStage(elapsed)} running={running} />
+          <Animated.View key={running ? peakCaption(elapsed, goalSec) : 'paused'} entering={FadeIn.duration(500)}>
+            <Txt variant="body" style={styles.caption}>
+              {running ? t(`session.captions.${peakCaption(elapsed, goalSec)}`) : t('session.paused')}
+            </Txt>
+          </Animated.View>
         </View>
       ) : (
         <View style={styles.center}>

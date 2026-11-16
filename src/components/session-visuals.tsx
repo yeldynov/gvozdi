@@ -12,14 +12,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
-import Svg, { Circle, Defs, Line, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { Txt } from '@/components/ui';
-
-
+import { ART } from '@/lib/art-palette';
 import { formatDuration } from '@/lib/practice';
-import { MILD_SEC, PEAK_SEC } from '@/lib/session';
-import { fonts, space, useColors } from '@/theme';
+import { MILD_SEC, PEAK_SEC, peakIntensity } from '@/lib/session';
+import { fonts, space, useColors, useSkin } from '@/theme';
 
 /** Soft disc that swells and settles on a 4s in / 4s out rhythm. */
 export function BreathDot({
@@ -151,37 +150,96 @@ const styles = StyleSheet.create({
   ripple: { position: 'absolute', width: R * 2, height: R * 2, borderRadius: R, borderWidth: 1.5, left: 140 - R, top: 140 - R },
 });
 
-const STAGES = [
-  { key: 'sharp', from: 0, to: PEAK_SEC, bar: 8 },
-  { key: 'stings', from: PEAK_SEC, to: MILD_SEC, bar: 5 },
-  { key: 'easier', from: MILD_SEC, to: Infinity, bar: 3 },
+// The peak line: x is piecewise time, so the short sharp stretch gets room. Its height is the felt intensity, so it
+// climbs without a dip to 1:30, slopes down to 7:00 and lies flat; fine teeth on the edge are the sting, not the trend.
+const LW = 320;
+const LH = 64;
+const BASE = LH - 11; // room for the dot halo on the flat line
+const AMP = BASE - 10;
+const SEGS = [
+  { key: 'sharp', from: 0, to: PEAK_SEC, x0: 0, x1: 112, art: 'terra' },
+  { key: 'stings', from: PEAK_SEC, to: MILD_SEC, x0: 112, x1: 240, art: 'gold' },
+  { key: 'easier', from: MILD_SEC, to: MILD_SEC + 180, x0: 240, x1: LW, art: 'sage' },
 ] as const;
+const lineX = (sec: number) => {
+  const s = SEGS.find((g) => sec < g.to) ?? SEGS[2];
+  return s.x0 + (s.x1 - s.x0) * Math.min(1, Math.max(0, (sec - s.from) / (s.to - s.from)));
+};
+const ridgeY = (sec: number) => BASE - peakIntensity(sec) * AMP;
+const SEG_PATHS = SEGS.map((g) => {
+  if (g.key === 'easier') return { edge: `M${g.x0} ${BASE}H${g.x1}`, area: '' };
+  const pts: string[] = [];
+  for (let x = g.x0, i = 0; x <= g.x1; x += 3, i++) {
+    const sec = g.from + ((x - g.x0) / (g.x1 - g.x0)) * (g.to - g.from);
+    const tooth = (i % 2 ? -1 : 1) * 2.5 * peakIntensity(sec); // the sting: fine, never deeper than the climb
+    pts.push(`${x} ${(ridgeY(sec) + tooth).toFixed(1)}`);
+  }
+  const edge = `M${pts.join('L')}`;
+  return { edge, area: `${edge}L${g.x1} ${BASE}L${g.x0} ${BASE}Z` };
+});
 
-/** Peak guidance as three named stages with their times; the bar under each fills as you pass through it. */
-export function PeakStages({ elapsed, goalSec }: { elapsed: number; goalSec: number }) {
-  const c = useColors();
-  const { t } = useTranslation();
-  // A short goal never reaches the later stages, so they are left out.
-  const shown = STAGES.filter((s) => !goalSec || s.from < goalSec);
+/** A segment of the ridge; the one you are in throbs from its base, faster and higher while it is sharp. */
+function LineSeg({ d, color, opacity, tremble, running }: { d: { edge: string; area: string }; color: string; opacity: number; tremble: number; running: boolean }) {
+  const reduced = useReducedMotion();
+  const v = useSharedValue(0);
+  useEffect(() => {
+    if (!tremble || !running || reduced) {
+      cancelAnimation(v);
+      v.value = 0;
+      return;
+    }
+    v.value = withRepeat(withTiming(1, { duration: 90 + 110 * (4 - tremble), easing: Easing.inOut(Easing.quad) }), -1, true);
+    return () => cancelAnimation(v);
+  }, [tremble, running, reduced, v]);
+  const style = useAnimatedStyle(() => ({ transformOrigin: 'bottom', transform: [{ scaleY: 1 + 0.035 * tremble * v.value }] }));
   return (
-    <View style={{ flexDirection: 'row', gap: space[3], alignSelf: 'stretch' }}>
-      {shown.map((s) => {
-        const current = elapsed >= s.from && elapsed < s.to;
-        const fill = s.to === Infinity ? (current ? 1 : 0) : Math.min(1, Math.max(0, (elapsed - s.from) / (s.to - s.from)));
-        return (
-          <View key={s.key} style={{ flex: 1, gap: space[1] }}>
-            <Txt variant="body" style={{ color: current ? c.text : c.text3, fontFamily: current ? fonts.textBold : fonts.text }}>
-              {t(`session.stages.${s.key}`)}
+    <Animated.View style={[StyleSheet.absoluteFill, style]}>
+      <Svg width="100%" height="100%" viewBox={`0 0 ${LW} ${LH}`}>
+        {d.area ? <Path d={d.area} fill={color} opacity={opacity * 0.18} /> : null}
+        <Path d={d.edge} fill="none" stroke={color} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" opacity={opacity} />
+      </Svg>
+    </Animated.View>
+  );
+}
+
+/**
+ * Peak guidance as a ridge that flattens: a steady climb to the top at 1:30, a long slope down to 7:00, then flat calm.
+ * A dot rides it; passed stretches dim, the current one trembles, calm ahead is always in view.
+ */
+export function PeakLine({ elapsed, running }: { elapsed: number; running: boolean }) {
+  const c = useColors();
+  const { GV } = ART[useSkin()];
+  const { t } = useTranslation();
+  const x = lineX(elapsed);
+  const y = elapsed < MILD_SEC ? ridgeY(elapsed) : BASE;
+  const at = SEGS.findIndex((g) => elapsed < g.to);
+  const cur = at < 0 ? 2 : at;
+  // Calm uses the theme's success colour so it stays readable ahead in every skin and mode.
+  const segColor = (i: number) => (i === 2 ? c.success : GV[SEGS[i].art]);
+  const tremble = cur === 2 ? 0 : Math.max(1, Math.round(peakIntensity(elapsed) * 4)); // 4 levels, so the loop restarts rarely
+  return (
+    <View style={{ alignSelf: 'stretch', gap: space[2] }}>
+      <View style={{ width: '100%', aspectRatio: LW / LH }}>
+        {SEGS.map((g, i) => (
+          <LineSeg key={g.key} d={SEG_PATHS[i]} color={segColor(i)} opacity={i < cur ? 0.3 : i === cur ? 1 : 0.55} tremble={i === cur ? tremble : 0} running={running} />
+        ))}
+        <Svg width="100%" height="100%" viewBox={`0 0 ${LW} ${LH}`} style={StyleSheet.absoluteFill}>
+          <Circle cx={x} cy={y} r={10} fill={segColor(cur)} opacity={0.2} />
+          <Circle cx={x} cy={y} r={5} fill={segColor(cur)} stroke={c.bg} strokeWidth={2} />
+        </Svg>
+      </View>
+      <View style={{ flexDirection: 'row' }}>
+        {SEGS.map((g, i) => (
+          <View key={g.key} style={{ flex: g.x1 - g.x0, gap: 2 }}>
+            <Txt variant="body" style={{ color: i === cur ? c.text : c.text3, fontFamily: i === cur ? fonts.textBold : fonts.text }}>
+              {t(`session.stages.${g.key}`)}
             </Txt>
             <Txt variant="caption" style={{ color: c.text3 }}>
-              {s.to === Infinity ? `${formatDuration(s.from)}+` : `${formatDuration(s.from)}–${formatDuration(s.to)}`}
+              {i === 2 ? `${formatDuration(g.from)}+` : `${formatDuration(g.from)}–${formatDuration(g.to)}`}
             </Txt>
-            <View style={{ height: s.bar, borderRadius: s.bar, backgroundColor: c.bg3, overflow: 'hidden', marginTop: space[1] }}>
-              <View style={{ height: '100%', width: `${fill * 100}%`, backgroundColor: c.accent }} />
-            </View>
           </View>
-        );
-      })}
+        ))}
+      </View>
     </View>
   );
 }

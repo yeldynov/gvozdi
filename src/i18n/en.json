@@ -167,7 +167,8 @@
     "onBoard": "On the board",
     "overGoal": "+{{time}} over goal",
     "goal": "goal {{time}}",
-    "peakEases": "Peak eases in",
+    "sharpFor": "Sharpest for",
+    "calmIn": "Calm in",
     "peak": "Peak",
     "steady": "Steady",
     "standing": "Standing · breathe steady",
@@ -176,11 +177,14 @@
     "stages": {
       "sharp": "Sharpest",
       "stings": "Still stings",
-      "easier": "Easier"
+      "easier": "Calm"
     },
     "captions": {
       "sharp": "Sharp now. That's your nerves, not an injury. Breathe out slowly.",
+      "exhale": "Long breath out. Let your shoulders drop.",
       "climbing": "The hardest stretch. Keep your weight still and breathe through it.",
+      "soften": "Unclench your jaw and hands. Stay with the breath.",
+      "hold": "Count five slow breaths. It peaks here, then turns.",
       "top": "Almost through the sharpest part. Stay with it.",
       "past": "The sharpest part is behind you. It still stings; it eases by 7:00.",
       "adapting": "Your body has adjusted. It's getting easier.",

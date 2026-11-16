@@ -42,7 +42,7 @@ src/app/read/[id].tsx        reading page (guide/faq/about/articles); text in i1
 src/components/guide-pics.tsx  still vignettes per guide paragraph (PAGES.guide.pics), drawn with the kit exported from scenes.tsx
 src/app/journal.tsx          article list (PAGES with article: true), read time derived from word count
 src/components/progress-visuals.tsx  DayBars (minutes per day), Badge (achievement icon)
-src/components/session-visuals.tsx  TimerRing, PeakStages, BreathDot
+src/components/session-visuals.tsx  TimerRing, PeakLine (peak guidance line), BreathDot; SceneStorm (peak sparks) lives in scenes.tsx
 src/components/session-fields.tsx   TensionPicker, NoteInput, TENSION_ICONS, useFormatDay (shared by save sheet + history)
 src/lib/session.ts           pure timer Clock (timestamp-based), Peak curve + captions, presets
 src/lib/backup.ts            pure: serialize/parse, parseSession/parseSyncBody (validate untrusted JSON), mergeSessions (LWW, returns same array if unchanged)

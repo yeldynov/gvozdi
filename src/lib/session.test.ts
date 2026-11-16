@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { clampMinutes, elapsedSec, stepMinutes, pauseClock, peakCaption, peakStage, resumeClock, startClock } from './session.ts';
+import { clampMinutes, elapsedSec, stepMinutes, pauseClock, peakCaption, peakIntensity, peakStage, resumeClock, startClock } from './session.ts';
 
 test('elapsed comes from the clock and excludes paused time', () => {
   let c = startClock(0);
@@ -23,6 +23,17 @@ test('peak: sharpest to 1:30, still stings to 7:00, then easier', () => {
   assert.equal(peakCaption(450, 600), 'adapting');
   assert.equal(peakCaption(300, 300), 'goal');
   assert.equal(peakCaption(100, 120), 'top'); // a 2-min session is still at its peak at 1:40
+  assert.deepEqual([12, 30, 50, 70].map((s) => peakCaption(s, 0)), ['exhale', 'climbing', 'soften', 'hold']);
+});
+
+test('peak intensity climbs to the top at 1:30, fades by 7:00, then is calm', () => {
+  assert.equal(peakIntensity(0), 0);
+  assert.ok(peakIntensity(10) > 0.2); // steep early climb
+  assert.ok(peakIntensity(45) < peakIntensity(80));
+  assert.equal(peakIntensity(90), 1);
+  assert.ok(peakIntensity(300) < peakIntensity(120));
+  assert.ok(peakIntensity(419) > 0.2 && peakIntensity(419) < 0.25);
+  assert.equal(peakIntensity(420), 0);
 });
 
 test('custom minutes stay within 1..90', () => {
